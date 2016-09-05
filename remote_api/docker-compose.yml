@@ -12,18 +12,18 @@ services:
     command: nodemon app.js
     environment:
       NODE_ENV: development
-    volumes:
-      - .:/remote_api
+    # volumes:
+    #   - .:/remote_api
     ports:
       - "3000:3000"
     depends_on:
       - db
       - mq
   dispatcher:
-    build: ./../dispatcher
+    build: dispatcher
     command: nodemon app.js
-    volumes:
-      - ./../dispatcher:/dispatcher
+    # volumes:
+    #   - ./../dispatcher:/dispatcher
     ports:
       - "3030:3030"
     depends_on:
