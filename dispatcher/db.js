@@ -7,13 +7,13 @@ process.env.NODE_ENV = process.env.NODE_ENV === undefined? 'development' : proce
 
 switch (process.env.NODE_ENV) {
   case 'production':
-    mongoose.connect('mongodb://db/remote_meeting_pro');
+    mongoose.connect('mongodb://localhost/remote_meeting_pro');
     break;
   case 'test':
     //mongoose.connect('mongodb://127.0.0.1:12707/remote_meeting_test');
     break;
   default:
-    mongoose.connect('mongodb://db/remote_meeting_dev');
+    mongoose.connect('mongodb://localhost/remote_meeting_dev');
 }
 
 logger.debug(process.env.NODE_ENV);   

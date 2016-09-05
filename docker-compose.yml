@@ -1,9 +1,9 @@
 version: '2'
 services:
-  db:
-    image: mongo
-    volumes: 
-      - /var/opt/mongo/db:/data/db
+  # db:
+  #   image: mongo
+  #   volumes: 
+  #     - /var/opt/mongo/db:/data/db
   mq:
     image: rabbitmq
   remote_api:
@@ -16,7 +16,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      # - db
       - mq
   dispatcher:
     build: dispatcher
@@ -27,5 +27,5 @@ services:
       - "3030:3030"
     depends_on:
       - mq
-      - db
+      # - db
   
