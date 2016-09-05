@@ -1,10 +1,10 @@
 'user strict';
 
-var bodyParser = require('body-parser');
-var logger     = require('log4js').getLogger('api');
-var express    = require('express');
-var app        = express();
-var router     = require('./routers');
+const bodyParser = require('body-parser');
+const logger     = require('log4js').getLogger('api');
+const express    = require('express');
+const app        = express();
+const router     = require('./routers');
 
 app.use(bodyParser.json());
 app.use(router);
