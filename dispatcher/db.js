@@ -1,19 +1,19 @@
 "use strict";
 
-var logger   = require('log4js').getLogger('db');
-var mongoose = require('mongoose');
+const logger   = require('log4js').getLogger('db');
+const mongoose = require('mongoose');
 
 process.env.NODE_ENV = process.env.NODE_ENV === undefined? 'development' : process.env.NODE_ENV;
 
 switch (process.env.NODE_ENV) {
   case 'production':
-    mongoose.connect('mongodb://localhost/remote_meeting_pro');
+    mongoose.connect('mongodb://db/remote_meeting_pro');
     break;
   case 'test':
     //mongoose.connect('mongodb://127.0.0.1:12707/remote_meeting_test');
     break;
   default:
-    mongoose.connect('mongodb://localhost/remote_meeting_dev');
+    mongoose.connect('mongodb://db/remote_meeting_dev');
 }
 
 logger.debug(process.env.NODE_ENV);   
