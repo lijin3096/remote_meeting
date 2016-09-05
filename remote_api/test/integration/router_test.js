@@ -14,13 +14,14 @@ const mongoose = require('mongoose');
 const User     = require('../../models/user');
 const Utils    = require('../../utils/utils');
 const nock     = require('nock');
+const app      = require('../../app');
 
 describe('Router', function() {
   let conn;
   let id;
 
-  let url = 'http://localhost:3000';
-
+//  let url = 'http://localhost:3000';
+  let url = app;
   let headers = {
   	'Content-Type': 'application/json',
   };
