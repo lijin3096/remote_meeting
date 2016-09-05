@@ -9,7 +9,8 @@ const expect   = chai.expect;
       chai.use(chaiHttp);
 
 const logger   = require('log4js').getLogger('integration test');
-const mongoose = require('mongoose');  
+const mongoose = require('mongoose'); 
+      mongoose.Promise = global.Promise;
 const User     = require('../../models/user');
 const Utils    = require('../../utils/utils');
 const nock     = require('nock');
@@ -65,7 +66,7 @@ describe('Router', function() {
 	conn = mongoose.connection;
     Utils.hashedPassword(user.password).then((hashedPassword) => {
 	  user.hashedPassword = hashedPassword;
-
+    
 	  conn.collection('users').insert(user).then((u) => {
 	  	id = u.ops[0]._id;
 	    headers['Authorization'] = id;

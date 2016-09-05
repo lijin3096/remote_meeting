@@ -3,7 +3,7 @@ services:
   db:
     image: mongo
     volumes: 
-      - remote_api/scripts:/tmp/scripts
+      - ./remote_api/scripts:/tmp/scripts
       - /var/opt/mongo/db:/data/db
   mq:
     image: rabbitmq
@@ -13,7 +13,7 @@ services:
     environment:
       NODE_ENV: development
     volumes:
-      - remote_api:/remote_api
+      - ./remote_api:/remote_api
     ports:
       - "3000:3000"
     depends_on:
@@ -23,7 +23,7 @@ services:
     build: dispatcher
     command: nodemon app.js
     volumes:
-      - dispatcher:/dispatcher
+      - ./dispatcher:/dispatcher
     ports:
       - "3030:3030"
     depends_on:

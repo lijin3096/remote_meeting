@@ -13,7 +13,7 @@ switch (process.env.NODE_ENV) {
   //   mongoose.connect('mongodb://db/remote_meeting_test');
   //   break;
   default:
-    mongoose.connect('mongodb://172.18.0.3/remote_meeting_dev');
+    mongoose.connect('mongodb://db/remote_meeting_dev');
 }
 
 Logger.debug(process.env.NODE_ENV);   
