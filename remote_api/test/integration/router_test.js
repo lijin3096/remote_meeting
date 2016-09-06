@@ -60,9 +60,9 @@ describe('Router', function() {
 
   before(function(done) {
 
-  	// nock('http://103.37.158.17:8080')
-  	// .post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
-   // .reply(200);
+  	nock('http://103.37.158.17:8080')
+  	.post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
+    .reply(200);
 
 	conn = mongoose.connection;
     Utils.hashedPassword(user.password).then((hashedPassword) => {
@@ -167,22 +167,18 @@ describe('Router', function() {
       });
     });
 
-    //it('expect status 200 and get an array of applies which orgCode is 0997001', function(done) {
-    //  nock('http://103.37.158.17:8080')
-    //  .post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
-    //  .reply(200);
-      
-    //  chai.request(url)
-    //  .get('/api/v1/applies')
-    //  .set(headers)
-    //  .query('orgCode', '0997001')
-    //  .end(function(err, res) {
-    //  	expect(err).to.be.null;
-    //  	expect(res).to.have.status(200);
-    //  	expect(res.body).to.have.property('applies').and.empty;
-    //  	done();
-    //  });
-    //})
+    it('expect status 200 and get an array of applies which orgCode is 0997001', function(done) {
+      chai.request(url)
+      .get('/api/v1/applies')
+      .set(headers)
+      .query('orgCode', '0997001')
+      .end(function(err, res) {
+      	expect(err).to.be.null;
+      	expect(res).to.have.status(200);
+      	expect(res.body).to.have.property('applies').and.empty;
+      	done();
+      });
+    })
 
   })
 })
