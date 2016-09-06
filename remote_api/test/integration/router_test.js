@@ -20,8 +20,8 @@ describe('Router', function() {
   let conn;
   let id;
 
-  let url = 'http://localhost:3000';
-  //let url = app;
+  //let url = 'http://localhost:3000';
+  let url = app;
   let headers = {
   	'Content-Type': 'application/json',
   };
