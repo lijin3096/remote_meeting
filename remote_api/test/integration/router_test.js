@@ -14,14 +14,14 @@ const mongoose = require('mongoose');
 const User     = require('../../models/user');
 const Utils    = require('../../utils/utils');
 const nock     = require('nock');
-const app      = require('../../app');
+
 
 describe('Router', function() {
   let conn;
   let id;
 
-  let url = 'http://127.0.0.1:3000';
-  //let url = app;
+  let url = 'http://localhost:3000';
+  
   let headers = {
   	'Content-Type': 'application/json',
   };
@@ -64,25 +64,25 @@ describe('Router', function() {
   	.post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
     .reply(200);
 
-	conn = mongoose.connection;
-    Utils.hashedPassword(user.password).then((hashedPassword) => {
-	  user.hashedPassword = hashedPassword;
-    
-	  conn.collection('users').insert(user).then((u) => {
-	  	id = u.ops[0]._id;
-	    headers['Authorization'] = id;
-	  }).then(() => {
-	  	conn.collection('applies').insert(applicant).then(() => {
-	  	  done();
-	  	})
-	  })
-	}).catch((e) => { done(e); });
+  	conn = mongoose.connection;
+      Utils.hashedPassword(user.password).then((hashedPassword) => {
+  	  user.hashedPassword = hashedPassword;
+      
+  	  conn.collection('users').insert(user).then((u) => {
+  	  	id = u.ops[0]._id;
+  	    headers['Authorization'] = id;
+  	  }).then(() => {
+  	  	conn.collection('applies').insert(applicant).then(() => {
+  	  	  done();
+  	  	})
+  	  })
+  	}).catch((e) => { done(e); });
   });
 
   after(function(done) {
     conn.db.dropCollection('users').then(() => {
       conn.db.dropCollection('applies').then(() => {
-      	nock.clearAll();
+      	
       	done();
       })
     }).catch((e) => { done(e); });
