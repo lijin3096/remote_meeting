@@ -60,9 +60,9 @@ describe('Router', function() {
 
   before(function(done) {
 
-  	nock('http://103.37.158.17:8080')
-  	.post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
-    .reply(200);
+  	// nock('http://103.37.158.17:8080')
+  	// .post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
+   // .reply(200);
 
 	conn = mongoose.connection;
     Utils.hashedPassword(user.password).then((hashedPassword) => {
@@ -82,6 +82,7 @@ describe('Router', function() {
   after(function(done) {
     conn.db.dropCollection('users').then(() => {
       conn.db.dropCollection('applies').then(() => {
+      	nock.clearAll();
       	done();
       })
     }).catch((e) => { done(e); });
@@ -167,6 +168,10 @@ describe('Router', function() {
     });
 
     it('expect status 200 and get an array of applies which orgCode is 0997001', function(done) {
+      nock('http://103.37.158.17:8080')
+      .post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
+      .reply(200);
+      
       chai.request(url)
       .get('/api/v1/applies')
       .set(headers)
