@@ -26,7 +26,7 @@ AMQP.connect('amqp://mq').then(function(conn) {
           if (err) logger.error(err);
           else {
             let options = {
-              host:     '10.93.1.102',
+              host:     '103.37.158.17',
               port:     9090,
               path:     '/xjp/familyRemoteMeeting/allocationMeetingTime',
               method:   'POST',
