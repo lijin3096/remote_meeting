@@ -56,3 +56,4 @@ AMQP.connect('amqp://mq').then(function(conn) {
 
   });
 }).then(null, console.warn);
+
