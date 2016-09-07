@@ -1,7 +1,7 @@
 'use strict';
 
 const _         = require('lodash');
-const MQ        = require('../mq/mq');
+const MQ        = require('../mq/sender');
 const Promise   = require('promise');
 
 const Logger    = require('log4js').getLogger('Apply model');
@@ -26,6 +26,7 @@ var ApplySchema = new mongoose.Schema({
     } 
   }]      
 });
+
 
 /**
  * Commit a apply.
@@ -91,35 +92,11 @@ ApplySchema.statics.commit = function(params, callback) {
 }
 
 
-/**
- * Find applies which dispatched meeting time of current date
- * with specify orgnization.
- * @param {!string} orgCode for query correspending applies
- * @param {function(Error, [Object])} callback after quering.
-*/
-ApplySchema.statics.applicationsOfToday = function(orgCode, callback) {
-  let today = new Date().toISOString();
-  let date = today.substring(0, today.indexOf('T'));
-
-  this.find({
-    orgCode: orgCode, 
-    'applyHistory.feedback.from': 'M',
-    'applyHistory.applyDate': date})
-  .select('name applicant applyHistory')
-  .exec((err, applies) => {
-    if (err) {
-      Logger.error(`find applies error ${err}`);
-      callback(err);
-    } else {       
-      callback(null, this.prepairApplies(applies, date));
-    } 
-  });
-}
-
 
 /**
  * Update apply after get feedback from external service.
  * When apply allowed by prison, send message to RabbitMQ.
+ *
  * @param {!Object} params of feedback property.
  * @param {function(Error, apply)}
 */ 
@@ -138,8 +115,6 @@ ApplySchema.statics.feedback = function(params, callback) {
       callback(null, apply);
     }
   });
-  
-
 }
 
 /**
@@ -158,7 +133,8 @@ ApplySchema.statics.updateFeedback = function(params, callback) {
     meetingTime: params.meetingTime
   }
 
-  this.findOneAndUpdate({
+  this.findOneAndUpdate(
+    {
       applicant: params.applicant,
       'applyHistory.applyDate': params.applyDate
     },
@@ -170,7 +146,8 @@ ApplySchema.statics.updateFeedback = function(params, callback) {
       } else {
         callback(null, apply);
       }
-    });
+    }
+  );
 
 }
 
@@ -210,9 +187,9 @@ ApplySchema.statics.search = function(query, cb) {
  * @param applies 
 */
 ApplySchema.statics.prepairApplies = function(applies, condition) {
-
   let result = {};
   let history = [];
+
   Logger.debug(condition);
   applies.forEach((apply) => {
     result.name = apply.name;
@@ -228,7 +205,6 @@ ApplySchema.statics.prepairApplies = function(applies, condition) {
       }
     });
 
-    Logger.debug(result);
     history.push(result);
   });
   return history;

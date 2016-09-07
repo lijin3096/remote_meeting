@@ -1,14 +1,14 @@
 'use strict';
 
 const express = require('express');
-const router  = express.Router();
 const logger  = require('log4js').getLogger('router');
-
 const User    = require('./models/user');
 const Apply   = require('./models/apply');
 const Org     = require('./models/orgnization');
 const Utils   = require('./utils/utils');
 const Meeting = require('./models/meeting');
+
+const router  = express.Router();
 
 router.get('/', (req, res) => {
   res.send('hello world');
@@ -50,6 +50,7 @@ router.post('/api/v1/feedback', (req, res) => {
       if(err) res.status(500).send({ error: 'feedback error' });
       else res.status(200).send({ msg: 'feedback success' });
     });
+    
   } else {
     res.status(401).send({ msg: 'forbidden' });
   }
@@ -130,7 +131,10 @@ router.route('/api/v1/applies')
     }
   })
   .get(function(req, res, next) {
-    Apply.applicationsOfToday(req.query.orgCode, (err, applies) => {
+    let today = new Date().toISOString();
+    let date = today.substring(0, today.indexOf('T'));
+
+    Apply.search({orgCode: req.query.orgCode, start: date, end: date}, (err, applies) => {
       if(err) {
         res.status(500).send({ error: 'find applies failed' });
         next(err);
@@ -142,7 +146,7 @@ router.route('/api/v1/applies')
     
   });
 
-// Update user collection
+// Update user's password or phone number.
 router.put('/api/v1/users/:id', (req, res) => {
   User.update(req.params.id, req.body.user, (err, result) => {
     if(err) {
@@ -171,17 +175,5 @@ router.get('/api/v1/search', (req, res) => {
     return res.status(200).send({ applies: result });
   })
 });
-
-// function compareDate(dateString) {
-//   let diffTime = new Date(dateString).getTime() - new Date().getTime();
-//   if (diffTime < 0) {
-//     return false;
-//   }
-//   let diffDates = Math.ceil(diffTime / (1000 * 3600 * 24));
-//   if (diffDates >= 1 && diffDates <= 30) {
-//     return true;
-//   }
-//   return false;
-// }
 
 module.exports = router;

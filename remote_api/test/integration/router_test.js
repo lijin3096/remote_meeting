@@ -60,7 +60,7 @@ describe('Router', function() {
 
   before(function(done) {
 
-  	nock('http://103.37.158.17:8080')
+  	nock('http://103.37.158.17:8080', {allowUnmocked: true})
   	.post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
     .reply(200);
 
@@ -82,7 +82,8 @@ describe('Router', function() {
   after(function(done) {
     conn.db.dropCollection('users').then(() => {
       conn.db.dropCollection('applies').then(() => {
-      	
+      	nock.cleanAll();
+        nock.enableNetConnect();
       	done();
       })
     }).catch((e) => { done(e); });
@@ -114,7 +115,7 @@ describe('Router', function() {
   	});
   })
 
-  describe('/api/v1/applies', function() {
+  describe('POST /api/v1/applies', function() {
   	it('expect status 400 when apply date is before today', function(done) {
   	  chai.request(url)
   	  .post('/api/v1/applies')
@@ -165,20 +166,24 @@ describe('Router', function() {
       	expect(res.body.msg).to.be.equal('申请提交成功');
       	done();
       });
-    });
+    });   
+  });
 
+  describe('GET /api/v1/applies', function() {
     it('expect status 200 and get an array of applies which orgCode is 0997001', function(done) {
       chai.request(url)
       .get('/api/v1/applies')
       .set(headers)
       .query('orgCode', '0997001')
       .end(function(err, res) {
-      	expect(err).to.be.null;
-      	expect(res).to.have.status(200);
-      	expect(res.body).to.have.property('applies').and.empty;
-      	done();
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('applies').and.empty;
+        done();
       });
-    })
+    });
+  });
 
-  })
+
+
 })
