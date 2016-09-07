@@ -4,6 +4,7 @@ services:
     image: mongo
     volumes: 
       - /mnt/var/lib/mongo/db:/data/db
+      - ./remote_api/scripts:/tmp/scripts
   mq:
     image: rabbitmq
   remote_api:
