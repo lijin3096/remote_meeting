@@ -22,7 +22,6 @@ AMQP.connect('amqp://mq').then(function(conn) {
         let id = array[3];
 
         let res = Dispatcher.init(p, s, array[0], function(err, res) {
-          logger.debug(res);
           if (err) logger.error(err);
           else {
             let options = {
@@ -39,7 +38,7 @@ AMQP.connect('amqp://mq').then(function(conn) {
               queueId: res.res[1],
               sfs: res.res[2]
             }
-
+            logger.debug(data);
             httpUtils.sendRequest(options, data, function(err, res) {
               logger.debug(data);
               if (err) logger.error(err);
