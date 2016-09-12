@@ -1,9 +1,7 @@
-"use strict";
-
 const Logger  = require('log4js').getLogger('Utils');
 const Bcrypt  = require('bcrypt');
 const _       = require('lodash');
-const Promise = require('promise');
+//const Promise = require('promise');
 const Org     = require('../models/orgnization');
 const Meeting = require('../models/meeting');
 

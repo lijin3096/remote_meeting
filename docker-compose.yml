@@ -7,6 +7,8 @@ services:
       - ./remote_api/scripts:/tmp/scripts
   mq:
     image: rabbitmq
+    ports: 
+      - "15672:15672"
   remote_api:
     build: remote_api
     command: nodemon app.js
