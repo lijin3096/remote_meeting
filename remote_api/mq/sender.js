@@ -1,12 +1,10 @@
-'use strict';
-
 const logger = require('log4js').getLogger('AMQP');
 const amqp   = require('amqplib');
 const when   = require('when');
 
-function MQ() {};
+function Sender() {}
 
-MQ.send = function(msg) {
+Sender.send = function(msg) {
   amqp.connect('amqp://mq').then(function(conn) {
     return when(conn.createChannel()).then(function(ch) {
       let q = 'apply';
@@ -19,6 +17,6 @@ MQ.send = function(msg) {
       });
     }).ensure(function() { conn.close(); });
   }).then(null, console.warn);   
-}
+};
 
-module.exports = MQ;
+module.exports = Sender;

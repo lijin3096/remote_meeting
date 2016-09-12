@@ -1,5 +1,24 @@
 {
   "name": "dispatcher",
+   "eslintConfig": {
+     "env": {
+        "browser": false,
+        "node": true
+     },
+     "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "semi": 2
+    }
+  },
+  "jshintConfig": {
+    "esversion": 6
+  },
   "version": "0.0.1",
   "private": true,
   "description": "Dispatch meeting",
@@ -13,7 +32,7 @@
     "mongoose": "^4.5.7"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive"
   },
   "repository": {
     "type": "git",

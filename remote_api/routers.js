@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const logger  = require('log4js').getLogger('router');
 const User    = require('./models/user');
@@ -7,9 +5,9 @@ const Apply   = require('./models/apply');
 const Org     = require('./models/orgnization');
 const Utils   = require('./utils/utils');
 const Meeting = require('./models/meeting');
-
 const router  = express.Router();
 
+logger.debug(Object.getOwnPropertyNames(Apply));
 router.get('/', (req, res) => {
   res.send('hello world');
 });
@@ -46,11 +44,11 @@ router.post('/api/v1/users', (req, res) => {
 // Get feedback from web management
 router.post('/api/v1/feedback', (req, res) => {
   if(req.headers.authorization === '8e5946ccc540e5ac5eb5851658681708') {
-    Apply.feedback(req.body.feedback, (err, result) => {
-      if(err) res.status(500).send({ error: 'feedback error' });
-      else res.status(200).send({ msg: 'feedback success' });
+    Apply.feedback(req.body.feedback, (err, apply) => {
+      if (err) res.status(500).send({ error: 'feedback error' });
+      else if (apply) res.status(200).send({ msg: 'feedback success' });
+      else res.status(404).send({msg: 'apply not found'});
     });
-    
   } else {
     res.status(401).send({ msg: 'forbidden' });
   }
@@ -61,12 +59,12 @@ router.post('/api/v1/prisons', (req, res) => {
   if(req.headers.authorization === '8e5946ccc540e5ac5eb5851658681708') {
     Org.config(req.body.settings, (err, result) => {
       if(err) res.status(500).send({ error: 'update settings error' });
-      else res.status(200).send( { msg: 'update settings success' })
+      else res.status(200).send( { msg: 'update settings success' });
     });
   } else {
     res.status(401).send({ msg: 'forbidden' });
   }  
-})
+});
 
 
 
@@ -86,7 +84,7 @@ router.all('*', (req, res, next) => {
         logger.debug('authentication failed');
         res.status(401).send({ msg: 'forbidden' });
       }
-    })
+    });
   } else {
     logger.debug('authentication value not valid');
     res.status(401).send({ msg: 'forbidden' });
@@ -154,7 +152,7 @@ router.put('/api/v1/users/:id', (req, res) => {
     } else {
       res.status(200).send({ msg: result });
     }
-  })
+  });
 });
 
 router.get('/api/v1/orgnizations/:orgCode/meetings', (req, res) => {
@@ -173,7 +171,7 @@ router.get('/api/v1/search', (req, res) => {
   Apply.search(query, (err, result) => {
     if (err) return res.status(500).send({ error: `${err}` });
     return res.status(200).send({ applies: result });
-  })
+  });
 });
 
 module.exports = router;

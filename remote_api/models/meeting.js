@@ -1,9 +1,5 @@
-'use strict';
-
-const _        = require('lodash');
-const promise  = require('promise');
+const _      = require('lodash');
 var logger   = require('log4js').getLogger('Meeting');
-
 var mongoose = require('./../db');
       mongoose.Promise = global.Promise;
       
@@ -14,7 +10,7 @@ var MeetingSchema = new Schema({
   orgType:     String,
   applyDate:   String,
   schedule:    [Schema.Types.Mixed]
-})
+});
 
 MeetingSchema.statics.persist = function(meeting, cb) {
   this.findOne({applyDate: meeting.applyDate, orgCode: meeting.orgCode}).then((m) => {
@@ -25,7 +21,7 @@ MeetingSchema.statics.persist = function(meeting, cb) {
       })
     } else cb(null, 'can not update');
   }).catch((e) => { cb(e); });
-}
+};
 
 MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
   this.findOne( { prisonCode: prisonCode, applyDate: applyDate } ).then((meeting) => {
@@ -45,13 +41,13 @@ MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
         } else {
           return cb( null, meeting );
         }
-      })
+      });
     }
 
     return cb( null, meeting);
     
-  })
-}
+  });
+};
 
 /**
  * @params
@@ -91,12 +87,12 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
           array = [meeting, m];
         }
         cb(null, array);
-      })
+      });
     } else {
       cb(null, meetings);
     }
   }).catch((e) => { cb(e); });
-}
+};
 
 
 MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
@@ -112,14 +108,14 @@ MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
     } else {
       cb(null, meeting);
     }
-  })
-}
+  });
+};
 
 MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {
   this.find({ applyDate: applyDate, orgCode: orgCode}).then((result) => {
     return cb(null, result);
   }).catch((e) => { cb(e); });
-}
+};
 
 
 module.exports = mongoose.model('Meeting', MeetingSchema);

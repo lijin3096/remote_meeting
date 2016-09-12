@@ -1,7 +1,3 @@
-'use strict';
-
-//process.env.NODE_ENV = 'test';
-
 const logger   = require('log4js').getLogger('user unit test');
 const mongoose = require('mongoose');
 const expect   = require('chai').expect;
@@ -21,7 +17,7 @@ describe('User', function() {
     orgnization: {code: '0997001', title: 'test sfs'},
     cloudMsg: {cloudID: 'xj001', token: '1234'},
     shorts: ['aa', 'bb', 'cc']
-  }
+  };
 
   before(function(done) {
       conn = mongoose.connection;
@@ -32,7 +28,7 @@ describe('User', function() {
           done();
         });
         
-      }).catch((e) => { done(e); })
+      }).catch((e) => { done(e); });
   });
 
   after(function(done) {
@@ -60,7 +56,7 @@ describe('User', function() {
       User.isValidUser('test2', '123456', function(err, res) {
         expect(res).to.have.property('valid').and.eql(false);
         done();
-      })
+      });
     });
 
     it('expect an error with data and hash arguments required.', function(done) {
@@ -76,9 +72,9 @@ describe('User', function() {
     it(`expect an user with id ${id}`, function(done) {
       User.getUserById(id, function(err, res) {
         expect(res).to.have.property('_id').and.eql(id);
-        done()
-      })
-    })
+        done();
+      });
+    });
   });
 
   describe('#create(user, callback)', function() {
@@ -106,4 +102,4 @@ describe('User', function() {
   });
 
 
-})
+});

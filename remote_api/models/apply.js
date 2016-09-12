@@ -1,32 +1,34 @@
-'use strict';
-
-const _         = require('lodash');
-const MQ        = require('../mq/sender');
-const Promise   = require('promise');
-
-const Logger    = require('log4js').getLogger('Apply model');
-const HTTP      = require('http');
+const _ = require('lodash');
+const Sender = require('../mq/sender');
+const Logger = require('log4js').getLogger('Apply model');
+const HTTP = require('http');
 const HTTPUtils = require('../utils/HTTPUtils');
-const mongoose  = require('../db');
-    mongoose.Promise = global.Promise;
+const mongoose = require('../db');
+mongoose.Promise = global.Promise;
 
-var ApplySchema = new mongoose.Schema({
-  name:             String,
-  orgCode:          String,
-  applicant:        String,
+const ApplySchema = new mongoose.Schema({
+  name: String,
+  orgCode: String,
+  applicant: String,
   applyHistory: [{
-    applyDate:      String, 
-    feedback: { 
-      isPass:       String,
-      meetingTime:  String,
-      from:         String, 
-      content:      String,
-      prison:       String, 
-      sfs:          String
-    } 
-  }]      
+    applyDate: String,
+    feedback: {
+      isPass: String,
+      meetingTime: String,
+      from: String,
+      content: String,
+      prison: String,
+      sfs: String
+    }
+  }]
 });
 
+const model = mongoose.model('Apply', ApplySchema);
+
+function Apply() {
+  // set default sender
+  this.sender = Sender;
+}
 
 /**
  * Commit a apply.
@@ -36,17 +38,15 @@ var ApplySchema = new mongoose.Schema({
  *     400 - the apply has been already commited yet;
  *
 */
-ApplySchema.statics.commit = function(params, callback) {
+Apply.prototype.commit = function (params, callback) {
   Logger.debug(params);
-  this.findOne({applicant: params.uuid})
+  model.findOne({ applicant: params.uuid })
     .then((apply) => {
       if (apply) {
-
         // date and applicant of params have already existed.
-        if (_.find(apply.applyHistory, {applyDate: params.applyDate})) {
+        if (_.find(apply.applyHistory, { applyDate: params.applyDate })) {
           return callback(null, 400);
         } else {
-
           // add new apply
           apply.orgCode = params.orgCode;
           apply.applyHistory.push({
@@ -68,30 +68,26 @@ ApplySchema.statics.commit = function(params, callback) {
                 port: 8080,
                 path: '/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest',
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'}
+                headers: { 'Content-Type': 'application/json' }
               };
 
               // FIXME: move this from model to other place
-              HTTPUtils.sendRequest(options, params, function(err, res) {
-                Logger.error(err);
+              HTTPUtils.sendRequest(options, params, function (err, res) {
                 if (err) return callback(err);  // Note: fix this when remote service not avaliable
                 Logger.debug(res);
                 return callback(null, res);
               });
-              
             }
           });
         }
       } else {
         callback(null, 404);
       }
-  }).catch((e) => {
-    Logger.error(e); 
-    callback(e)
-  });
-}
-
-
+    }).catch((e) => {
+      Logger.error(e);
+      callback(e);
+    });
+};
 
 /**
  * Update apply after get feedback from external service.
@@ -99,48 +95,50 @@ ApplySchema.statics.commit = function(params, callback) {
  *
  * @param {!Object} params of feedback property.
  * @param {function(Error, apply)}
-*/ 
-ApplySchema.statics.feedback = function(params, callback) {
+*/
+Apply.prototype.feedback = function (params, callback) {
   Logger.debug(params);
 
   if (params.from === 'P' && params.isPass === 'PASSED') {
-    MQ.send(params.applyDate + ':' + params.prison + ':' + params.sfs + ':' + params.id);
+    this.sender.send(params.applyDate + 
+      ':' + params.prison + 
+      ':' + params.sfs + 
+      ':' + params.id);
   }
 
   this.updateFeedback(params, (err, apply) => {
     if (err) {
-      Logger.error(err);
       callback(err);
-    } else {
+    } else if (apply) {
       callback(null, apply);
+    } else {
+      callback(null, null);
     }
   });
-}
+};
 
 /**
  * Update feedback of apply.
  * @param {!Object} params of feedback property.
  * @param {function(Error, apply)} callback after update.
  */
-ApplySchema.statics.updateFeedback = function(params, callback) {
-
-  let feedback = { 
+Apply.prototype.updateFeedback = function (params, callback) {
+  let feedback = {
     from: params.from,
     isPass: params.isPass,
     content: params.content,
     prison: params.prison,
     sfs: params.sfs,
     meetingTime: params.meetingTime
-  }
+  };
 
-  this.findOneAndUpdate(
-    {
+  model.findOneAndUpdate({
       applicant: params.applicant,
       'applyHistory.applyDate': params.applyDate
     },
-    { $set: { 'applyHistory.$.feedback': feedback } }, 
+    { $set: { 'applyHistory.$.feedback': feedback } },
     (err, apply) => {
-      if(err) {
+      if (err) {
         Logger.error(`update feedback error: ${err}`);
         callback(err);
       } else {
@@ -148,15 +146,15 @@ ApplySchema.statics.updateFeedback = function(params, callback) {
       }
     }
   );
-
-}
+};
 
 /**
  * Search applies with specify conditions.
  * @param {Object} query condition.
  * @param {function(Error, apply)} cb after search.
  */
-ApplySchema.statics.search = function(query, cb) {
+Apply.prototype.search = function (query, cb) {
+
   let queryProperties = Object.getOwnPropertyNames(query);
   let condition = {};
 
@@ -168,25 +166,26 @@ ApplySchema.statics.search = function(query, cb) {
     }
   });
 
-  this.find({
-      orgCode: query.orgCode, 
-      'applyHistory.applyDate': condition,
-      'applyHistory.feedback.from': 'M'
-    }, (err, applies) => {
-      if (err) {
-        Logger.error(`search error: ${err}`);
-        cb(err);
-      } else {
-        cb(null, this.prepairApplies(applies, condition));
-      }
-    });
-}
+  model.find({
+    orgCode: query.orgCode,
+    'applyHistory.applyDate': condition,
+    'applyHistory.feedback.from': 'M'
+  }, (err, applies) => {
+    if (err) {
+      Logger.error(`search error: ${err}`);
+      cb(err);
+    } else {
+      cb(null, this.prepairApplies(applies, condition));
+    }
+  });
+
+};
 
 /**
  * Filter method for reject which feedbacks not come from M
  * @param applies 
 */
-ApplySchema.statics.prepairApplies = function(applies, condition) {
+Apply.prototype.prepairApplies = function (applies, condition) {
   let result = {};
   let history = [];
 
@@ -195,19 +194,23 @@ ApplySchema.statics.prepairApplies = function(applies, condition) {
     result.name = apply.name;
     result.uuid = apply.applicant;
 
-    result.apply = apply.applyHistory.filter(function(h) {
+    result.apply = apply.applyHistory.filter(function (h) {
       if (typeof condition === 'string') {
         return h.feedback.from === 'M' && h.applyDate === applyDate;
       } else if (typeof condition === 'object') {
         return h.feedback.from === 'M' &&
-               h.applyDate >= condition['$gte'] &&
-               h.applyDate <= condition['$lte'];
+          h.applyDate >= condition.$gte &&
+          h.applyDate <= condition.$lte;
       }
     });
 
     history.push(result);
   });
   return history;
-}
+};
 
-module.exports = mongoose.model('Apply', ApplySchema);
+Apply.prototype.setSender = function (sender) {
+  this.sender = sender;
+};
+
+module.exports = new Apply();

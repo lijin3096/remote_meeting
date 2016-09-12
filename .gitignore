@@ -1,3 +1,4 @@
 npm-debug.log
 /dispatcher/node_modules
 /remote_api/node_modules
+/.vscode

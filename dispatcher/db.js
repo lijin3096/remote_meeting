@@ -1,9 +1,7 @@
-"use strict";
-
-const logger   = require('log4js').getLogger('db');
+const logger = require('log4js').getLogger('db');
 const mongoose = require('mongoose');
 
-process.env.NODE_ENV = process.env.NODE_ENV === undefined? 'development' : process.env.NODE_ENV;
+process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'development' : process.env.NODE_ENV;
 
 switch (process.env.NODE_ENV) {
   case 'production':
@@ -16,7 +14,7 @@ switch (process.env.NODE_ENV) {
     mongoose.connect('mongodb://db/remote_meeting_dev');
 }
 
-logger.debug(process.env.NODE_ENV);   
+logger.debug(process.env.NODE_ENV);
 
 const db = mongoose.connection;
 
@@ -25,7 +23,7 @@ db.on('error', (err) => {
 });
 
 db.once('open', (err) => {
-  if(err) logger.error(`Database open error ${err}`);
+  if (err) logger.error(`Database open error ${err}`);
   else logger.debug('Database open success');
 });
 

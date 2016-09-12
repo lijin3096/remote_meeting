@@ -1,5 +1,3 @@
-'user strict';
-
 const bodyParser = require('body-parser');
 const logger     = require('log4js').getLogger('api');
 const express    = require('express');

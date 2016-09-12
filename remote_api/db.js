@@ -1,5 +1,3 @@
-"use strict";
-
 const Logger   = require('log4js').getLogger('db');
 const mongoose = require('mongoose');
 

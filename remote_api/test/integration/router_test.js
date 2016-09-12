@@ -1,7 +1,4 @@
-'use strict';
-
 //process.env.NODE_ENV = 'test';
-
 const chaiAsPromised = require('chai-as-promised');
 const chaiHttp = require('chai-http');
 const chai     = require('chai');
@@ -14,7 +11,6 @@ const mongoose = require('mongoose');
 const User     = require('../../models/user');
 const Utils    = require('../../utils/utils');
 const nock     = require('nock');
-
 
 describe('Router', function() {
   let conn;
@@ -34,7 +30,7 @@ describe('Router', function() {
     orgnization: {code: '0997001', title: 'test sfs'},
     cloudMsg: {cloudID: 'xj001', token: '1234'},
     shorts: ['aa', 'bb', 'cc']
-  }
+  };
 
   let applicant = {
   	name: 'David Liu',
@@ -48,7 +44,7 @@ describe('Router', function() {
   	  	}
   	  }
   	]
-  }
+  };
 
   let validApply = { 
   	apply: {
@@ -56,7 +52,7 @@ describe('Router', function() {
   	  uuid: '650104199012124201',
   	  applyDate: '2016-09-15'
   	}
-  }
+  };
 
   before(function(done) {
 
@@ -70,12 +66,12 @@ describe('Router', function() {
       
   	  conn.collection('users').insert(user).then((u) => {
   	  	id = u.ops[0]._id;
-  	    headers['Authorization'] = id;
+  	    headers.Authorization = id;
   	  }).then(() => {
   	  	conn.collection('applies').insert(applicant).then(() => {
   	  	  done();
-  	  	})
-  	  })
+  	  	});
+  	  });
   	}).catch((e) => { done(e); });
   });
 
@@ -85,7 +81,7 @@ describe('Router', function() {
       	nock.cleanAll();
         nock.enableNetConnect();
       	done();
-      })
+      });
     }).catch((e) => { done(e); });
   });
 
@@ -113,7 +109,7 @@ describe('Router', function() {
   	  	done(err);
   	  });
   	});
-  })
+  });
 
   describe('POST /api/v1/applies', function() {
   	it('expect status 400 when apply date is before today', function(done) {
@@ -126,7 +122,7 @@ describe('Router', function() {
   	  	expect(res).to.have.status(400);
   	  	expect(res.body.msg).to.be.equal('Apply date is not valid');
   	  	done();
-  	  })
+  	  });
   	});
 
     it('expect status 404 when user that is not have permission for appling.', function(done) {
@@ -184,6 +180,16 @@ describe('Router', function() {
     });
   });
 
+	describe('POST /api/v1/feedback', function() {
+		it('expect', function(done) {
+			chai.request(url)
+			.post('/api/v1/feedback')
+			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
+			.send({feedback: {applyDate: '2016-09-25', prison: 'p0991002', sfs: 's0997001', isPass: 'PASSED', from: 'P'}})
+			.end(function(err, res) {
+				done();
+			});
+		});
+	});
 
-
-})
+});

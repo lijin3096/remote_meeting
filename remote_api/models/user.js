@@ -1,17 +1,12 @@
-'use strict';
-
 const bcrypt    = require('bcrypt');
-const Promise   = require('promise');
 const logger    = require('log4js').getLogger('User model');
-
 const mongoose  = require('../db');
       mongoose.Promise = global.Promise;
 
 const ObjectId  = mongoose.Types.ObjectId;
 const Utils     = require('./../utils/utils');
 
-
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   userid:           String,
   name:             String,
   phone:            { type:String, default: 'undefined' }, 
@@ -56,7 +51,7 @@ UserSchema.statics.isValidUser = function(userid, password, cb) {
     else 
       return cb(null, {valid: false, user: 'not found'});
   }).catch((err) => { cb(null, {valid: false, user: `found user ${err}`}); });
-}
+};
 
 
 /**
@@ -74,7 +69,7 @@ UserSchema.statics.create = function(user, callback) {
     logger.error(`create user ${err}`);
     callback(err);
   });
-}
+};
 
 /**
  * Get user by specify _id.
@@ -91,7 +86,7 @@ UserSchema.statics.getUserById = function(id, cb) {
       cb(null, user);
     }
   });
-}
+};
 
 /**
  * Update phone number and password of specify user by _id.
@@ -122,22 +117,20 @@ UserSchema.statics.update = function(_id, params, callback) {
           callback(null, 'update phone success');
         }).catch((e) => {
           callback(e);
-        })
+        });
       }
     } else { 
       callback(null, 'no such user');
     }
   });
 
-}
+};
 
 UserSchema.statics.shortNumbers = function(orgCode, cb) {
   this.findOne({ 'orgnization.code': orgCode }).
     select('shortNumbers').exec(function(err, res) {
       cb(err, res);
-    })
-}
-
-
+    });
+};
 
 module.exports = mongoose.model('User', UserSchema);
