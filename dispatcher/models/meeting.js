@@ -1,20 +1,16 @@
-'use strict';
-
 const _        = require('lodash');
-const promise  = require('promise');
 const logger   = require('log4js').getLogger('Meeting');
-
 const mongoose = require('./../db');
       mongoose.Promise = global.Promise;
       
 const Schema   = mongoose.Schema;
 
-var MeetingSchema = new mongoose.Schema({
+const MeetingSchema = new mongoose.Schema({
   orgCode:     String,
   orgType:     String,
   applyDate:   String,
   schedule:    [Schema.Types.Mixed]
-})
+});
 
 MeetingSchema.statics.persist = function(meeting, cb) {
   this.findOne({applyDate: meeting.applyDate, orgCode: meeting.orgCode}).then((m) => {
@@ -22,10 +18,10 @@ MeetingSchema.statics.persist = function(meeting, cb) {
       m.schedule = meeting.schedule;
       m.save().then((res) => {
         cb(null, res);
-      })
+      });
     } else cb(null, 'can not update');
   }).catch((e) => { cb(e); });
-}
+};
 
 MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
   this.findOne( { prisonCode: prisonCode, applyDate: applyDate } ).then((meeting) => {
@@ -45,13 +41,13 @@ MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
         } else {
           return cb( null, meeting );
         }
-      })
+      });
     }
 
     return cb( null, meeting);
     
-  })
-}
+  });
+};
 
 /**
  * @params
@@ -84,19 +80,12 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
       let orgCode = meeting.orgType === 'p' ? sfs : prison;
       let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
-      self.create(applyDate, orgCode, orgType).then((m) => {
-        if (m.orgType === 'p') {
-          array = [m, meeting];
-        } else {
-          array = [meeting, m];
-        }
-        cb(null, array);
-      })
+      self.create(applyDate, orgCode, orgType, cb(err, res));
     } else {
       cb(null, meetings);
     }
   }).catch((e) => { cb(e); });
-}
+};
 
 
 MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
@@ -112,14 +101,14 @@ MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
     } else {
       cb(null, meeting);
     }
-  })
-}
+  });
+};
 
 MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {
   this.find({ applyDate: applyDate, orgCode: orgCode}).then((result) => {
     return cb(null, result);
   }).catch((e) => { cb(e); });
-}
+};
 
 
 module.exports = mongoose.model('Meeting', MeetingSchema);

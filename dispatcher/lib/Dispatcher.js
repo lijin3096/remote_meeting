@@ -1,6 +1,6 @@
 
 const _ = require('lodash');
-const PROMISE = require('promise');
+const Promise = require('promise');
 
 const logger = require('log4js').getLogger('Utils');
 const Org = require('../models/orgnization');
@@ -209,20 +209,20 @@ class Dispatcher {
     return p;
   }
 
-  static hashedPassword(password) {
-    return new PROMISE(function (resolve, reject) {
-      BCRYPT.genSalt(10, (err, salt) => {
-        if (err) {
-          logger.error(`genSalt error ${err}`);
-          reject(err);
-        } else
-          BCRYPT.hash(password, salt, (err, hashedPassword) => {
-            if (err) reject(err);
-            else resolve(hashedPassword);
-          });
-      });
-    });
-  }
+  // static hashedPassword(password) {
+  //   return new Promise(function (resolve, reject) {
+  //     BCRYPT.genSalt(10, (err, salt) => {
+  //       if (err) {
+  //         logger.error(`genSalt error ${err}`);
+  //         reject(err);
+  //       } else
+  //         BCRYPT.hash(password, salt, (err, hashedPassword) => {
+  //           if (err) reject(err);
+  //           else resolve(hashedPassword);
+  //         });
+  //     });
+  //   });
+  // }
 
 
 
