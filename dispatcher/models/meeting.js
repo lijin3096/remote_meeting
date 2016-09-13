@@ -50,37 +50,40 @@ MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
 };
 
 /**
- * @params
- * @applyDate
- * @prison
- * @sfs
+ * Return schedules of prison and justice.
+ *
+ * @param {String} applyDate - Date of apply.
+ * @param {String} prison - Orgnization code of prison.
+ * @param {String} justice - Orgnization code of justice.
+ * @param {Function(err, schedules)} cb - Callback after query.
+ * 
 */
-MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
+MeetingSchema.statics.schedules = function(applyDate, prison, justice, cb) {
   let self = this;
 
-  this.find({ applyDate: applyDate }).where('orgCode').in([prison,sfs]).sort('orgType').then((meetings) => {
+  this.find({ applyDate: applyDate }).where('orgCode').in([prison,justice]).sort('orgType').then((meetings) => {
     let len = meetings.length;
 
+    // create new meetings of prison and justice with
+    // specify Date if no meetings in specify date.
     if (len === 0) {
-      
+
       let array = [];
       array.push({applyDate: applyDate, orgType: 'p', orgCode: prison, schedule: []});
-      array.push({applyDate: applyDate, orgType: 's', orgCode: sfs, schedule: []});
+      array.push({applyDate: applyDate, orgType: 's', orgCode: justice, schedule: []});
 
       this.collection.insertMany(array).then((res) => {
-        self.find({applyDate: applyDate}).where('orgCode').in([prison, sfs]).sort('orgType').then((ms) => {
+        self.find({applyDate: applyDate}).where('orgCode').in([prison, justice]).sort('orgType').then((ms) => {
           cb(null, ms);
         });
       });
       
     } else if (len === 1) {
 
-      var array = [];
+      let array = [];
       let meeting = meetings[0];
 
-      array.push(meeting);
-
-      let orgCode = meeting.orgType === 'p' ? sfs : prison;
+      let orgCode = meeting.orgType === 'p' ? justice : prison;
       let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
       let m = new self({ 
@@ -93,46 +96,24 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
           cb(err);
         } else {
           logger.debug(m);
+          array.push(meeting);
           array.push(m);
           cb(null, _.sortBy(array, ['orgType']));
         }
       });
-      // self.create(applyDate, orgCode, orgType, (err, res) => {
-      //   if (err) {
-      //     cb(err);
-      //   } else {
-      //     cb(null, res);
-      //   }
-      //});
-    } else {
+    } else if (len === 2){
       cb(null, meetings);
+    } else {
+      cb(new Error('multi result found'));
     }
   }).catch((e) => { cb(e); });
 };
 
-
-// MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
-  
-//   let meeting = new this({ 
-//       applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
-//   });
-
-//   meeting.save((err) => {   
-//     if (err) {
-//       logger.error(`create meeting error ${err}`);
-//       cb(err);
-//     } else {
-//       cb(null, meeting);
-//     }
-//   });
+// MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {
+//   this.find({ applyDate: applyDate, orgCode: orgCode}).then((result) => {
+//     return cb(null, result);
+//   }).catch((e) => { cb(e); });
 // };
-
-MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {
-  this.find({ applyDate: applyDate, orgCode: orgCode}).then((result) => {
-    return cb(null, result);
-  }).catch((e) => { cb(e); });
-};
-
 
 module.exports = mongoose.model('Meeting', MeetingSchema);
 

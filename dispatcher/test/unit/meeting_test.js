@@ -1,28 +1,30 @@
 var logger = require('log4js').getLogger('user unit test');
 var mongoose = require('mongoose');
-
 var chai = require('chai'),
-  expect = chai.expect;
+    expect = chai.expect;
 
 var Meeting = require('../../models/meeting');
-//var Factory  = require('rosie').Factory;
-
-before(function (done) {
-  // mongoose.connect('mongodb://172.18.0.2/remote_meeting_test', function (err) {
-  //   if (err) logger.error(err);
-  //   done(err);
-  // });
-  done();
-});
-
-after(function (done) {
-  mongoose.connection.db.dropCollection('meetings', function (err) {
-    done(err);
-  });
-});
-
 
 describe('Meeting', function () {
+  before(function (done) {
+    let meetings = [
+      {orgCode: 'p0991001', orgType: 'p', applyDate: '2016-09-01'}
+    ];
+    mongoose.connection.collection('meetings').insertMany(meetings)
+    .then((res) => {
+       done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+   
+  });
+
+  after(function (done) {
+    mongoose.connection.db.dropCollection('meetings', function (err) {
+      done(err);
+    });
+  });
 
   describe('#schedules(applyDate, prison, sfs, callback)', function () {
     it('expect an array with two meetings and schedule was empty', function (done) {
