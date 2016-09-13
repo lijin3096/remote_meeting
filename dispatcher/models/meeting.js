@@ -75,18 +75,35 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
       
     } else if (len === 1) {
 
-      let array = [];
+      var array = [];
       let meeting = meetings[0];
+
+      array.push(meeting);
+
       let orgCode = meeting.orgType === 'p' ? sfs : prison;
       let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
-      self.create(applyDate, orgCode, orgType, (err, res) => {
+      let m = new self({ 
+          applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
+      });
+
+      m.save((err) => {
         if (err) {
+          logger.error(err);
           cb(err);
         } else {
-          cb(null, res);
+          logger.debug(m);
+          array.push(m);
+          cb(null, _.sortBy(array, ['orgType']));
         }
       });
+      // self.create(applyDate, orgCode, orgType, (err, res) => {
+      //   if (err) {
+      //     cb(err);
+      //   } else {
+      //     cb(null, res);
+      //   }
+      //});
     } else {
       cb(null, meetings);
     }
@@ -94,22 +111,21 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
 };
 
 
-MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
+// MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
   
-  let meeting = new this({ 
-      applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
-  });
+//   let meeting = new this({ 
+//       applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
+//   });
 
-  meeting.save((err) => {
-    return cb(err, meeting);
-    // if (err) {
-    //   logger.error(`create meeting error ${err}`);
-    //   cb(err);
-    // } else {
-    //   cb(null, meeting);
-    // }
-  });
-};
+//   meeting.save((err) => {   
+//     if (err) {
+//       logger.error(`create meeting error ${err}`);
+//       cb(err);
+//     } else {
+//       cb(null, meeting);
+//     }
+//   });
+// };
 
 MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {
   this.find({ applyDate: applyDate, orgCode: orgCode}).then((result) => {
