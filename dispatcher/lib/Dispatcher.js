@@ -1,55 +1,14 @@
 
 const _ = require('lodash');
-const Promise = require('promise');
-
 const logger = require('log4js').getLogger('Utils');
 const Org = require('../models/orgnization');
 const Meeting = require('../models/meeting');
 
 class Dispatcher {
 
-  /**
-   * @return [p, index] 
-  */
-  static dispatch(prison, shortP, sfs, shortS) {
-
-
-    let sPos = this.posUsable(sfs.schedule, shortS);
-    let pPos = this.posUsable(prison.schedule, shortP);
-
-    let sFlatted = this.flatten(sPos);
-    let pFlatted = this.flatten(pPos);
-
-    let res = this.compare(pFlatted, sFlatted);
-
-    let indexP, indexS, pos;
-
-    if (res.pos === -1) {
-      let largestP = this.largestPos(pFlatted);
-      let largestS = this.largestPos(sFlatted);
-
-      indexP = this.findCorrespondingIndex(pPos, largestP[0]);
-      indexS = this.findCorrespondingIndex(sPos, largestS[0]);
-      pos = largestP[1] > largestS[1] ? largestP[1] : largestS[1];
-
-    } else {
-      indexP = this.findCorrespondingIndex(pPos, res.p);
-      indexS = this.findCorrespondingIndex(sPos, res.s);
-      pos = res.pos;
-    }
-
-    this.persist(prison, indexP, shortS[indexS], pos);
-    this.persist(sfs, indexS, shortP[indexP], pos);
-
-    return [shortP[indexP], pos, shortS[indexS]];
-
-  }
-
-  /**
-   * @params
-   * @p orgCode of prison
-   * @s orgCode of sfs
-  */
+/**
+ *    
+*/
   static init(p, s, applyDate, cb) {
     let self = this;
 
@@ -64,12 +23,9 @@ class Dispatcher {
           Meeting.schedules(applyDate, p, s, function (err, meetings) {
             if (err) cb(err);
             else {
-
               let prison = meetings[0];
               let sfs = meetings[1];
-
               let res = self.dispatch(prison, orgs[0].shortNumbers, sfs, orgs[1].shortNumbers);
-
               Meeting.persist(prison, function (error, prison) {
                 if (err) {
                   logger.error(err);
@@ -91,6 +47,51 @@ class Dispatcher {
       }
     });
   }
+
+  /**
+   * Dispatch terminal with prison and justice short numbers.
+   * 
+   * @param {String} prison - Orgnization code.
+   * @param {Array<String>} shortP - short numbers of prison.
+   * @param {String} justice - Orgnization code of justice.
+   * @param {Array<String>} shortS - short numbers of justice.
+   * 
+   * @return {Array<String>} - 0 short number of prison,
+   *                           1 position in queue,
+   *                           2 short number of justice. 
+  */
+  static dispatch(prison, shortP, justice, shortS) {
+
+    let sPos = this.posUsable(justice.schedule, shortS);
+    let pPos = this.posUsable(prison.schedule, shortP);
+
+    let sFlatted = this.flatten(sPos);
+    let pFlatted = this.flatten(pPos);
+
+    let res = this.compare(pFlatted, sFlatted);
+    let indexP, indexS, pos;
+
+    if (res.pos === -1) {
+      let largestP = this.largestPos(pFlatted);
+      let largestS = this.largestPos(sFlatted);
+
+      indexP = this.findCorrespondingIndex(pPos, largestP[0]);
+      indexS = this.findCorrespondingIndex(sPos, largestS[0]);
+      pos = largestP[1] > largestS[1] ? largestP[1] : largestS[1];
+
+    } else {
+      indexP = this.findCorrespondingIndex(pPos, res.p);
+      indexS = this.findCorrespondingIndex(sPos, res.s);
+      pos = res.pos;
+    }
+
+    this.persist(prison, indexP, shortS[indexS], pos);
+    this.persist(justice, indexS, shortP[indexP], pos);
+
+    return [shortP[indexP], pos, shortS[indexS]];
+  }
+
+  
 
   /*
    * @model  
@@ -208,23 +209,6 @@ class Dispatcher {
 
     return p;
   }
-
-  // static hashedPassword(password) {
-  //   return new Promise(function (resolve, reject) {
-  //     BCRYPT.genSalt(10, (err, salt) => {
-  //       if (err) {
-  //         logger.error(`genSalt error ${err}`);
-  //         reject(err);
-  //       } else
-  //         BCRYPT.hash(password, salt, (err, hashedPassword) => {
-  //           if (err) reject(err);
-  //           else resolve(hashedPassword);
-  //         });
-  //     });
-  //   });
-  // }
-
-
 
   static dateString(datetime) {
     return datetime.substring(0, datetime.indexOf('T'));

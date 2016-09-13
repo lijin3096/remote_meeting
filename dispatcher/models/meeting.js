@@ -80,7 +80,13 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
       let orgCode = meeting.orgType === 'p' ? sfs : prison;
       let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
-      self.create(applyDate, orgCode, orgType, cb(err, res));
+      self.create(applyDate, orgCode, orgType, (err, res) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, res);
+        }
+      });
     } else {
       cb(null, meetings);
     }
@@ -91,16 +97,17 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
 MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
   
   let meeting = new this({ 
-        applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
-      });
+      applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
+  });
 
   meeting.save((err) => {
-    if (err) {
-      logger.error(`create meeting error ${err}`);
-      cb(err);
-    } else {
-      cb(null, meeting);
-    }
+    return cb(err, meeting);
+    // if (err) {
+    //   logger.error(`create meeting error ${err}`);
+    //   cb(err);
+    // } else {
+    //   cb(null, meeting);
+    // }
   });
 };
 
