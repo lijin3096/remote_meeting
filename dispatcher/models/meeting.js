@@ -14,12 +14,14 @@ const MeetingSchema = new mongoose.Schema({
 
 MeetingSchema.statics.persist = function(meeting, cb) {
   this.findOne({applyDate: meeting.applyDate, orgCode: meeting.orgCode}).then((m) => {
-    if(m) {
+    if (m) {
       m.schedule = meeting.schedule;
       m.save().then((res) => {
         cb(null, res);
       });
-    } else cb(null, 'can not update');
+    } else {
+     cb(null, 'can not update');
+    }
   }).catch((e) => { cb(e); });
 };
 
@@ -61,52 +63,64 @@ MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
 MeetingSchema.statics.schedules = function(applyDate, prison, justice, cb) {
   let self = this;
 
-  this.find({ applyDate: applyDate }).where('orgCode').in([prison,justice]).sort('orgType').then((meetings) => {
-    let len = meetings.length;
+  this.find( {applyDate: applyDate} )
+      .where( 'orgCode' )
+      .in( [prison,justice] )
+      .sort( 'orgType' )
+      .then( (meetings) => {
+        let len = meetings.length;
 
-    // create new meetings of prison and justice with
-    // specify Date if no meetings in specify date.
-    if (len === 0) {
+        switch (len) {
+          case 0:
+            logger.debug('create two meetings');
+            meetings.push( {applyDate: applyDate, orgType: 'p', orgCode: prison, schedule: []} );
+            meetings.push( {applyDate: applyDate, orgType: 's', orgCode: justice, schedule: []} );
 
-      let array = [];
-      array.push({applyDate: applyDate, orgType: 'p', orgCode: prison, schedule: []});
-      array.push({applyDate: applyDate, orgType: 's', orgCode: justice, schedule: []});
+            this.collection.insertMany(meetings).then((res) => {
+              self.find({applyDate: applyDate})
+                  .where( 'orgCode' )
+                  .in( [prison, justice] )
+                  .sort( 'orgType' )
+                  .then( (meetings) => {
+                    cb(null,meetings);
+                  });
+            });
+            break;
+          case 1:
+            logger.debug('create one meeting');
+            let array = [];
+            let meeting = meetings[0];
 
-      this.collection.insertMany(array).then((res) => {
-        self.find({applyDate: applyDate}).where('orgCode').in([prison, justice]).sort('orgType').then((ms) => {
-          cb(null, ms);
-        });
-      });
-      
-    } else if (len === 1) {
+            let orgCode = meeting.orgType === 'p' ? justice : prison;
+            let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
-      let array = [];
-      let meeting = meetings[0];
+            let m = new self({ 
+                applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
+            });
 
-      let orgCode = meeting.orgType === 'p' ? justice : prison;
-      let orgType = meeting.orgType === 'p' ? 's' : 'p';
-
-      let m = new self({ 
-          applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
-      });
-
-      m.save((err) => {
-        if (err) {
-          logger.error(err);
-          cb(err);
-        } else {
-          logger.debug(m);
-          array.push(meeting);
-          array.push(m);
-          cb(null, _.sortBy(array, ['orgType']));
+            m.save((err) => {
+              if (err) {
+                logger.error(err);
+                cb(err);
+              } else {
+                array.push(meeting);
+                array.push(m);
+                cb(null, _.sortBy(array, ['orgType']));
+              }
+            });
+            break;
+          case 2:
+            logger.debug('return meetings directly');
+            cb(null, meetings);
+            break;
+          default:
+            logger.debug('more than two meetings found');
+            cb(new Error('multi result found'));
         }
-      });
-    } else if (len === 2){
-      cb(null, meetings);
-    } else {
-      cb(new Error('multi result found'));
-    }
-  }).catch((e) => { cb(e); });
+  }).catch( (e) => {
+    logger.error(e);
+    cb(e); 
+  });
 };
 
 // MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {

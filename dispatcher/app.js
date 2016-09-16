@@ -19,8 +19,9 @@ AMQP.connect('amqp://mq').then(function (conn) {
         let id = array[3];
 
         let res = Dispatcher.init(p, s, array[0], function (err, res) {
-          if (err) logger.error(err);
-          else {
+          if (err) {
+            logger.error(err);
+          } else if (res.code === 200) {
             let options = {
               host: '103.37.158.17',
               port: 8080,
@@ -42,6 +43,8 @@ AMQP.connect('amqp://mq').then(function (conn) {
               if (err) logger.error(err);
               else logger.debug(res);
             });
+          } else {
+            logger.debug(`code: ${res.code}`);
           }
         });
 

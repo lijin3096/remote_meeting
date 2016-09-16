@@ -107,6 +107,7 @@ Apply.prototype.feedback = function (params, callback) {
   }
 
   this.updateFeedback(params, (err, apply) => {
+    Logger.debug(apply);
     if (err) {
       callback(err);
     } else if (apply) {

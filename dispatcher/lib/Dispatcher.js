@@ -1,42 +1,44 @@
-
-const _ = require('lodash');
-const logger = require('log4js').getLogger('Utils');
-const Org = require('../models/orgnization');
+const _       = require('lodash');
+const logger  = require('log4js').getLogger('Utils');
+const Org     = require('../models/orgnization');
 const Meeting = require('../models/meeting');
 
 class Dispatcher {
 
 /**
- *    
+ * @param {String} p - Orgnization code of prison.
+ * @param {String} s - Orgnization code of justice.
+ * @param {String} applyDate.
+ * @param {Function(err, Object)} cb.
+ * 
 */
   static init(p, s, applyDate, cb) {
     let self = this;
-
     Org.shortNumbers(p, s, function (err, orgs) {
       if (err) {
         logger.error(err);
         cb(err);
       } else {
         if (orgs.length !== 2) {
-          cb(null, { code: 400 });
+          cb(null, {code: 400});
         } else {
-          Meeting.schedules(applyDate, p, s, function (err, meetings) {
+          Meeting.schedules(applyDate, p, s, (err, meetings) => {
             if (err) cb(err);
             else {
               let prison = meetings[0];
               let sfs = meetings[1];
               let res = self.dispatch(prison, orgs[0].shortNumbers, sfs, orgs[1].shortNumbers);
-              Meeting.persist(prison, function (error, prison) {
+              Meeting.persist(prison, (error, prison) => {
                 if (err) {
                   logger.error(err);
                   cb(err);
                 } else {
-                  Meeting.persist(sfs, function (e, sfs) {
+                  Meeting.persist(sfs, (e, sfs) => {
                     if (e) {
                       logger.error(e);
                       cb(e);
                     } else {
-                      cb(null, { code: 200, res: res });
+                      cb(null, {code: 200, res: res});
                     }
                   });
                 }
@@ -93,17 +95,13 @@ class Dispatcher {
 
   
 
-  /*
-   * @model  
-   * @index
-   * @shortNumber
-   * @position
+  /**
+   * param {Object} model
   */
   static persist(model, index, shortNumber, position) {
-    let queue = model.schedule[index] === undefined ?
-      [] : model.schedule[index];
+    let queue = model.schedule[index] === undefined ? [] : model.schedule[index];
 
-    // add P to position if position larger than length of queue
+    // add `P` to position if position larger than queue length
     let len = queue.length;
     for (let i = 0; i < position - len; i++) {
       queue.push('P');
