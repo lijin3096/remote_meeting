@@ -48,7 +48,10 @@ describe('Dispatcher unit tests', function () {
 
     it('expect ', function (done) {
       dispatcher.init('p0991001', 's0997001', '2016-08-25', function (err, res) {
-        if (err) done(err);
+        if (err) {
+		  logger.error(err);
+		  return done(err);
+		}
         expect(res).to.have.property('code').and.equal(200);
         done();
       });
