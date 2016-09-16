@@ -52,6 +52,7 @@ describe('Dispatcher unit tests', function () {
 		  logger.error(err);
 		  return done(err);
 		}
+		logger.debug(res);
         expect(res).to.have.property('code').and.equal(200);
         done();
       });
