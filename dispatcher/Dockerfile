@@ -5,7 +5,7 @@ WORKDIR /dispatcher
 ADD package.json /dispatcher/package.json
 ADD . /dispatcher
 ADD ../wait-for-it.sh /dispatcher
-RUN chmod +x ./wait-for-it.sh
+RUN chmod +x /dispatcher/wait-for-it.sh
 RUN npm install -g nodemon
 RUN npm install -g pm2
 RUN npm install
