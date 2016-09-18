@@ -21,7 +21,7 @@ services:
       - db
       - mq
     restart: always
-    entrypoint: ./wait-for-it.sh db:27017 --strict pm2 start app.js
+    entrypoint: ./wait-for-it.sh db:27017 --strict -- pm2 start app.js
   dispatcher:
     build: dispatcher
     # volumes:
@@ -32,5 +32,5 @@ services:
       - mq
       - db
     restart: always
-    entrypoint: ./wait-for-it.sh db:27017 --strict pm2 start app.js
+    entrypoint: ./wait-for-it.sh db:27017 --strict -- pm2 start app.js
   
