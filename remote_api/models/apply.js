@@ -4,11 +4,12 @@ const Logger = require('log4js').getLogger('Apply model');
 const HTTP = require('http');
 const HTTPUtils = require('../utils/HTTPUtils');
 const mongoose = require('../db');
-mongoose.Promise = global.Promise;
+      mongoose.Promise = global.Promise;
 
 const ApplySchema = new mongoose.Schema({
   name: String,
   orgCode: String,
+  phone: String,
   applicant: String,
   applyHistory: [{
     applyDate: String,
@@ -25,8 +26,8 @@ const ApplySchema = new mongoose.Schema({
 
 const model = mongoose.model('Apply', ApplySchema);
 
+// set default sender
 function Apply() {
-  // set default sender
   this.sender = Sender;
 }
 
@@ -37,6 +38,7 @@ function Apply() {
  *     404 - the applicant is not exist;
  *     400 - the apply has been already commited yet;
  *
+ * @api public
 */
 Apply.prototype.commit = function (params, callback) {
   Logger.debug(params);
@@ -49,6 +51,7 @@ Apply.prototype.commit = function (params, callback) {
         } else {
           // add new apply
           apply.orgCode = params.orgCode;
+          apply.phone = params.phone;
           apply.applyHistory.push({
             applyDate: params.applyDate,
             feedback: {
@@ -95,6 +98,7 @@ Apply.prototype.commit = function (params, callback) {
  *
  * @param {!Object} params of feedback property.
  * @param {function(Error, apply)}
+ * @api public
 */
 Apply.prototype.feedback = function (params, callback) {
   Logger.debug(params);
@@ -122,6 +126,7 @@ Apply.prototype.feedback = function (params, callback) {
  * Update feedback of apply.
  * @param {!Object} params of feedback property.
  * @param {function(Error, apply)} callback after update.
+ * @api private
  */
 Apply.prototype.updateFeedback = function (params, callback) {
   let feedback = {
@@ -153,6 +158,7 @@ Apply.prototype.updateFeedback = function (params, callback) {
  * Search applies with specify conditions.
  * @param {Object} query condition.
  * @param {function(Error, apply)} cb after search.
+ * @api public
  */
 Apply.prototype.search = function (query, cb) {
 
@@ -176,7 +182,7 @@ Apply.prototype.search = function (query, cb) {
       Logger.error(`search error: ${err}`);
       cb(err);
     } else {
-      cb(null, this.prepairApplies(applies, condition));
+      cb(null, this.map(applies, condition));
     }
   });
 
@@ -184,9 +190,12 @@ Apply.prototype.search = function (query, cb) {
 
 /**
  * Filter method for reject which feedbacks not come from M
- * @param applies 
+ * @param {Array} applies - that will be map.
+ * @param {Object} condition for searching. 
+ * @return {Array} Map result.
+ * @api private
 */
-Apply.prototype.prepairApplies = function (applies, condition) {
+Apply.prototype.map = function (applies, condition) {
   let result = {};
   let history = [];
 
@@ -194,6 +203,7 @@ Apply.prototype.prepairApplies = function (applies, condition) {
   applies.forEach((apply) => {
     result.name = apply.name;
     result.uuid = apply.applicant;
+    result.phone = apply.phone;
 
     result.apply = apply.applyHistory.filter(function (h) {
       if (typeof condition === 'string') {
