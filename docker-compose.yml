@@ -11,7 +11,6 @@ services:
       - "15672:15672"
   remote_api:
     build: remote_api
-    command: nodemon app.js
     environment:
       NODE_ENV: development
     # volumes:
@@ -21,9 +20,10 @@ services:
     depends_on:
       - db
       - mq
+    restart: always
+    entrypoint: ./wait-for-it.sh db:27017 --strict pm2 start app.js
   dispatcher:
     build: dispatcher
-    command: nodemon app.js
     # volumes:
     #   - ./dispatcher:/dispatcher
     ports:
@@ -31,4 +31,6 @@ services:
     depends_on:
       - mq
       - db
+    restart: always
+    entrypoint: ./wait-for-it.sh db:27017 --strict pm2 start app.js
   
