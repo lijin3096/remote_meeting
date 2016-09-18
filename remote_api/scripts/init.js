@@ -215,7 +215,7 @@ var users = [
   {userid: 'ycx021', password: '123456', phone: '15599880258', name: '欧小龙', orgnization: {code: '0997181', title: '乌吉热克乡'}, cloudMsg: {cloudID: '', token: '123456'}, shorts:['1852'] },
 
 
-]
+];
 var orgnizations = [
   {orgCode: 's0997001', orgType: 's', shortNumbers:['1255','1260'] },
   {orgCode: 's0997002', orgType: 's', shortNumbers:['1292'] },
