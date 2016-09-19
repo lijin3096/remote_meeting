@@ -31,7 +31,7 @@ function Apply() {
       }]
   });
 
-  this.model = mongoose.model('Apply', ApplySchema);
+  this.model = mongoose.model('Apply', this.ApplySchema);
 }
 
 /**
