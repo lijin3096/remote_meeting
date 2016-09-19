@@ -1,34 +1,37 @@
-const _ = require('lodash');
-const Sender = require('../mq/sender');
-const Logger = require('log4js').getLogger('Apply model');
-const HTTP = require('http');
+const _         = require('lodash');
+const Sender    = require('../mq/sender');
+const Logger    = require('log4js').getLogger('Apply model');
+const HTTP      = require('http');
 const HTTPUtils = require('../utils/HTTPUtils');
-const mongoose = require('../db');
+const mongoose  = require('../db');
       mongoose.Promise = global.Promise;
 
-const ApplySchema = new mongoose.Schema({
-  name: String,
-  orgCode: String,
-  phone: String,
-  applicant: String,
-  applyHistory: [{
-    applyDate: String,
-    feedback: {
-      isPass: String,
-      meetingTime: String,
-      from: String,
-      content: String,
-      prison: String,
-      sfs: String
-    }
-  }]
-});
 
-const model = mongoose.model('Apply', ApplySchema);
 
 // set default sender
 function Apply() {
   this.sender = Sender;
+  this.ApplySchema = new mongoose.Schema({
+    name:        String,
+    orgCode:     String,
+    phone:       String,
+    applicant:   String,
+    applyHistory: 
+      [{
+        applyDate:       String,
+        feedback: 
+          {
+            isPass:      String,
+            meetingTime: String,
+            from:        String,
+            content:     String,
+            prison:      String,
+            sfs:         String
+          }
+      }]
+  });
+
+  this.model = mongoose.model('Apply', ApplySchema);
 }
 
 /**
