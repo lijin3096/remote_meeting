@@ -34,7 +34,7 @@ describe('Router', function() {
 
   let applicant = {
   	name: 'David Liu',
-  	orgCode: '0997001',
+  	orgCode: 's0997001',
   	applicant: '650104199012124201',
   	applyHistory: [
   	  {
@@ -48,7 +48,7 @@ describe('Router', function() {
 
   let validApply = { 
   	apply: {
-  	  orgCode: '0997001',
+  	  orgCode: 's0997001',
   	  uuid: '650104199012124201',
   	  applyDate: '2016-09-29'
   	}
@@ -67,17 +67,22 @@ describe('Router', function() {
   	  conn.collection('users').insert(user).then((u) => {
   	  	id = u.ops[0]._id;
   	    headers.Authorization = id;
-  	  }).then(() => {
-  	  	conn.collection('applies').insert(applicant).then(() => {
+  	  }).then( () => {
+  	  	conn.collection('applies').insert(applicant)
+				.then( () => {
   	  	  done();
   	  	});
   	  });
-  	}).catch((e) => { done(e); });
+  	}).catch( (e) => {
+			 done(e); 
+			});
   });
 
   after(function(done) {
-    conn.db.dropCollection('users').then(() => {
-      conn.db.dropCollection('applies').then(() => {
+    conn.db.dropCollection('users')
+		.then( () => {
+      conn.db.dropCollection('applies')
+			.then( () => {
       	nock.cleanAll();
         nock.enableNetConnect();
       	done();
@@ -157,6 +162,7 @@ describe('Router', function() {
       .set(headers)
       .send(validApply)
       .end(function(err, res) {
+				logger.error(err);
       	expect(err).to.be.null;
       	expect(res).to.have.status(200);
       	expect(res.body.msg).to.be.equal('申请提交成功');
