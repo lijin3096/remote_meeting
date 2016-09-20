@@ -1,8 +1,8 @@
 const bodyParser = require('body-parser');
 const logger     = require('log4js').getLogger('api');
-const express    = require('express');
-const app        = express();
 const router     = require('./routers');
+const express    = require('express'),
+      app        = express();
 
 app.use(bodyParser.json());
 app.use(router);

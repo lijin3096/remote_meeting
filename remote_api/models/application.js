@@ -2,7 +2,7 @@ const _         = require('lodash');
 const Sender    = require('../mq/sender');
 const Logger    = require('log4js').getLogger('Apply model');
 const HTTP      = require('http');
-const HTTPUtils = require('../utils/HTTPUtils');
+const httpUtils = require('../utils/HTTPUtils');
 const mongoose  = require('../db');
       mongoose.Promise = global.Promise;
 
@@ -13,8 +13,7 @@ function Application() {
     orgCode:     String,
     phone:       String,
     applicant:   String,
-    applyHistory: 
-      [{
+    applyHistory: [{
         applyDate:       String,
         feedback: 
           {
@@ -38,13 +37,12 @@ function Application() {
  * @param {Function(Error, number)} callback after commit.
  *   404 - the applicant is not exist.
  *   400 - an application has been already commited yet.
- * 
  * @api public
 */
-Application.prototype.submit = function (params, callback) {
+Application.prototype.submit = function(params, callback) {
   Logger.debug(params);
-  this.model.findOne( {applicant: params.uuid} )
-    .then( (application) => {
+  this.model.findOne({applicant: params.uuid})
+    .then((application) => {
       if (application) {
         // date and applicant of params have already existed.
         if ( _.find(application.applyHistory, {applyDate: params.applyDate}) ) {
@@ -78,14 +76,14 @@ Application.prototype.submit = function (params, callback) {
           //     };
 
           //     // FIXME: move this from model to other place
-          //     HTTPUtils.sendRequest(options, params, function (err, res) {
+          //     httpUtils.sendRequest(options, params, function (err, res) {
           //       if (err) return callback(err);
           //       Logger.debug(res);
           //       return callback(null, res);
           //     });
           //   }
           // });
-          application.save().then( () => {
+          application.save().then(() => {
             Logger.debug('send to external service');
             let options = {
               host: '103.37.158.17',
@@ -96,7 +94,7 @@ Application.prototype.submit = function (params, callback) {
             };
 
             // FIXME: move this from model to other place
-            HTTPUtils.sendRequest(options, params, function (err, res) {
+            httpUtils.sendRequest(options, params, function (err, res) {
               if (err) return callback(err);
               Logger.debug(res);
               return callback(null, res);
@@ -113,16 +111,15 @@ Application.prototype.submit = function (params, callback) {
 };
 
 /**
- * Update apply after get feedback from external service.
- * When apply allowed by prison, send message to RabbitMQ.
+ * Update application after get a feedback from external service.
+ * If the application authorized by a prison, send a message to RabbitMQ.
  *
  * @param {!Object} params of feedback property.
- * @param {function(Error, apply)}
+ * @param {Function(Error, application)}
  * @api public
 */
-Application.prototype.feedback = function (params, callback) {
+Application.prototype.feedback = function(params, callback) {
   Logger.debug(params);
-
   if (params.from === 'P' && params.isPass === 'PASSED') {
     this.sender.send(params.applyDate + 
       ':' + params.prison + 
@@ -130,12 +127,12 @@ Application.prototype.feedback = function (params, callback) {
       ':' + params.id);
   }
 
-  this.updateFeedback(params, (err, apply) => {
-    Logger.debug(apply);
+  this.updateFeedback(params, (err, application) => {
+    Logger.debug(application);
     if (err) {
       callback(err);
-    } else if (apply) {
-      callback(null, apply);
+    } else if (application) {
+      callback(null, application);
     } else {
       callback(null, null);
     }
@@ -143,26 +140,27 @@ Application.prototype.feedback = function (params, callback) {
 };
 
 /**
- * Update feedback of apply.
+ * Update feedback.
  * @param {!Object} params of feedback property.
- * @param {function(Error, apply)} callback after update.
+ * @param {Function(Error, apply)} callback after update.
  * @api private
  */
-Application.prototype.updateFeedback = function (params, callback) {
+Application.prototype.updateFeedback = function(params, callback) {
   let feedback = {
-    from: params.from,
-    isPass: params.isPass,
-    content: params.content,
-    prison: params.prison,
-    sfs: params.sfs,
+    from:        params.from,
+    isPass:      params.isPass,
+    content:     params.content,
+    prison:      params.prison,
+    sfs:         params.sfs,
     meetingTime: params.meetingTime
   };
 
-  this.model.findOneAndUpdate({
+  this.model.findOneAndUpdate(
+    {
       applicant: params.applicant,
       'applyHistory.applyDate': params.applyDate
     },
-    { $set: { 'applyHistory.$.feedback': feedback } },
+    { $set: {'applyHistory.$.feedback': feedback} },
     (err, apply) => {
       if (err) {
         Logger.error(`update feedback error: ${err}`);
@@ -175,13 +173,12 @@ Application.prototype.updateFeedback = function (params, callback) {
 };
 
 /**
- * Search applies with specify conditions.
+ * Search applications with a condition object.
  * @param {Object} query condition.
- * @param {function(Error, apply)} cb after search.
+ * @param {Function(Error, apply)} cb after search.
  * @api public
  */
-Application.prototype.search = function (query, cb) {
-
+Application.prototype.search = function(query, cb) {
   let queryProperties = Object.getOwnPropertyNames(query);
   let condition = {};
 
@@ -193,45 +190,42 @@ Application.prototype.search = function (query, cb) {
     }
   });
 
-  this.model.find({
-    orgCode: query.orgCode,
-    'applyHistory.applyDate': condition,
-    'applyHistory.feedback.from': 'M'
-  }, (err, applies) => {
-    if (err) {
-      Logger.error(`search error: ${err}`);
-      cb(err);
-    } else {
-      cb(null, this.map(applies, condition));
-    }
+  this.model.find({ orgCode: query.orgCode, 'applyHistory.applyDate': condition,
+    'applyHistory.feedback.from': 'M' },
+     (err, applications) => {
+      if (err) {
+        Logger.error(`search error: ${err}`);
+        cb(err);
+      } else {
+        cb(null, this.map(applications, condition));
+      }
   });
 
 };
 
 /**
- * Filter method for reject which feedbacks not come from M
- * @param {Array} applies - that will be map.
+ * Reject which feedback not comes from `M`.
+ * @param {Array} applications - that will be map.
  * @param {Object} condition for searching. 
- * @return {Array} Map result.
+ * @return {Array} mapping result.
  * @api private
 */
-Application.prototype.map = function (applies, condition) {
+Application.prototype.map = function(applications, condition) {
   let result = {};
   let history = [];
 
-  Logger.debug(condition);
-  applies.forEach((apply) => {
-    result.name = apply.name;
-    result.uuid = apply.applicant;
-    result.phone = apply.phone;
+  applications.forEach((application) => {
+    result.name = application.name;
+    result.uuid = application.applicant;
+    result.phone = application.phone;
 
-    result.apply = apply.applyHistory.filter(function (h) {
+    result.application = application.applyHistory.filter(function(h) {
       if (typeof condition === 'string') {
         return h.feedback.from === 'M' && h.applyDate === applyDate;
       } else if (typeof condition === 'object') {
         return h.feedback.from === 'M' &&
-          h.applyDate >= condition.$gte &&
-          h.applyDate <= condition.$lte;
+               h.applyDate >= condition.$gte &&
+               h.applyDate <= condition.$lte;
       }
     });
 
@@ -240,7 +234,7 @@ Application.prototype.map = function (applies, condition) {
   return history;
 };
 
-Application.prototype.sender = function (sender) {
+Application.prototype.sender = function(sender) {
   this.sender = sender;
 };
 
