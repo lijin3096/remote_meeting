@@ -45,7 +45,7 @@ function Apply() {
 */
 Apply.prototype.commit = function (params, callback) {
   Logger.debug(params);
-  model.findOne({ applicant: params.uuid })
+  this.model.findOne({ applicant: params.uuid })
     .then((apply) => {
       if (apply) {
         // date and applicant of params have already existed.
@@ -141,7 +141,7 @@ Apply.prototype.updateFeedback = function (params, callback) {
     meetingTime: params.meetingTime
   };
 
-  model.findOneAndUpdate({
+  this.model.findOneAndUpdate({
       applicant: params.applicant,
       'applyHistory.applyDate': params.applyDate
     },
@@ -176,7 +176,7 @@ Apply.prototype.search = function (query, cb) {
     }
   });
 
-  model.find({
+  this.model.find({
     orgCode: query.orgCode,
     'applyHistory.applyDate': condition,
     'applyHistory.feedback.from': 'M'
@@ -223,7 +223,7 @@ Apply.prototype.map = function (applies, condition) {
   return history;
 };
 
-Apply.prototype.setSender = function (sender) {
+Apply.prototype.sender = function (sender) {
   this.sender = sender;
 };
 

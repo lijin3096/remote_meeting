@@ -18,7 +18,7 @@ describe('Apply', function () {
       logger.debug('send to mock mq');
     };
 
-    Apply.setSender(sender);
+    Apply.sender(sender);
 
     nock('http://103.37.158.17:8080', { allowUnmocked: true })
       .post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', {
