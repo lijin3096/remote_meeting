@@ -1,19 +1,20 @@
-const logger = require('log4js').getLogger('apply test');
-const chai = require('chai'),
-  expect = chai.expect,
-  should = chai.should();
-const mongoose = require('mongoose');
+const logger = require('log4js').getLogger('application_test');
+const chai   = require('chai'),
+      expect = chai.expect,
+      should = chai.should();
+var nock     = require('nock');
+const Apply  = require('../../models/application');
+const Utils  = require('../../utils/utils');
 
-var nock = require('nock');
-const Apply = require('../../models/application');
-const Utils = require('../../utils/utils');
+const mongoose = require('mongoose');
 
 describe('Apply', function () {
   var conn;
 
   before(function (done) {
     let today = new Date().toISOString();
-    let sender = function () { };
+    let sender = function () {};
+    
     sender.send = function () {
       logger.debug('send to mock mq');
     };
@@ -70,24 +71,24 @@ describe('Apply', function () {
     });
   });
 
-  describe('#commit', function () {
+  describe('#submit', function () {
 
     it('expect 404 when applicant not found.', function (done) {
-      Apply.commit({ orgCode: '0997001', uuid: '6772323232', applyDate: '2016-08-25' }, (err, res) => {
+      Apply.submit({ orgCode: '0997001', uuid: '6772323232', applyDate: '2016-08-25' }, (err, res) => {
         expect(res).to.be.equal(404);
         done(err);
       });
     });
 
-    it('expect 400 when commit an apply that is already existed.', function (done) {
-      Apply.commit({ orgCode: '0997001', uuid: '777777', applyDate: '2016-08-29' }, (err, res) => {
+    it('expect 400 when submit an apply that is already existed.', function (done) {
+      Apply.submit({ orgCode: '0997001', uuid: '777777', applyDate: '2016-08-29' }, (err, res) => {
         expect(res).to.be.equal(400);
         done(err);
       });
     });
 
-    it('expect 200 when commit an apply successful.', function (done) {
-      Apply.commit({ orgCode: '0997001', uuid: '666666', applyDate: '2016-08-31' }, (err, res) => {
+    it('expect 200 when submit an apply successful.', function (done) {
+      Apply.submit({ orgCode: '0997001', uuid: '666666', applyDate: '2016-08-31' }, (err, res) => {
         expect(res).to.be.equal(200);
         done(err);
       });

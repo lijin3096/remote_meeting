@@ -1,5 +1,5 @@
 const AMQP = require('amqplib');
-const logger = require('log4js').getLogger('mq app');
+const logger = require('log4js').getLogger('mq');
 const Dispatcher = require('./lib/Dispatcher');
 const httpUtils = require('./lib/utils/HTTPUtils');
 
