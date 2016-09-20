@@ -5,7 +5,7 @@ const chai = require('chai'),
 const mongoose = require('mongoose');
 
 var nock = require('nock');
-const Apply = require('../../models/apply');
+const Apply = require('../../models/application');
 const Utils = require('../../utils/utils');
 
 describe('Apply', function () {

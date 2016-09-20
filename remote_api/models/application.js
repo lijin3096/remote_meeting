@@ -6,10 +6,7 @@ const HTTPUtils = require('../utils/HTTPUtils');
 const mongoose  = require('../db');
       mongoose.Promise = global.Promise;
 
-
-
-// set default sender
-function Apply() {
+function Application() {
   this.sender = Sender;
   this.ApplySchema = new mongoose.Schema({
     name:        String,
@@ -35,63 +32,83 @@ function Apply() {
 }
 
 /**
- * Commit a apply.
- * @param {!Object} params for creating an apply.
- * @param {function(Error, number)} callback after commit,
- *     404 - the applicant is not exist;
- *     400 - the apply has been already commited yet;
- *
+ * Submit an application.
+ * 
+ * @param {!Object} params for creating an application.
+ * @param {Function(Error, number)} callback after commit.
+ *   404 - the applicant is not exist.
+ *   400 - an application has been already commited yet.
+ * 
  * @api public
 */
-Apply.prototype.commit = function (params, callback) {
+Application.prototype.submit = function (params, callback) {
   Logger.debug(params);
-  this.model.findOne({ applicant: params.uuid })
-    .then((apply) => {
-      if (apply) {
+  this.model.findOne( {applicant: params.uuid} )
+    .then( (application) => {
+      if (application) {
         // date and applicant of params have already existed.
-        if (_.find(apply.applyHistory, { applyDate: params.applyDate })) {
+        if ( _.find(application.applyHistory, {applyDate: params.applyDate}) ) {
           return callback(null, 400);
         } else {
-          // add new apply
-          apply.orgCode = params.orgCode;
-          apply.phone = params.phone;
-          apply.applyHistory.push({
-            applyDate: params.applyDate,
-            feedback: {
-              isPass: 'pending',
-              meetingTime: '0'
+          // add new application to history
+          application.orgCode = params.orgCode;
+          application.phone = params.phone;
+          application.applyHistory.push(
+            {
+              applyDate: params.applyDate,
+              feedback: {
+                isPass: 'pending',
+                meetingTime: '0'
+              }
             }
-          });
+          );
 
-          apply.save((err) => {
-            if (err) {
-              Logger.error(`update apply ${err}`);
-              return callback(err);
-            } else {
-              Logger.debug('send to external service');
-              let options = {
-                host: '103.37.158.17',
-                port: 8080,
-                path: '/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest',
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-              };
+          // application.save((err) => {
+          //   if (err) {
+          //     Logger.error(`update apply ${err}`);
+          //     return callback(err);
+          //   } else {
+          //     Logger.debug('send to external service');
+          //     let options = {
+          //       host: '103.37.158.17',
+          //       port: 8080,
+          //       path: '/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest',
+          //       method: 'POST',
+          //       headers: { 'Content-Type': 'application/json' }
+          //     };
 
-              // FIXME: move this from model to other place
-              HTTPUtils.sendRequest(options, params, function (err, res) {
-                if (err) return callback(err);  // Note: fix this when remote service not avaliable
-                Logger.debug(res);
-                return callback(null, res);
-              });
-            }
+          //     // FIXME: move this from model to other place
+          //     HTTPUtils.sendRequest(options, params, function (err, res) {
+          //       if (err) return callback(err);
+          //       Logger.debug(res);
+          //       return callback(null, res);
+          //     });
+          //   }
+          // });
+          application.save().then( () => {
+            Logger.debug('send to external service');
+            let options = {
+              host: '103.37.158.17',
+              port: 8080,
+              path: '/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest',
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            };
+
+            // FIXME: move this from model to other place
+            HTTPUtils.sendRequest(options, params, function (err, res) {
+              if (err) return callback(err);
+              Logger.debug(res);
+              return callback(null, res);
+            });          
           });
         }
       } else {
         callback(null, 404);
       }
-    }).catch((e) => {
-      Logger.error(e);
-      callback(e);
+    }).catch( (err) => {
+      Logger.error(err);
+      callback(err);
     });
 };
 
@@ -103,7 +120,7 @@ Apply.prototype.commit = function (params, callback) {
  * @param {function(Error, apply)}
  * @api public
 */
-Apply.prototype.feedback = function (params, callback) {
+Application.prototype.feedback = function (params, callback) {
   Logger.debug(params);
 
   if (params.from === 'P' && params.isPass === 'PASSED') {
@@ -131,7 +148,7 @@ Apply.prototype.feedback = function (params, callback) {
  * @param {function(Error, apply)} callback after update.
  * @api private
  */
-Apply.prototype.updateFeedback = function (params, callback) {
+Application.prototype.updateFeedback = function (params, callback) {
   let feedback = {
     from: params.from,
     isPass: params.isPass,
@@ -163,7 +180,7 @@ Apply.prototype.updateFeedback = function (params, callback) {
  * @param {function(Error, apply)} cb after search.
  * @api public
  */
-Apply.prototype.search = function (query, cb) {
+Application.prototype.search = function (query, cb) {
 
   let queryProperties = Object.getOwnPropertyNames(query);
   let condition = {};
@@ -198,7 +215,7 @@ Apply.prototype.search = function (query, cb) {
  * @return {Array} Map result.
  * @api private
 */
-Apply.prototype.map = function (applies, condition) {
+Application.prototype.map = function (applies, condition) {
   let result = {};
   let history = [];
 
@@ -223,8 +240,8 @@ Apply.prototype.map = function (applies, condition) {
   return history;
 };
 
-Apply.prototype.sender = function (sender) {
+Application.prototype.sender = function (sender) {
   this.sender = sender;
 };
 
-module.exports = new Apply();
+module.exports = new Application();

@@ -1,11 +1,11 @@
-const express = require('express');
-const logger  = require('log4js').getLogger('router');
-const User    = require('./models/user');
-const Apply   = require('./models/apply');
-const Org     = require('./models/orgnization');
-const Utils   = require('./utils/utils');
-const Meeting = require('./models/meeting');
-const router  = express.Router();
+const express     = require('express');
+const logger      = require('log4js').getLogger('router');
+const User        = require('./models/user');
+const Org         = require('./models/orgnization');
+const Utils       = require('./utils/utils');
+const Meeting     = require('./models/meeting');
+const Application = require('./models/application');
+const router      = express.Router();
 
 logger.debug(Object.getOwnPropertyNames(Apply));
 router.get('/', (req, res) => {
@@ -106,7 +106,7 @@ router.all('*', (req, res, next) => {
 router.route('/api/v1/applies')
   .post(function(req, res, next) {
     if (Utils.validDateWithToday(req.body.apply.applyDate)) {
-      Apply.commit(req.body.apply, (err, resultCode) => {
+      Application.commit(req.body.apply, (err, resultCode) => {
         if (err) {
           res.status(500).send({ error: `commit apply ${err}` });
           next(err);
@@ -137,7 +137,7 @@ router.route('/api/v1/applies')
     let today = new Date().toISOString();
     let date = today.substring(0, today.indexOf('T'));
 
-    Apply.search({orgCode: req.query.orgCode, start: date, end: date}, (err, applies) => {
+    Application.search({orgCode: req.query.orgCode, start: date, end: date}, (err, applies) => {
       if(err) {
         res.status(500).send({ error: 'find applies failed' });
         next(err);
@@ -173,7 +173,7 @@ router.get('/api/v1/orgnizations/:orgCode/meetings', (req, res) => {
 
 router.get('/api/v1/search', (req, res) => {
   let query = { start: req.query.start, end: req.query.end, orgCode: req.query.orgCode };
-  Apply.search(query, (err, result) => {
+  Application.search(query, (err, result) => {
     if (err) return res.status(500).send({ error: `${err}` });
     return res.status(200).send({ applies: result });
   });
