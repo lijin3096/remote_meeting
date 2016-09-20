@@ -35,8 +35,10 @@ function Application() {
  * 
  * @param {!Object} params for creating an application.
  * @param {Function(Error, number)} callback after commit.
- *   404 - the applicant is not exist.
- *   400 - an application has been already commited yet.
+ *   the number of
+ *     404 - the applicant is not exist.
+ *     400 - an application has been already commited yet.
+ *     200 - application submit successfully.
  * @api public
 */
 Application.prototype.submit = function(params, callback) {
@@ -61,28 +63,6 @@ Application.prototype.submit = function(params, callback) {
             }
           );
 
-          // application.save((err) => {
-          //   if (err) {
-          //     Logger.error(`update apply ${err}`);
-          //     return callback(err);
-          //   } else {
-          //     Logger.debug('send to external service');
-          //     let options = {
-          //       host: '103.37.158.17',
-          //       port: 8080,
-          //       path: '/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest',
-          //       method: 'POST',
-          //       headers: { 'Content-Type': 'application/json' }
-          //     };
-
-          //     // FIXME: move this from model to other place
-          //     httpUtils.sendRequest(options, params, function (err, res) {
-          //       if (err) return callback(err);
-          //       Logger.debug(res);
-          //       return callback(null, res);
-          //     });
-          //   }
-          // });
           application.save().then(() => {
             Logger.debug('send to external service');
             let options = {

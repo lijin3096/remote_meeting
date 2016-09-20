@@ -2,33 +2,33 @@ const logger = require('log4js').getLogger('application_test');
 const chai   = require('chai'),
       expect = chai.expect,
       should = chai.should();
-var nock     = require('nock');
-const Apply  = require('../../models/application');
+const nock   = require('nock');
 const Utils  = require('../../utils/utils');
-
+const Application  = require('../../models/application');
 const mongoose = require('mongoose');
 
-describe('Apply', function () {
+describe('Application', function() {
   var conn;
 
-  before(function (done) {
+  before(function(done) {
     let today = new Date().toISOString();
-    let sender = function () {};
-    
-    sender.send = function () {
+
+    let sender = function() {};
+    sender.send = function() {
       logger.debug('send to mock mq');
     };
 
-    Apply.sender(sender);
+    // set a mock message queue
+    Application.sender(sender);
 
     nock('http://103.37.158.17:8080', { allowUnmocked: true })
       .post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', {
-        apply: { orgCode: '0997001', name: 'Turky', uuid: '666666' }
+        application: { orgCode: '0997001', name: 'Turky', uuid: '666666' }
       }).reply(200);
 
     conn = mongoose.connection;
     conn.collection('applies').insertMany([
-      { name: 'Turky', applicant: '666666' },  // inited applicant that has not commit any apply
+      { name: 'Turky', applicant: '666666' },
 
       {
         orgCode: '0997001', name: 'Mart', applicant: '777777',
@@ -63,7 +63,7 @@ describe('Apply', function () {
     done();
   });
 
-  after(function (done) {
+  after(function(done) {
     conn.db.dropCollection('applies', function (err) {
       nock.cleanAll();
       nock.enableNetConnect();
@@ -71,59 +71,64 @@ describe('Apply', function () {
     });
   });
 
-  describe('#submit', function () {
+  describe('#submit', function() {
 
-    it('expect 404 when applicant not found.', function (done) {
-      Apply.submit({ orgCode: '0997001', uuid: '6772323232', applyDate: '2016-08-25' }, (err, res) => {
-        expect(res).to.be.equal(404);
-        done(err);
+    it('expect 404 when applicant was not found.', function(done) {
+      Application.submit({orgCode: '0997001', uuid: '6772323232', applyDate: '2016-08-25' },
+        (err, res) => {
+          expect(res).to.be.equal(404);
+          done(err);
       });
     });
 
-    it('expect 400 when submit an apply that is already existed.', function (done) {
-      Apply.submit({ orgCode: '0997001', uuid: '777777', applyDate: '2016-08-29' }, (err, res) => {
-        expect(res).to.be.equal(400);
-        done(err);
-      });
+    it('expect 400 when submit an application which with the date of application is already exist.', 
+      function(done) {
+        Application.submit({orgCode: '0997001', uuid: '777777', applyDate: '2016-08-29' },
+          (err, res) => {
+            expect(res).to.be.equal(400);
+            done(err);
+          });
     });
 
-    it('expect 200 when submit an apply successful.', function (done) {
-      Apply.submit({ orgCode: '0997001', uuid: '666666', applyDate: '2016-08-31' }, (err, res) => {
-        expect(res).to.be.equal(200);
-        done(err);
-      });
+    it('expect 200 when submit an application successfully.', function(done) {
+      Application.submit({orgCode: '0997001', uuid: '666666', applyDate: '2016-08-31' },
+        (err, res) => {
+          expect(res).to.be.equal(200);
+          done(err);
+        });
     });
 
   });
 
-  describe('#search(query, callback)', function () {
-    it('expect an array with 2 elements', function (done) {
-      let query = { start: '2016-08-01', end: '2016-09-31', orgCode: '0997001' };
-      Apply.search(query, (err, result) => {
+  describe('#search(query, callback)', function() {
+    it('expect result with 2 applicants', function(done) {
+      let query = {start: '2016-08-01', end: '2016-09-31', orgCode: '0997001'};
+      Application.search(query, (err, result) => {
         expect(result).to.have.length(2);
         done(err);
       });
     });
 
-    it('expect an array with 1 element', function (done) {
-      let query = { start: '2016-08-31', end: '2016-08-31', orgCode: '0997001' };
-      Apply.search(query, (err, result) => {
+    it('expect result with 1 applicant.', function(done) {
+      let query = {start: '2016-08-31', end: '2016-08-31', orgCode: '0997001'};
+      Application.search(query, (err, result) => {
         expect(result).to.have.length(1);
         done(err);
       });
     });
   });
 
-  describe('#feedback(feedback)', function () {
-    it('expect null when not found the apply', function (done) {
-      Apply.feedback({ from: 'P', isPass: 'PASSED' }, (err, result) => {
-        expect(result).to.be.null;
-        done(err);
+  describe('#feedback(feedback)', function() {
+    it('expect null when not found the application', function(done) {
+      Application.feedback( {applicant: '232324423', from: 'P', isPass: 'PASSED'}, 
+        (err, result) => {
+          expect(result).to.be.null;
+          done(err);
       });
     });
 
-    it('expect', function (done) {
-      Apply.feedback({
+    it('expect', function(done) {
+      Application.feedback({
         applicant: "777777",
         applyDate: "2016-08-26",
         from: "P",
@@ -131,7 +136,6 @@ describe('Apply', function () {
         content: "PASSED"
       }, (err, result) => {
         expect(result).to.not.be.null;
-        logger.debug(result);
         done(err);
       });
     });
