@@ -7,7 +7,6 @@ const Meeting     = require('./models/meeting');
 const Application = require('./models/application');
 const router      = express.Router();
 
-logger.debug(Object.getOwnPropertyNames(Apply));
 router.get('/', (req, res) => {
   res.send('hello world');
 });

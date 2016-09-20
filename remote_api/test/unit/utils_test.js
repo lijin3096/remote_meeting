@@ -1,7 +1,3 @@
-'use strict';
-
-//process.env.NODE_ENV = 'test';
-
 const Logger   = require('log4js').getLogger('user unit test');
 const chaiAsPromised = require('chai-as-promised');
 const chai     = require('chai'),
@@ -17,7 +13,7 @@ describe('Utils unit tests', function() {
       let dateString = Utils.dateOfDatetime(new Date());
       expect(dateString).to.be.a('string');
       expect(dateString).to.not.contain('T');
-    })
+    });
   });
 
   describe('#validDateWithToday(dateString)', function() {

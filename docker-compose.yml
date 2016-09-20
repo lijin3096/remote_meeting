@@ -3,7 +3,7 @@ services:
   db:
     image: mongo
     volumes: 
-      - /mnt/var/lib/mongo/db:/data/db
+      # - /mnt/var/lib/mongo/db:/data/db
       - ./remote_api/scripts:/tmp/scripts
   mq:
     image: rabbitmq
