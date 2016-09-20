@@ -105,7 +105,7 @@ router.all('*', (req, res, next) => {
 router.route('/api/v1/applies')
   .post(function(req, res, next) {
     if (Utils.validDateWithToday(req.body.apply.applyDate)) {
-      Application.commit(req.body.apply, (err, resultCode) => {
+      Application.submit(req.body.apply, (err, resultCode) => {
         if (err) {
           res.status(500).send({ error: `commit apply ${err}` });
           next(err);
