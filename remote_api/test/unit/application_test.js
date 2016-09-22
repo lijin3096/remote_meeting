@@ -127,7 +127,7 @@ describe('Application', function() {
       });
     });
 
-    it('expect', function(done) {
+    it('expect result is not null when feedback successfully', function(done) {
       Application.feedback({
         applicant: "777777",
         applyDate: "2016-08-26",
