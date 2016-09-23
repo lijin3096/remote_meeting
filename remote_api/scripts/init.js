@@ -1,18 +1,6 @@
 var conn = new Mongo();
 var db = conn.getDB('remote_meeting_dev');
 
-// var applicants = [
-//     { applicant: '650104198111224217', name: '刘睿'},
-//     { applicant: '430482199404073618', name: '黄正能'},
-//     { applicant: '432503199109225916', name: 'zenwenzhi'},
-//     { applicant: '43061119920102554x', name: '李进'},
-//     { applicant: '430481199410146258', name: '黄勇军'},
-//     { applicant: '432503199003240835', name: '肖君'},
-//     { applicant: '430124198812291441', name: '刘思佳'},
-//     { applicant: '430102199310230514', name: '杨宇'},
-//     { applicant: '430181198905201078', name: '李彦波'}
-// ];
-
 var users = [
   {userid: 'aks001', password: '123456', phone: '', name: '郭刚', orgnization: {code: 's0997001', title: '英巴格社区居委会'}, cloudMsg: {cloudID: '', token: '123456'}, shorts:['1255','1260'] }, 
   {userid: 'aks002', password: '123456', phone: '13565108816', name: '郭文', orgnization: {code: 's0997002', title: '依干其乡依干其村社区'}, cloudMsg: {cloudID: '', token: '123456'}, shorts:['1292'] },
@@ -402,6 +390,5 @@ var orgnizations = [
   {orgCode: 'p0908001', orgType: 'p', shortNumbers:['1561','1565','1568'] },
  ];
 
-//db.applies.insertMany(applicants);
 db.users.insertMany(users);
 db.orgnizations.insertMany(orgnizations);
