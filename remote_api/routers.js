@@ -70,9 +70,6 @@ router.post('/api/v1/prisons', (req, res) => {
   }  
 });
 
-
-
-
 // Authorization request 
 router.all('*', (req, res, next) => {
   let _id = req.headers.authorization;
@@ -96,10 +93,10 @@ router.all('*', (req, res, next) => {
 });
 
 /**
- * Post an apply.
+ * Submit an application.
  * param {object} object - Object with orgCode, uuid and applyDate.
  * 
- * Get applies of today.
+ * Get hodiernal applications.
  * params {string} orgCode - The orgnization code.
 */
 router.route('/api/v1/applies')
