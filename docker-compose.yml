@@ -2,8 +2,9 @@ version: '2'
 services:
   db:
     image: mongo
+    command: mongo localhost /tmp/scripts/init.js
     volumes: 
-      # - /mnt/var/lib/mongo/db:/data/db
+      - /mnt/var/lib/mongo/db:/data/db
       - ./remote_api/scripts:/tmp/scripts
   mq:
     image: rabbitmq
