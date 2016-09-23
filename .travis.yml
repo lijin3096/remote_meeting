@@ -17,7 +17,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose build
   - docker-compose up -d
-#  - docker exec -i remotemeeting_db_1 mongo localhost /tmp/scripts/init.js
+  - docker exec -i remotemeeting_db_1 mongo localhost /tmp/scripts/init.js
   - docker ps
 
 install: true
