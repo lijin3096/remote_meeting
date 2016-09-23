@@ -7,6 +7,6 @@ ADD . /remote_api
 RUN chmod +x ./wait-for-it.sh
 RUN mkdir /usr/lib64
 RUN cp libstdc++.so.6.0.21 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
-RUN npm install -g nodemon
-RUN npm install -g pm2
+# RUN npm install -g nodemon
+# RUN npm install -g pm2
 RUN npm install

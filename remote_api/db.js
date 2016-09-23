@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 
 function Database() {
   this.env = process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'development' : process.env.NODE_ENV;
-  this.db = conn();
-  db.on('error', (err) => {
+  this.db = this.conn();
+  this.db.on('error', (err) => {
     Logger.error(`Database error: ${err}`);
   });
 
-  db.once('open', (err) => {
+  this.db.once('open', (err) => {
     if(err) {
       Logger.error(`Database open error ${err}`);
     } else {
