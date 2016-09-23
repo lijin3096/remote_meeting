@@ -1,7 +1,7 @@
 const Logger   = require('log4js').getLogger('db');
 const mongoose = require('mongoose');
 
-function database() {
+function Database() {
   this.env = process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'development' : process.env.NODE_ENV;
   this.db = conn();
   db.on('error', (err) => {
@@ -22,7 +22,7 @@ function database() {
  * 
  * @return {Object} connection.
  */
-database.prototype.conn = function() {
+Database.prototype.conn = function() {
   switch (this.env) {
     case 'production':
       mongoose.connect('mongodb://db/remote_meeting_pro');

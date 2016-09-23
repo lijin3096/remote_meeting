@@ -43,14 +43,14 @@ router.post('/api/v1/users', (req, res) => {
 // Get feedback from web management
 router.post('/api/v1/feedback', (req, res) => {
   if(req.headers.authorization === '8e5946ccc540e5ac5eb5851658681708') {
-    Apply.feedback(req.body.feedback, (err, apply) => {
+    Application.feedback(req.body.feedback, (err, application) => {
       if (err) 
         res.status(500).send({ error: 'feedback error' });
-      else if (apply) 
+      else if (application) 
         res.status(200).send({ msg: 'feedback success' });
       else{
         logger.debug('here');
-        res.status(404).send({msg: 'apply not found'});
+        res.status(404).send({msg: 'application not found'});
       }
     });
   } else {
