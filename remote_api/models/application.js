@@ -162,13 +162,15 @@ Application.prototype.search = function(query, cb) {
   var queryProperties = Object.getOwnPropertyNames(query);
   var condition = {};
   var condition2 = null;
-  var isPass = query.isPass || 'PASSED';
+  var isPass = 'PASSED';
       
   queryProperties.forEach((q) => {
     if (q === 'start') {
       condition.$gte = query[q];
     } else if (q === 'end') {
       condition.$lte = query[q];
+    } else if (q === 'isPass') {
+      isPass = query[q];
     }
   });
    
