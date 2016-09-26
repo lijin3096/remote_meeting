@@ -159,18 +159,16 @@ Application.prototype.updateFeedback = function(params, callback) {
  * @api public
  */
 Application.prototype.search = function(query, cb) {
-  let queryProperties = Object.getOwnPropertyNames(query);
-  let condition = {};
-  let condition2 = null;
-  let isPass = 'PASSED';
+  var queryProperties = Object.getOwnPropertyNames(query);
+  var condition = {};
+  var condition2 = null;
+  var isPass = query.isPass || 'PASSED';
       
   queryProperties.forEach((q) => {
     if (q === 'start') {
       condition.$gte = query[q];
     } else if (q === 'end') {
       condition.$lte = query[q];
-    } else if (q === 'isPass') {
-      isPass = query[q];
     }
   });
    
@@ -180,11 +178,12 @@ Application.prototype.search = function(query, cb) {
     condition2 = {'applyHistory.feedback.isPass': isPass};
   }
   
-  Logger.debug(condition);
-  Logger.debug(condition2);
+  Logger.debug(Object.keys(condition2)[0]);
+  Logger.debug(condition[Object.keys(condition2)[0]];
+
   this.model.find({ orgCode: query.orgCode,
                    'applyHistory.applyDate': {$gte: query.start, $lte: query.end},
-                   Object.keys(condition2)[0]: condition2[Object.keys(condition2)[0]]
+                   Object.keys(condition2)[0]: condition[Object.keys(condition2)[0]]
                   },
      (err, applications) => {
       if (err) {
@@ -204,7 +203,7 @@ Application.prototype.search = function(query, cb) {
  * @return {Array} mapping result.
  * @api private
 */
-Application.prototype.map = function(applications, condition, isPass) {
+Application.prototype.map = function(applications, isPass) {
   Logger.debug(applications);
   let result = {};
   let history = [];
