@@ -28,8 +28,8 @@ describe('Application', function() {
 
     conn = mongoose.connection;
     conn.collection('applies').insertMany([
+      { name: 'tester', applicant: '555555', orgCode: '0997001'},
       { name: 'Turky', applicant: '666666' },
-
       {
         orgCode: '0997001', name: 'Mart', applicant: '777777',
         applyHistory: [
