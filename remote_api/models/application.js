@@ -182,8 +182,9 @@ Application.prototype.search = function(query, cb) {
   
   Logger.debug(condition);
   Logger.debug(condition2);
-  this.model.find({ orgCode: query.orgCode, 'applyHistory.applyDate': condition,
-    condition2 },
+  this.model.find({ orgCode: query.orgCode, 
+                   'applyHistory.applyDate': {$gte: queryProperties['start'], $lte: queryProperties['end']},
+                    condition2 },
      (err, applications) => {
       if (err) {
         Logger.error(`search error: ${err}`);
