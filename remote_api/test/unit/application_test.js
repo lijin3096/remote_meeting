@@ -91,7 +91,7 @@ describe('Application', function() {
     });
 
     it('expect 200 when submit an application successfully.', function(done) {
-      Application.submit({orgCode: '0997001', uuid: '666666', applyDate: '2016-08-31' },
+      Application.submit({orgCode: '0997001', uuid: '666666', applyDate: '2016-09-03' },
         (err, res) => {
           expect(res).to.be.equal(200);
           done(err);
@@ -102,7 +102,7 @@ describe('Application', function() {
 
   describe('#search(query, callback)', function() {
     it('expect result with 2 applicants', function(done) {
-      let query = {start: '2016-08-01', end: '2016-09-31', orgCode: '0997001'};
+      let query = {start: '2016-08-01', end: '2016-09-01', orgCode: '0997001'};
       Application.search(query, (err, result) => {
         expect(result).to.have.length(2);
         done(err);
