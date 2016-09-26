@@ -203,7 +203,7 @@ Application.prototype.search = function(query, cb) {
  * @return {Array} mapping result.
  * @api private
 */
-Application.prototype.map = function(applications, isPass) {
+Application.prototype.map = function(applications, condition, isPass) {
   Logger.debug(applications);
   let result = {};
   let history = [];
