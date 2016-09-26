@@ -161,23 +161,32 @@ Application.prototype.updateFeedback = function(params, callback) {
 Application.prototype.search = function(query, cb) {
   let queryProperties = Object.getOwnPropertyNames(query);
   let condition = {};
-
+  let condition2 = null;
+  let isPass = 'PASSED';
+      
   queryProperties.forEach((q) => {
     if (q === 'start') {
-      condition.$gte = query[q];
+      condition['$gte'] = query[q];
     } else if (q === 'end') {
-      condition.$lte = query[q];
+      condition['$lte'] = query[q];
+    } else if (q === 'isPass') {
+      isPass = query[q];
     }
   });
-
+   
+  if (isPass === 'PASSED') {
+    condition2 = {'applyHistory.feedback.from': 'M'};
+  } else {
+    condition2 = {'applyHistory.feedback.isPass': isPass};
+  }
   this.model.find({ orgCode: query.orgCode, 'applyHistory.applyDate': condition,
-    'applyHistory.feedback.from': 'M' },
+    condition2 },
      (err, applications) => {
       if (err) {
         Logger.error(`search error: ${err}`);
         cb(err);
       } else {
-        cb(null, this.map(applications, condition));
+        cb(null, this.map(applications, condition, isPass));
       }
   });
 
@@ -190,7 +199,7 @@ Application.prototype.search = function(query, cb) {
  * @return {Array} mapping result.
  * @api private
 */
-Application.prototype.map = function(applications, condition) {
+Application.prototype.map = function(applications, condition, isPass) {
   let result = {};
   let history = [];
 
@@ -200,13 +209,22 @@ Application.prototype.map = function(applications, condition) {
     result.phone = application.phone;
 
     result.application = application.applyHistory.filter(function(h) {
-      if (typeof condition === 'string') {
-        return h.feedback.from === 'M' && h.applyDate === applyDate;
-      } else if (typeof condition === 'object') {
-        return h.feedback.from === 'M' &&
-               h.applyDate >= condition.$gte &&
-               h.applyDate <= condition.$lte;
-      }
+//       if (typeof condition === 'string') {
+//         return h.feedback.from === 'M' && h.applyDate === applyDate;
+//       } else if (typeof condition === 'object') {
+//         return h.feedback.from === 'M' &&
+//                h.applyDate >= condition.$gte &&
+//                h.applyDate <= condition.$lte;
+//       }
+       if (isPass === 'PASSED') {
+         return h.feedback.from === 'M' &&
+                h.applyDate >= condition.$gte &&
+                h.applyDate <= condition.$lte;
+       } else {
+         return h.feedback.isPass === 'DENIED' &&
+                h.applyDate >= condition.$gte &&
+                h.applyDate <= condition.$lte;
+       }
     });
 
     history.push(result);
