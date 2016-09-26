@@ -179,6 +179,9 @@ Application.prototype.search = function(query, cb) {
   } else {
     condition2 = {'applyHistory.feedback.isPass': isPass};
   }
+  
+  Logger.debug(condition);
+  Logger.debug(condition2);
   this.model.find({ orgCode: query.orgCode, 'applyHistory.applyDate': condition,
     condition2 },
      (err, applications) => {
@@ -200,6 +203,7 @@ Application.prototype.search = function(query, cb) {
  * @api private
 */
 Application.prototype.map = function(applications, condition, isPass) {
+  Logger.debug(applications);
   let result = {};
   let history = [];
 
