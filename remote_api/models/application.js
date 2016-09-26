@@ -183,7 +183,8 @@ Application.prototype.search = function(query, cb) {
   Logger.debug(condition);
   Logger.debug(condition2);
   this.model.find({ orgCode: query.orgCode,
-                   'applyHistory.applyDate': {$gte: query.start, $lte: query.end}
+                   'applyHistory.applyDate': {$gte: query.start, $lte: query.end},
+                   Object.keys(condition2)[0]: condition2[Object.keys(condition2)[0]]
                   },
      (err, applications) => {
       if (err) {
