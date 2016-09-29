@@ -104,7 +104,7 @@ router.route('/api/v1/applies')
     if (Utils.validDateWithToday(req.body.apply.filingDate)) {
       Application.submit(req.body.apply, (err, resultCode) => {
         if (err) {
-          res.status(500).send({ error: `commit apply ${err}` });
+          res.status(500).send({ error: `Submit application ${err}` });
           next(err);
         } else {
           logger.debug(resultCode);
@@ -125,7 +125,7 @@ router.route('/api/v1/applies')
         }
       });
     } else {
-      res.status(400).send({ msg: 'Apply date is not valid'});
+      res.status(400).send({ msg: 'Filing date is not valid'});
       next();
     }
   })
@@ -135,7 +135,7 @@ router.route('/api/v1/applies')
 
     Application.search({orgCode: req.query.orgCode, start: date, end: date}, (err, applies) => {
       if(err) {
-        res.status(500).send({ error: 'find applies failed' });
+        res.status(500).send({ error: 'find applications failed' });
         next(err);
       } else {
         res.status(200).send({ applies: applies });

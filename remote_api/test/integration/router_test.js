@@ -49,7 +49,7 @@ describe('Router', function() {
   	apply: {
   	  orgCode: 's0997001',
   	  uuid: '650104199012124201',
-  	  filingDate: '2016-09-29'
+  	  filingDate: '2016-12-31'
   	}
   };
 
@@ -120,7 +120,7 @@ describe('Router', function() {
   	  chai.request(url)
   	  .post('/api/v1/applies')
   	  .set(headers)
-  	  .send({apply: {orgCode: '0997001', uuid: '650104199012124201', filingDate: '2016-09-01'}})
+  	  .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', filingDate: '2016-09-01'}})
   	  .end(function(err, res) {
   	  	expect(err).to.be.not.null;
   	  	expect(res).to.have.status(400);
@@ -133,7 +133,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: '0997001', uuid: '6666666666', filingDate: '2016-09-30'}})
+      .send({apply: {orgCode: 's0997001', uuid: '6666666666', filingDate: '2016-09-30'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
@@ -142,20 +142,20 @@ describe('Router', function() {
       });
     });
 
-    it('expect status 400 when user commit an apply which date is duplicate.', function(done) {
+    it('expect status 400 when user submit an application which is exist.', function(done) {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: '0997001', uuid: '650104199012124201', filingDate: '2016-09-30'}})
+      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', filingDate: '2016-09-30'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
       	expect(res.body.msg).to.be.equal('提交日期重复');
-      	done();
+      	done(err);
       });
     });
 
-    it('expect status 200 when commit successfully', function(done) {
+    it('expect status 200 when submit successfully', function(done) {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
