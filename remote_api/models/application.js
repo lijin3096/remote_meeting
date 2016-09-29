@@ -14,7 +14,7 @@ function Application() {
     phone:       String,
     applicant:   String,
     history: [{
-        filingDate:      String,
+        fillingDate:      String,
         feedback: 
           {
             isPass:      String,
@@ -47,7 +47,7 @@ Application.prototype.submit = function(params, callback) {
     .then((application) => {
       if (application) {
         // Check the applicant has already applyed in special date.
-        if ( _.find(application.history, {filingDate: params.filingDate}) ) {
+        if ( _.find(application.history, {fillingDate: params.fillingDate}) ) {
           return callback(null, 400);
         } else {
           // add new application to history
@@ -55,7 +55,7 @@ Application.prototype.submit = function(params, callback) {
           application.phone = params.phone;
           application.history.push(
             {
-              filingDate: params.filingDate,
+              fillingDate: params.fillingDate,
               feedback: {
                 isPass: 'pending',
                 meetingTime: '0'
@@ -100,7 +100,7 @@ Application.prototype.submit = function(params, callback) {
 Application.prototype.feedback = function(params, callback) {
   Logger.debug(params);
   if (params.from === 'P' && params.isPass === 'PASSED') {
-    this.sender.send(params.filingDate + 
+    this.sender.send(params.fillingDate + 
       ':' + params.prison + 
       ':' + params.justice + 
       ':' + params.id);
@@ -137,7 +137,7 @@ Application.prototype.updateFeedback = function(params, callback) {
   this.model.findOneAndUpdate(
     {
       applicant: params.applicant,
-      'history.filingDate': params.filingDate
+      'history.fillingDate': params.fillingDate
     },
     { $set: {'history.$.feedback': feedback} },
     (err, apply) => {
@@ -182,7 +182,7 @@ Application.prototype.search = function(query, cb) {
   Logger.debug(condition2[Object.keys(condition2)[0]]);
 
   this.model.find({ orgCode: query.orgCode,
-                   'history.filingDate': {$gte: query.start, $lte: query.end}
+                   'history.fillingDate': {$gte: query.start, $lte: query.end}
                   },
      (err, applications) => {
       if (err) {
@@ -214,20 +214,20 @@ Application.prototype.map = function(applications, condition, isPass) {
 
     result.application = application.history.filter( (h) => {
 //       if (typeof condition === 'string') {
-//         return h.feedback.from === 'M' && h.filingDate === filingDate;
+//         return h.feedback.from === 'M' && h.fillingDate === fillingDate;
 //       } else if (typeof condition === 'object') {
 //         return h.feedback.from === 'M' &&
-//                h.filingDate >= condition.$gte &&
-//                h.filingDate <= condition.$lte;
+//                h.fillingDate >= condition.$gte &&
+//                h.fillingDate <= condition.$lte;
 //       }
        if (isPass === 'PASSED') {
          return h.feedback.from === 'M' &&
-                h.filingDate >= condition.$gte &&
-                h.filingDate <= condition.$lte;
+                h.fillingDate >= condition.$gte &&
+                h.fillingDate <= condition.$lte;
        } else {
          return h.feedback.isPass === 'DENIED' &&
-                h.filingDate >= condition.$gte &&
-                h.filingDate <= condition.$lte;
+                h.fillingDate >= condition.$gte &&
+                h.fillingDate <= condition.$lte;
        }
     });
 

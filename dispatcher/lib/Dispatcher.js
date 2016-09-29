@@ -8,11 +8,11 @@ class Dispatcher {
 /**
  * @param {String} p - Orgnization code of prison.
  * @param {String} s - Orgnization code of justice.
- * @param {String} filingDate.
+ * @param {String} fillingDate.
  * @param {Function(err, Object)} cb.
  * 
 */
-  static init(p, s, filingDate, cb) {
+  static init(p, s, fillingDate, cb) {
     let self = this;
     Org.shortNumbers(p, s, function (err, orgs) {
       if (err) {
@@ -22,7 +22,7 @@ class Dispatcher {
         if (orgs.length !== 2) {
           cb(null, {code: 400});
         } else {
-          Meeting.schedules(filingDate, p, s, (err, meetings) => {
+          Meeting.schedules(fillingDate, p, s, (err, meetings) => {
             if (err) cb(err);
             else {
               let prison = meetings[0];

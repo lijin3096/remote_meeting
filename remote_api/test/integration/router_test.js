@@ -37,7 +37,7 @@ describe('Router', function() {
   	applicant: '650104199012124201',
   	history: [
   	  {
-  	  	filingDate: '2016-09-30',
+  	  	fillingDate: '2016-09-30',
   	  	feedback: {
   	  	  isPass: 'pending'
   	  	}
@@ -49,7 +49,7 @@ describe('Router', function() {
   	apply: {
   	  orgCode: 's0997001',
   	  uuid: '650104199012124201',
-  	  filingDate: '2016-12-31'
+  	  fillingDate: '2016-12-31'
   	}
   };
 
@@ -120,7 +120,7 @@ describe('Router', function() {
   	  chai.request(url)
   	  .post('/api/v1/applies')
   	  .set(headers)
-  	  .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', filingDate: '2016-09-01'}})
+  	  .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-01'}})
   	  .end(function(err, res) {
   	  	expect(err).to.be.not.null;
   	  	expect(res).to.have.status(400);
@@ -133,7 +133,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '6666666666', filingDate: '2016-09-30'}})
+      .send({apply: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-09-30'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
@@ -146,7 +146,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', filingDate: '2016-09-30'}})
+      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-30'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
@@ -190,7 +190,7 @@ describe('Router', function() {
 			chai.request(url)
 			.post('/api/v1/feedback')
 			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
-			.send({feedback: {filingDate: '2016-09-25', prison: 'p0991002', justice: 's0997001', isPass: 'PASSED', from: 'P'}})
+			.send({feedback: {fillingDate: '2016-09-25', prison: 'p0991002', justice: 's0997001', isPass: 'PASSED', from: 'P'}})
 			.end(function(err, res) {
 				done();
 			});

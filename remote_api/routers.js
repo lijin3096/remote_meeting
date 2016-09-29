@@ -94,14 +94,14 @@ router.all('*', (req, res, next) => {
 
 /**
  * Submit an application.
- * param {object} object - Object with orgCode, uuid and filingDate.
+ * param {object} object - Object with orgCode, uuid and fillingDate.
  * 
  * Get hodiernal applications.
  * params {string} orgCode - The orgnization code.
 */
 router.route('/api/v1/applies')
   .post(function(req, res, next) {
-    if (Utils.validDateWithToday(req.body.apply.filingDate)) {
+    if (Utils.validDateWithToday(req.body.apply.fillingDate)) {
       Application.submit(req.body.apply, (err, resultCode) => {
         if (err) {
           res.status(500).send({ error: `Submit application ${err}` });
