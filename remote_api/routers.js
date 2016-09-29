@@ -125,7 +125,7 @@ router.route('/api/v1/applies')
         }
       });
     } else {
-      res.status(400).send({ msg: 'Filing date is not valid'});
+      res.status(400).send({ msg: 'Filling date is not valid'});
       next();
     }
   })

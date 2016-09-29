@@ -124,7 +124,7 @@ describe('Router', function() {
   	  .end(function(err, res) {
   	  	expect(err).to.be.not.null;
   	  	expect(res).to.have.status(400);
-  	  	expect(res.body.msg).to.be.equal('Apply date is not valid');
+  	  	expect(res.body.msg).to.be.equal('Filling date is not valid');
   	  	done();
   	  });
   	});
