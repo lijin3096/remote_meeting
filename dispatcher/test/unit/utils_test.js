@@ -62,7 +62,7 @@ describe('Dispatcher unit tests', function () {
 
   describe('#avilableSfs(schedule, terminals)', function () {
 
-    describe('schedules of sfs is empty', function () {
+    describe('schedules of justice is empty', function () {
       let pos = dispatcher.posUsable([], shortsS);
 
 			it('expect an array with 3 elements', function () {
@@ -76,7 +76,7 @@ describe('Dispatcher unit tests', function () {
 			});
     });
 
-    describe('schedules of sfs is not empty but not fill complete', function () {
+    describe('schedules of justice is not empty but not fill complete', function () {
       let pos = dispatcher.posUsable([['A']], shortsS);
 
       it('expect an array with 3 elements', function () {
@@ -215,7 +215,7 @@ describe('Dispatcher unit tests', function () {
 		});
   });
 
-  describe('#dispatch(prison, shortP, sfs, shortS)', function () {
+  describe('#dispatch(prison, shortP, justice, shortS)', function () {
 
     let prison1 = { schedule: [] };
     let prison2 = { schedule: [] };

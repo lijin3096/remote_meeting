@@ -8,11 +8,11 @@ class Dispatcher {
 /**
  * @param {String} p - Orgnization code of prison.
  * @param {String} s - Orgnization code of justice.
- * @param {String} applyDate.
+ * @param {String} filingDate.
  * @param {Function(err, Object)} cb.
  * 
 */
-  static init(p, s, applyDate, cb) {
+  static init(p, s, filingDate, cb) {
     let self = this;
     Org.shortNumbers(p, s, function (err, orgs) {
       if (err) {
@@ -22,18 +22,18 @@ class Dispatcher {
         if (orgs.length !== 2) {
           cb(null, {code: 400});
         } else {
-          Meeting.schedules(applyDate, p, s, (err, meetings) => {
+          Meeting.schedules(filingDate, p, s, (err, meetings) => {
             if (err) cb(err);
             else {
               let prison = meetings[0];
-              let sfs = meetings[1];
-              let res = self.dispatch(prison, orgs[0].shortNumbers, sfs, orgs[1].shortNumbers);
+              let justice = meetings[1];
+              let res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
               Meeting.persist(prison, (error, prison) => {
                 if (err) {
                   logger.error(err);
                   cb(err);
                 } else {
-                  Meeting.persist(sfs, (e, sfs) => {
+                  Meeting.persist(justice, (e, justice) => {
                     if (e) {
                       logger.error(e);
                       cb(e);
@@ -115,9 +115,9 @@ class Dispatcher {
   }
 
 
-  // compare prison and sfs usable positions
+  // compare prison and justice usable positions
   // p: usable index of prison
-  // s: usable index of sfs
+  // s: usable index of justice
   // pos: position of usable 
   static compare(a, b) {
     let array = [];

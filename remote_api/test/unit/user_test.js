@@ -14,7 +14,7 @@ describe('User', function() {
     name: 'test_name',
     phone: '13999999999',
     password: '123456',
-    orgnization: {code: '0997001', title: 'test sfs'},
+    orgnization: {code: '0997001', title: 'test justice'},
     cloudMsg: {cloudID: 'xj001', token: '1234'},
     shorts: ['aa', 'bb', 'cc']
   };
@@ -84,7 +84,7 @@ describe('User', function() {
         userid: 'test02',
         name: 'test_name2',
         phone: '1388888888',
-        orgnization: {code: '0997002', title: 'test2 sfs'},
+        orgnization: {code: '0997002', title: 'test2 justice'},
         cloudMsg: {cloudID: 'xj002', token: '5678'},
         shorts: ['ddd', 'ee', 'ff']
       });

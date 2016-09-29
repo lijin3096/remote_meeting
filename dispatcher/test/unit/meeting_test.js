@@ -9,12 +9,12 @@ var Meeting = require('../../models/meeting');
 describe('Meeting', function () {
   before(function (done) {
     let ms = [
-      {orgCode: 'p0991001', orgType: 'p', applyDate: '2016-09-01', schedule: [['1255']]},
-      {orgCode: 's0997001', orgType: 's', applyDate: '2016-09-01', schedule: [['1448']]},
+      {orgCode: 'p0991001', orgType: 'p', filingDate: '2016-09-01', schedule: [['1255']]},
+      {orgCode: 's0997001', orgType: 's', filingDate: '2016-09-01', schedule: [['1448']]},
 
-      {orgCode: 's0997001', orgType: 's', applyDate: '2016-09-02', schedule: [['1448']]},
-      {orgCode: 'p0991002', orgType: 'p', applyDate: '2016-09-02'},
-      {orgCode: 'p0991002', orgType: 'p', applyDate: '2016-09-02'}
+      {orgCode: 's0997001', orgType: 's', filingDate: '2016-09-02', schedule: [['1448']]},
+      {orgCode: 'p0991002', orgType: 'p', filingDate: '2016-09-02'},
+      {orgCode: 'p0991002', orgType: 'p', filingDate: '2016-09-02'}
     ];
 
     mongoose.connection.collection('meetings').insertMany(ms, (err, res) => {
@@ -33,7 +33,7 @@ describe('Meeting', function () {
     });
   });
 
-  describe('#schedules(applyDate, prison, sfs, callback)', function () {
+  describe('#schedules(filingDate, prison, justice, callback)', function () {
     it('expect an array with two meetings that schedules was empty.', function (done) {
       Meeting.schedules('2016-08-25', 'p0991009', 's0997009', function (err, meetings) {
         if (err) {
@@ -90,7 +90,7 @@ describe('Meeting', function () {
 
   describe('#persist(Meeting)', function () {
     it('expect a message with `can not update` when no result with specify conditions.', function(done) {
-      let meeting = { applyDate: '2016-08-25', orgCode: '0997001', schedule: [['aa']] };
+      let meeting = { filingDate: '2016-08-25', orgCode: '0997001', schedule: [['aa']] };
       Meeting.persist(meeting, function (err, res) {
         expect(res).to.be.equal('can not update');
         done(err);
@@ -98,7 +98,7 @@ describe('Meeting', function () {
     });
 
     it('expect meeting with a new schedule.', function(done) {
-      Meeting.persist({applyDate: '2016-09-01', orgCode: 's0997001', schedule:[['1448','1448']]},
+      Meeting.persist({filingDate: '2016-09-01', orgCode: 's0997001', schedule:[['1448','1448']]},
        function(err, res) {
          logger.debug(res);
          expect(res).to.have.deep.property('schedule[0][0]', '1448');
@@ -113,7 +113,7 @@ describe('Meeting', function () {
 
 
 
-  // describe('#getSFSSchedule(orgCode, applyDate, callback)', function () {
+  // describe('#getSFSSchedule(orgCode, filingDate, callback)', function () {
   //   it('expect a Meetings which orgCode is 0997001', function (done) {
   //     Meeting.getSFSSchedule('0997001', '2016-08-25', function (err, res) {
   //       expect(res).to.have.length(1);
@@ -123,7 +123,7 @@ describe('Meeting', function () {
   //   });
   // });
 
-  // describe('#create(applyDate, orgCode, orgType, callback)', function () {
+  // describe('#create(filingDate, orgCode, orgType, callback)', function () {
   //   it('expect a new Meeting', function (done) {
   //     Meeting.create('2016-09-01', '0997002', 's', function (err, meeting) {
   //       expect(meeting).to.have.property('schedule').to.be.empty;

@@ -32,13 +32,13 @@ describe('Application', function() {
       { name: 'Turky', applicant: '666666' },
       {
         orgCode: '0997001', name: 'Mart', applicant: '777777',
-        applyHistory: [
+        history: [
           {
-            applyDate: '2016-08-26',
+            filingDate: '2016-08-26',
             feedback: { isPass: 'PASSED', meetingTime: '10:00', from: 'S', content: 'PASSED' }
           },
           {
-            applyDate: '2016-08-29',
+            filingDate: '2016-08-29',
             feedback: { isPass: 'PASSED', meetingTime: '10:00', from: 'M', content: 'PASSED' }
           }
 
@@ -47,13 +47,13 @@ describe('Application', function() {
 
       {
         orgCode: '0997001', name: 'Miler', applicant: '888888',
-        applyHistory: [
+        history: [
           {
-            applyDate: '2016-08-30',
+            filingDate: '2016-08-30',
             feedback: { isPass: 'PASSED', meetingTime: '10:30', from: 'M', content: 'PASSED' }
           },
           {
-            applyDate: '2016-08-31',
+            filingDate: '2016-08-31',
             feedback: { isPass: 'PASSED', meetingTime: '10:30', from: 'M', content: 'PASSED' }
           }
         ]
@@ -74,7 +74,7 @@ describe('Application', function() {
   describe('#submit', function() {
 
     it('expect 404 when applicant was not found.', function(done) {
-      Application.submit({orgCode: '0997001', uuid: '6772323232', applyDate: '2016-08-25' },
+      Application.submit({orgCode: '0997001', uuid: '6772323232', filingDate: '2016-08-25' },
         (err, res) => {
           expect(res).to.be.equal(404);
           done(err);
@@ -83,7 +83,7 @@ describe('Application', function() {
 
     it('expect 400 when submit an application which with the date of application is already exist.', 
       function(done) {
-        Application.submit({orgCode: '0997001', uuid: '777777', applyDate: '2016-08-29' },
+        Application.submit({orgCode: '0997001', uuid: '777777', filingDate: '2016-08-29' },
           (err, res) => {
             expect(res).to.be.equal(400);
             done(err);
@@ -91,7 +91,7 @@ describe('Application', function() {
     });
 
     it('expect 200 when submit an application successfully.', function(done) {
-      Application.submit({orgCode: '0997001', uuid: '666666', applyDate: '2016-09-03' },
+      Application.submit({orgCode: '0997001', uuid: '666666', filingDate: '2016-09-03' },
         (err, res) => {
           expect(res).to.be.equal(200);
           done(err);
@@ -130,7 +130,7 @@ describe('Application', function() {
     it('expect result is not null when feedback successfully', function(done) {
       Application.feedback({
         applicant: "777777",
-        applyDate: "2016-08-26",
+        filingDate: "2016-08-26",
         from: "P",
         isPass: "PASSED",
         content: "PASSED"

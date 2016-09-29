@@ -26,7 +26,7 @@ describe('Router', function() {
     name: 'test_name',
     phone: '13999999999',
     password: '123456',
-    orgnization: {code: '0997001', title: 'test sfs'},
+    orgnization: {code: '0997001', title: 'test justice'},
     cloudMsg: {cloudID: 'xj001', token: '1234'},
     shorts: ['aa', 'bb', 'cc']
   };
@@ -35,9 +35,9 @@ describe('Router', function() {
   	name: 'David Liu',
   	orgCode: 's0997001',
   	applicant: '650104199012124201',
-  	applyHistory: [
+  	history: [
   	  {
-  	  	applyDate: '2016-09-30',
+  	  	filingDate: '2016-09-30',
   	  	feedback: {
   	  	  isPass: 'pending'
   	  	}
@@ -49,7 +49,7 @@ describe('Router', function() {
   	apply: {
   	  orgCode: 's0997001',
   	  uuid: '650104199012124201',
-  	  applyDate: '2016-09-29'
+  	  filingDate: '2016-09-29'
   	}
   };
 
@@ -120,7 +120,7 @@ describe('Router', function() {
   	  chai.request(url)
   	  .post('/api/v1/applies')
   	  .set(headers)
-  	  .send({apply: {orgCode: '0997001', uuid: '650104199012124201', applyDate: '2016-09-01'}})
+  	  .send({apply: {orgCode: '0997001', uuid: '650104199012124201', filingDate: '2016-09-01'}})
   	  .end(function(err, res) {
   	  	expect(err).to.be.not.null;
   	  	expect(res).to.have.status(400);
@@ -133,7 +133,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: '0997001', uuid: '6666666666', applyDate: '2016-09-30'}})
+      .send({apply: {orgCode: '0997001', uuid: '6666666666', filingDate: '2016-09-30'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
@@ -146,7 +146,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: '0997001', uuid: '650104199012124201', applyDate: '2016-09-30'}})
+      .send({apply: {orgCode: '0997001', uuid: '650104199012124201', filingDate: '2016-09-30'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
@@ -190,7 +190,7 @@ describe('Router', function() {
 			chai.request(url)
 			.post('/api/v1/feedback')
 			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
-			.send({feedback: {applyDate: '2016-09-25', prison: 'p0991002', sfs: 's0997001', isPass: 'PASSED', from: 'P'}})
+			.send({feedback: {filingDate: '2016-09-25', prison: 'p0991002', justice: 's0997001', isPass: 'PASSED', from: 'P'}})
 			.end(function(err, res) {
 				done();
 			});

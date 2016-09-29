@@ -8,13 +8,13 @@ const mongoose  = require('../db');
 
 function Application() {
   this.sender = Sender;
-  this.ApplySchema = new mongoose.Schema({
+  this.applicationSchema = new mongoose.Schema({
     name:        String,
     orgCode:     String,
     phone:       String,
     applicant:   String,
-    applyHistory: [{
-        applyDate:       String,
+    history: [{
+        filingDate:      String,
         feedback: 
           {
             isPass:      String,
@@ -22,12 +22,12 @@ function Application() {
             from:        String,
             content:     String,
             prison:      String,
-            sfs:         String
+            justice:     String
           }
       }]
   });
 
-  this.model = mongoose.model('Apply', this.ApplySchema);
+  this.model = mongoose.model('Application', this.applicationSchema);
 }
 
 /**
@@ -46,16 +46,16 @@ Application.prototype.submit = function(params, callback) {
   this.model.findOne({applicant: params.uuid})
     .then((application) => {
       if (application) {
-        // date and applicant of params have already existed.
-        if ( _.find(application.applyHistory, {applyDate: params.applyDate}) ) {
+        // Check the applicant has already applyed in special date.
+        if ( _.find(application.history, {filingDate: params.filingDate}) ) {
           return callback(null, 400);
         } else {
           // add new application to history
           application.orgCode = params.orgCode;
           application.phone = params.phone;
-          application.applyHistory.push(
+          application.history.push(
             {
-              applyDate: params.applyDate,
+              filingDate: params.filingDate,
               feedback: {
                 isPass: 'pending',
                 meetingTime: '0'
@@ -74,9 +74,8 @@ Application.prototype.submit = function(params, callback) {
             };
 
             // FIXME: move this from model to other place
-            httpUtils.sendRequest(options, params, function (err, res) {
+            httpUtils.sendRequest(options, params, (err, res) => {
               if (err) return callback(err);
-              Logger.debug(res);
               return callback(null, res);
             });          
           });
@@ -101,9 +100,9 @@ Application.prototype.submit = function(params, callback) {
 Application.prototype.feedback = function(params, callback) {
   Logger.debug(params);
   if (params.from === 'P' && params.isPass === 'PASSED') {
-    this.sender.send(params.applyDate + 
+    this.sender.send(params.filingDate + 
       ':' + params.prison + 
-      ':' + params.sfs + 
+      ':' + params.justice + 
       ':' + params.id);
   }
 
@@ -131,16 +130,16 @@ Application.prototype.updateFeedback = function(params, callback) {
     isPass:      params.isPass,
     content:     params.content,
     prison:      params.prison,
-    sfs:         params.sfs,
+    justice:         params.justice,
     meetingTime: params.meetingTime
   };
 
   this.model.findOneAndUpdate(
     {
       applicant: params.applicant,
-      'applyHistory.applyDate': params.applyDate
+      'history.filingDate': params.filingDate
     },
-    { $set: {'applyHistory.$.feedback': feedback} },
+    { $set: {'history.$.feedback': feedback} },
     (err, apply) => {
       if (err) {
         Logger.error(`update feedback error: ${err}`);
@@ -159,12 +158,11 @@ Application.prototype.updateFeedback = function(params, callback) {
  * @api public
  */
 Application.prototype.search = function(query, cb) {
-  var queryProperties = Object.getOwnPropertyNames(query);
-  var condition = {};
-  var condition2 = null;
-  var isPass = 'PASSED';
+  let condition = {};
+  var condition2 = [];
+  let isPass = 'PASSED';
       
-  queryProperties.forEach((q) => {
+  Object.getOwnPropertyNames(query).forEach( (q) => {
     if (q === 'start') {
       condition.$gte = query[q];
     } else if (q === 'end') {
@@ -175,16 +173,16 @@ Application.prototype.search = function(query, cb) {
   });
    
   if (isPass === 'PASSED') {
-    condition2 = {'applyHistory.feedback.from': 'M'};
+    condition2 = ['history.feedback.from', 'M'];
   } else {
-    condition2 = {'applyHistory.feedback.isPass': isPass};
+    condition2 = ['history.feedback.isPass', isPass];
   }
   
   Logger.debug(Object.keys(condition2)[0]);
   Logger.debug(condition2[Object.keys(condition2)[0]]);
 
   this.model.find({ orgCode: query.orgCode,
-                   'applyHistory.applyDate': {$gte: query.start, $lte: query.end}
+                   'history.filingDate': {$gte: query.start, $lte: query.end}
                   },
      (err, applications) => {
       if (err) {
@@ -209,27 +207,27 @@ Application.prototype.map = function(applications, condition, isPass) {
   let result = {};
   let history = [];
 
-  applications.forEach((application) => {
+  applications.forEach( (application) => {
     result.name = application.name;
     result.uuid = application.applicant;
     result.phone = application.phone;
 
-    result.application = application.applyHistory.filter(function(h) {
+    result.application = application.history.filter( (h) => {
 //       if (typeof condition === 'string') {
-//         return h.feedback.from === 'M' && h.applyDate === applyDate;
+//         return h.feedback.from === 'M' && h.filingDate === filingDate;
 //       } else if (typeof condition === 'object') {
 //         return h.feedback.from === 'M' &&
-//                h.applyDate >= condition.$gte &&
-//                h.applyDate <= condition.$lte;
+//                h.filingDate >= condition.$gte &&
+//                h.filingDate <= condition.$lte;
 //       }
        if (isPass === 'PASSED') {
          return h.feedback.from === 'M' &&
-                h.applyDate >= condition.$gte &&
-                h.applyDate <= condition.$lte;
+                h.filingDate >= condition.$gte &&
+                h.filingDate <= condition.$lte;
        } else {
          return h.feedback.isPass === 'DENIED' &&
-                h.applyDate >= condition.$gte &&
-                h.applyDate <= condition.$lte;
+                h.filingDate >= condition.$gte &&
+                h.filingDate <= condition.$lte;
        }
     });
 

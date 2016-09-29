@@ -8,12 +8,12 @@ var Schema   = mongoose.Schema;
 var MeetingSchema = new Schema({
   orgCode:     String,
   orgType:     String,
-  applyDate:   String,
+  filingDate:   String,
   schedule:    [Schema.Types.Mixed]
 });
 
 MeetingSchema.statics.persist = function(meeting, cb) {
-  this.findOne({applyDate: meeting.applyDate, orgCode: meeting.orgCode}).then((m) => {
+  this.findOne({filingDate: meeting.filingDate, orgCode: meeting.orgCode}).then((m) => {
     if(m) {
       m.schedule = meeting.schedule;
       m.save().then((res) => {
@@ -23,13 +23,13 @@ MeetingSchema.statics.persist = function(meeting, cb) {
   }).catch((e) => { cb(e); });
 };
 
-MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
-  this.findOne( { prisonCode: prisonCode, applyDate: applyDate } ).then((meeting) => {
+MeetingSchema.statics.schedule = function(filingDate, prisonCode, cb) {
+  this.findOne( { prisonCode: prisonCode, filingDate: filingDate } ).then((meeting) => {
    
     if (!meeting) {
 
       meeting = new this({
-        applyDate: applyDate,
+        filingDate: filingDate,
         prisonCode: prisonCode,
         schedule: []
       });
@@ -51,24 +51,24 @@ MeetingSchema.statics.schedule = function(applyDate, prisonCode, cb) {
 
 /**
  * @params
- * @applyDate
+ * @filingDate
  * @prison
- * @sfs
+ * @justice
 */
-MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
+MeetingSchema.statics.schedules = function(filingDate, prison, justice, cb) {
   let self = this;
 
-  this.find({ applyDate: applyDate }).where('orgCode').in([prison,sfs]).sort('orgType').then((meetings) => {
+  this.find({ filingDate: filingDate }).where('orgCode').in([prison,justice]).sort('orgType').then((meetings) => {
     let len = meetings.length;
 
     if (len === 0) {
       
       let array = [];
-      array.push({applyDate: applyDate, orgType: 'p', orgCode: prison, schedule: []});
-      array.push({applyDate: applyDate, orgType: 's', orgCode: sfs, schedule: []});
+      array.push({filingDate: filingDate, orgType: 'p', orgCode: prison, schedule: []});
+      array.push({filingDate: filingDate, orgType: 's', orgCode: justice, schedule: []});
 
       this.collection.insertMany(array).then((res) => {
-        self.find({applyDate: applyDate}).where('orgCode').in([prison, sfs]).sort('orgType').then((ms) => {
+        self.find({filingDate: filingDate}).where('orgCode').in([prison, justice]).sort('orgType').then((ms) => {
           cb(null, ms);
         });
       });
@@ -77,10 +77,10 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
 
       let array = [];
       let meeting = meetings[0];
-      let orgCode = meeting.orgType === 'p' ? sfs : prison;
+      let orgCode = meeting.orgType === 'p' ? justice : prison;
       let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
-      self.create(applyDate, orgCode, orgType).then((m) => {
+      self.create(filingDate, orgCode, orgType).then((m) => {
         if (m.orgType === 'p') {
           array = [m, meeting];
         } else {
@@ -95,10 +95,10 @@ MeetingSchema.statics.schedules = function(applyDate, prison, sfs, cb) {
 };
 
 
-MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
+MeetingSchema.statics.create = function(filingDate, orgCode, orgType, cb) {
   
   let meeting = new this({ 
-        applyDate: applyDate, orgCode: orgCode, orgType: orgType, schedule:[] 
+        filingDate: filingDate, orgCode: orgCode, orgType: orgType, schedule:[] 
       });
 
   meeting.save((err) => {
@@ -111,8 +111,8 @@ MeetingSchema.statics.create = function(applyDate, orgCode, orgType, cb) {
   });
 };
 
-MeetingSchema.statics.getSFSSchedule = function(orgCode, applyDate, cb) {
-  this.find({ applyDate: applyDate, orgCode: orgCode}).then((result) => {
+MeetingSchema.statics.getSFSSchedule = function(orgCode, filingDate, cb) {
+  this.find({ filingDate: filingDate, orgCode: orgCode}).then((result) => {
     return cb(null, result);
   }).catch((e) => { cb(e); });
 };

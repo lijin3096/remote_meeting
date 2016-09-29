@@ -34,7 +34,7 @@ AMQP.connect('amqp://mq').then(function (conn) {
               id: id,
               terminalId: res.res[0],
               queueId: res.res[1],
-              sfs: res.res[2]
+              justice: res.res[2]
             };
 
             logger.debug(data);
