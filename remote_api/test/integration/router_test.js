@@ -147,6 +147,7 @@ describe('Router', function() {
       .set(headers)
       .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-10-29'}})
       .end(function(err, res) {
+				logger.debug(res);
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
       	expect(res.body.msg).to.be.equal('申请日期重复');
