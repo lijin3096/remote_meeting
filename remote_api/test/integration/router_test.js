@@ -151,7 +151,7 @@ describe('Router', function() {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
       	expect(res.body.msg).to.be.equal('申请日期重复');
-      	done(err);
+      	done();
       });
     });
 
