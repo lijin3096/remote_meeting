@@ -67,7 +67,7 @@ describe('Router', function() {
   	  	id = u.ops[0]._id;
   	    headers.Authorization = id;
   	  }).then( () => {
-  	  	conn.collection('applies').insert(applicant)
+  	  	conn.collection('applications').insert(applicant)
 				.then( () => {
   	  	  done();
   	  	});
@@ -80,7 +80,7 @@ describe('Router', function() {
   after(function(done) {
     conn.db.dropCollection('users')
 		.then( () => {
-      conn.db.dropCollection('applies')
+      conn.db.dropCollection('applications')
 			.then( () => {
       	nock.cleanAll();
         nock.enableNetConnect();

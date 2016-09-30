@@ -63,7 +63,7 @@ describe('Application', function() {
   });
 
   after(function(done) {
-    conn.db.dropCollection('applies', function (err) {
+    conn.db.dropCollection('applications', function (err) {
       nock.cleanAll();
       nock.enableNetConnect();
       done(err);
