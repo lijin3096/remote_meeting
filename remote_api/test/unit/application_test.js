@@ -119,7 +119,7 @@ describe('Application', function() {
 
   describe('#feedback(feedback)', function() {
     it('expect null when not found the application', function(done) {
-      Application.feedback( {applicant: '232324423', from: 'P', isPass: 'PASSED'}, 
+      Application.feedback({applicant: '232324423', from: 'P', isPass: 'PASSED'}, 
         (err, result) => {
           expect(result).to.be.null;
           done(err);

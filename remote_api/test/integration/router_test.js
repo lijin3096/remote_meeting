@@ -45,7 +45,7 @@ describe('Router', function() {
   };
 
   let validApplication = { 
-  	apply: {
+  	application: {
   	  orgCode: 's0997001',
   	  uuid: '650104199012124201',
   	  fillingDate: '2016-10-30'
@@ -115,11 +115,11 @@ describe('Router', function() {
   });
 
   describe('POST /api/v1/applies', function() {
-  	it('expect status 400 when apply date is not valid', function(done) {
+  	it('expect status 400 when application date is not valid', function(done) {
   	  chai.request(url)
   	  .post('/api/v1/applies')
   	  .set(headers)
-  	  .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-30'}})
+  	  .send({application: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-30'}})
   	  .end(function(err, res) {
   	  	expect(err).to.be.not.null;
   	  	expect(res).to.have.status(400);
@@ -132,7 +132,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-10-29'}})
+      .send({application: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-10-29'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
@@ -145,7 +145,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-10-29'}})
+      .send({application: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-10-29'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
