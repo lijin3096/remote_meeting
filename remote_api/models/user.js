@@ -17,7 +17,7 @@ function User() {
     shorts:           [String]
   });
 
-  this.model = mongoose.model('User', schema);
+  this.model = mongoose.model('User', this.schema);
 }
 
 
