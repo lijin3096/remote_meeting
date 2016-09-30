@@ -36,7 +36,7 @@ describe('Router', function() {
   	applicant: '650104199012124201',
   	history: [
   	  {
-  	  	fillingDate: '2016-09-29',
+  	  	fillingDate: '2016-10-29',
   	  	feedback: {
   	  	  isPass: 'pending'
   	  	}
@@ -132,7 +132,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-12-31'}})
+      .send({apply: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-10-29'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
