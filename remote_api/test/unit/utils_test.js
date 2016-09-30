@@ -30,7 +30,7 @@ describe('Utils unit tests', function() {
 
     it('expect false when given date is greater than today and difference is greater than 30 days',
       function() {
-        expect(Utils.validDateWithToday('2016-10-30')).to.be.false;
+        expect(Utils.validDateWithToday('2016-12-30')).to.be.false;
       }
     );
   });
