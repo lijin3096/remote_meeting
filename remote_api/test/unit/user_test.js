@@ -92,7 +92,7 @@ describe('User', function() {
         shorts: ['ddd', 'ee', 'ff']
       };
       
-      let user = new User.model(newUser);
+      let user = new User.model(params);
       user.password = params.password;
       User.create(user, (err, res) => {
         if(err) {
