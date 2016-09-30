@@ -28,7 +28,9 @@ describe('User', function() {
           done();
         });
         
-      }).catch((e) => { done(e); });
+      }).catch( (e) => {
+         done(e); 
+      });
   });
 
   after(function(done) {
@@ -80,17 +82,17 @@ describe('User', function() {
   describe('#create(user, callback)', function() {
     it('expect create a new user successful', function(done) {
 
-      let newUser = new User({
+      let newUser = {
         userid: 'test02',
         name: 'test_name2',
         phone: '1388888888',
+        password: '654321',
         orgnization: {code: '0997002', title: 'test2 justice'},
         cloudMsg: {cloudID: 'xj002', token: '5678'},
         shorts: ['ddd', 'ee', 'ff']
-      });
+      };
 
-      newUser.password = '654321';
-      User.create(newUser, function(err, res) {
+      User.create(new User.model(newUser), function(err, res) {
         if(err) {
           logger.error(err);
         }

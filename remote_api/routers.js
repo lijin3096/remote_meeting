@@ -49,7 +49,6 @@ router.post('/api/v1/feedback', (req, res) => {
       else if (application) 
         res.status(200).send({ msg: 'feedback success' });
       else{
-        logger.debug('here');
         res.status(404).send({msg: 'application not found'});
       }
     });
@@ -101,8 +100,8 @@ router.all('*', (req, res, next) => {
 */
 router.route('/api/v1/applies')
   .post(function(req, res, next) {
-    if (Utils.validDateWithToday(req.body.apply.fillingDate)) {
-      Application.submit(req.body.apply, (err, resultCode) => {
+    if (Utils.validDateWithToday(req.body.application.fillingDate)) {
+      Application.submit(req.body.application, (err, resultCode) => {
         if (err) {
           res.status(500).send({ error: `Submit application error: ${err}` });
           next(err);

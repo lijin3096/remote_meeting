@@ -102,7 +102,7 @@ User.prototype.getUserById = function(id, cb) {
 */
 User.prototype.update = function(_id, params, callback) {
  
-  this.model.findOne({ _id: new ObjectId(_id) }).then((user) => {
+  this.model.findOne({ _id: new ObjectId(_id) }).then( (user) => {
     if (user) {
       if (params.hasOwnProperty('newPassword')) {
         

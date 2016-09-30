@@ -131,7 +131,7 @@ Application.prototype.updateFeedback = function(params, callback) {
     isPass:      params.isPass,
     content:     params.content,
     prison:      params.prison,
-    justice:         params.justice,
+    justice:     params.justice,
     meetingTime: params.meetingTime
   };
 
@@ -179,12 +179,11 @@ Application.prototype.search = function(query, cb) {
     condition2 = ['history.feedback.isPass', isPass];
   }
   
-  let key = condition2[0];
-  let value = condition2[1];
+
 
   this.model.find({ orgCode: query.orgCode,
-                   'history.fillingDate': {$gte: query.start, $lte: query.end},
-                   key: value
+                   'history.fillingDate': {$gte: query.start, $lte: query.end}
+                  
                   },
      (err, applications) => {
       if (err) {
