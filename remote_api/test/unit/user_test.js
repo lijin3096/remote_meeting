@@ -82,7 +82,7 @@ describe('User', function() {
   describe('#create(user, callback)', function() {
     it('expect create a new user successful', function(done) {
 
-      let newUser = {
+      let params = {
         userid: 'test02',
         name: 'test_name2',
         phone: '1388888888',
@@ -91,8 +91,10 @@ describe('User', function() {
         cloudMsg: {cloudID: 'xj002', token: '5678'},
         shorts: ['ddd', 'ee', 'ff']
       };
-
-      User.create(new User.model(newUser), function(err, res) {
+      
+      let user = new User.model(newUser);
+      user.password = params.password;
+      User.create(user, (err, res) => {
         if(err) {
           logger.error(err);
         }
