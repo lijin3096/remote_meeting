@@ -147,7 +147,6 @@ describe('Router', function() {
       .set(headers)
       .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-10-29'}})
       .end(function(err, res) {
-				logger.debug(res);
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
       	expect(res.body.msg).to.be.equal('申请日期重复');
@@ -161,7 +160,6 @@ describe('Router', function() {
       .set(headers)
       .send(validApplication)
       .end(function(err, res) {
-				logger.error(err);
       	expect(err).to.be.null;
       	expect(res).to.have.status(200);
       	expect(res.body.msg).to.be.equal('申请提交成功');

@@ -28,6 +28,7 @@ function Application() {
   });
 
   this.model = mongoose.model('Application', this.applicationSchema);
+
 }
 
 /**
@@ -159,7 +160,7 @@ Application.prototype.updateFeedback = function(params, callback) {
  */
 Application.prototype.search = function(query, cb) {
   let condition = {};
-  var condition2 = [];
+  let condition2 = [];
   let isPass = 'PASSED';
       
   Object.getOwnPropertyNames(query).forEach( (q) => {
@@ -178,11 +179,12 @@ Application.prototype.search = function(query, cb) {
     condition2 = ['history.feedback.isPass', isPass];
   }
   
-  Logger.debug(Object.keys(condition2)[0]);
-  Logger.debug(condition2[Object.keys(condition2)[0]]);
+  let key = condition2[0];
+  let value = condition2[1];
 
   this.model.find({ orgCode: query.orgCode,
-                   'history.fillingDate': {$gte: query.start, $lte: query.end}
+                   'history.fillingDate': {$gte: query.start, $lte: query.end},
+                   key: value
                   },
      (err, applications) => {
       if (err) {
@@ -213,13 +215,6 @@ Application.prototype.map = function(applications, condition, isPass) {
     result.phone = application.phone;
 
     result.application = application.history.filter( (h) => {
-//       if (typeof condition === 'string') {
-//         return h.feedback.from === 'M' && h.fillingDate === fillingDate;
-//       } else if (typeof condition === 'object') {
-//         return h.feedback.from === 'M' &&
-//                h.fillingDate >= condition.$gte &&
-//                h.fillingDate <= condition.$lte;
-//       }
        if (isPass === 'PASSED') {
          return h.feedback.from === 'M' &&
                 h.fillingDate >= condition.$gte &&
