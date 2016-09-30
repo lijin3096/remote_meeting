@@ -114,7 +114,7 @@ router.route('/api/v1/applies')
               next();
               break;
             case 400:
-              res.status(resultCode).send({ msg: '提交日期重复' });
+              res.status(resultCode).send({ msg: '申请日期重复' });
               next();
               break;
             case 404:
@@ -125,7 +125,7 @@ router.route('/api/v1/applies')
         }
       });
     } else {
-      res.status(400).send({ msg: 'Filling date is not valid'});
+      res.status(400).send({ msg: '该日期不能申请会见'});
       next();
     }
   })

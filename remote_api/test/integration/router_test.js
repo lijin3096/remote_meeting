@@ -12,11 +12,10 @@ const Utils    = require('../../utils/utils');
 const nock     = require('nock');
 
 describe('Router', function() {
-  let conn;
-  let id;
-
+  let conn = null;
+  let id = null;
   let url = 'http://localhost:3000';
-  
+
   let headers = {
   	'Content-Type': 'application/json',
   };
@@ -37,7 +36,7 @@ describe('Router', function() {
   	applicant: '650104199012124201',
   	history: [
   	  {
-  	  	fillingDate: '2016-09-30',
+  	  	fillingDate: '2016-09-29',
   	  	feedback: {
   	  	  isPass: 'pending'
   	  	}
@@ -45,7 +44,7 @@ describe('Router', function() {
   	]
   };
 
-  let validApply = { 
+  let validApplication = { 
   	apply: {
   	  orgCode: 's0997001',
   	  uuid: '650104199012124201',
@@ -56,7 +55,7 @@ describe('Router', function() {
   before(function(done) {
 
   	nock('http://103.37.158.17:8080', {allowUnmocked: true})
-  	.post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApply)
+  	.post('/xjp/familyRemoteMeeting/sqFamilyRemoteMeetingRest', validApplication)
     .reply(200);
 
   	conn = mongoose.connection;
@@ -116,15 +115,15 @@ describe('Router', function() {
   });
 
   describe('POST /api/v1/applies', function() {
-  	it('expect status 400 when apply date is before today', function(done) {
+  	it('expect status 400 when apply date is not valid', function(done) {
   	  chai.request(url)
   	  .post('/api/v1/applies')
   	  .set(headers)
-  	  .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-01'}})
+  	  .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-30'}})
   	  .end(function(err, res) {
   	  	expect(err).to.be.not.null;
   	  	expect(res).to.have.status(400);
-  	  	expect(res.body.msg).to.be.equal('Filling date is not valid');
+  	  	expect(res.body.msg).to.be.equal('该日期不能申请会见');
   	  	done();
   	  });
   	});
@@ -133,7 +132,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-09-30'}})
+      .send({apply: {orgCode: 's0997001', uuid: '6666666666', fillingDate: '2016-12-31'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
@@ -146,11 +145,11 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-30'}})
+      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-29'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);
-      	expect(res.body.msg).to.be.equal('提交日期重复');
+      	expect(res.body.msg).to.be.equal('申请日期重复');
       	done(err);
       });
     });
@@ -159,7 +158,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send(validApply)
+      .send(validApplication)
       .end(function(err, res) {
 				logger.error(err);
       	expect(err).to.be.null;
