@@ -25,7 +25,7 @@ describe('Router', function() {
     name: 'test_name',
     phone: '13999999999',
     password: '123456',
-    orgnization: {code: '0997001', title: 'test justice'},
+    orgnization: {code: 's0997001', title: 'test justice'},
     cloudMsg: {cloudID: 'xj001', token: '1234'},
     shorts: ['aa', 'bb', 'cc']
   };
@@ -59,7 +59,7 @@ describe('Router', function() {
     .reply(200);
 
   	conn = mongoose.connection;
-      Utils.hashedPassword(user.password).then((hashedPassword) => {
+      Utils.hashedPassword(user.password).then( (hashedPassword) => {
   	  user.hashedPassword = hashedPassword;
       
   	  conn.collection('users').insert(user).then((u) => {
@@ -85,7 +85,7 @@ describe('Router', function() {
         nock.enableNetConnect();
       	done();
       });
-    }).catch((e) => { done(e); });
+    }).catch( (e) => { done(e); });
   });
 
   describe('/api/v1/login', function() {
@@ -128,7 +128,7 @@ describe('Router', function() {
   	  });
   	});
 
-    it('expect status 404 when user that is not have permission for appling.', function(done) {
+    it('expect status 404 when user which not have permission.', function(done) {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
@@ -136,7 +136,7 @@ describe('Router', function() {
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(404);
-      	expect(res.body.msg).to.be.equal('该用户未有申请会见权限');
+      	expect(res.body.msg).to.be.equal('用户无申请会见权限');
       	done();
       });
     });
@@ -145,7 +145,7 @@ describe('Router', function() {
       chai.request(url)
       .post('/api/v1/applies')
       .set(headers)
-      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-09-29'}})
+      .send({apply: {orgCode: 's0997001', uuid: '650104199012124201', fillingDate: '2016-10-29'}})
       .end(function(err, res) {
       	expect(err).to.be.not.null;
       	expect(res).to.have.status(400);

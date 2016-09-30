@@ -104,7 +104,7 @@ router.route('/api/v1/applies')
     if (Utils.validDateWithToday(req.body.apply.fillingDate)) {
       Application.submit(req.body.apply, (err, resultCode) => {
         if (err) {
-          res.status(500).send({ error: `Submit application ${err}` });
+          res.status(500).send({ error: `Submit application error: ${err}` });
           next(err);
         } else {
           logger.debug(resultCode);
@@ -118,7 +118,7 @@ router.route('/api/v1/applies')
               next();
               break;
             case 404:
-              res.status(resultCode).send({ msg: '该用户未有申请会见权限' });
+              res.status(resultCode).send({ msg: '用户无申请会见权限' });
               next();
               break;
           }
