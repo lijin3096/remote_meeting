@@ -49,10 +49,10 @@ describe('Dispatcher', function () {
     it('expect ', function (done) {
       dispatcher.init('p0991001', 's0997001', '2016-08-25', function (err, res) {
         if (err) {
-		  logger.error(err);
-		  return done(err);
-		}
-		logger.debug(res);
+		      logger.error(err);
+		      return done(err);
+		    }
+		    logger.debug(res);
         expect(res).to.have.property('code').and.equal(200);
         done();
       });

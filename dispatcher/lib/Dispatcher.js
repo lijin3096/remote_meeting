@@ -20,6 +20,7 @@ class Dispatcher {
         cb(err);
       } else {
         if (orgs.length !== 2) {
+          logger.debug(orgs);
           cb(null, {code: 400});
         } else {
           Meeting.schedules(fillingDate, p, s, (err, meetings) => {
