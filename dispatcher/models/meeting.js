@@ -7,7 +7,7 @@ function Meeting() {
   this.schema = new Schema({
     orgCode:     String,
     orgType:     String,
-    fillingDate:   String,
+    fillingDate: String,
     schedule:    [Schema.Types.Mixed]
   });
 

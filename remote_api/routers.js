@@ -3,7 +3,7 @@ const logger      = require('log4js').getLogger('router');
 const User        = require('./models/user');
 const Org         = require('./models/orgnization');
 const Utils       = require('./utils/utils');
-const Meeting     = require('./models/meeting');
+//const Meeting     = require('./models/meeting');
 const Application = require('./models/application');
 const router      = express.Router();
 
@@ -155,16 +155,16 @@ router.put('/api/v1/users/:id', (req, res) => {
   });
 });
 
-router.get('/api/v1/orgnizations/:orgCode/meetings', (req, res) => {
-  let today = new Date().toISOString();
-  Meeting.getSFSSchedule(req.params.orgCode, today.substring(0, today.indexOf('T')), 
-    (err, meetings) => {
-    if(err)
-      res.status(500).send({ error: `${err}`});
-    else
-      res.status(200).send({ meetings: meetings});
-  });
-});
+// router.get('/api/v1/orgnizations/:orgCode/meetings', (req, res) => {
+//   let today = new Date().toISOString();
+//   Meeting.getSFSSchedule(req.params.orgCode, today.substring(0, today.indexOf('T')), 
+//     (err, meetings) => {
+//     if(err)
+//       res.status(500).send({ error: `${err}`});
+//     else
+//       res.status(200).send({ meetings: meetings});
+//   });
+// });
 
 router.get('/api/v1/search', (req, res) => {
   let query = { start: req.query.start, end: req.query.end, orgCode: req.query.orgCode };
