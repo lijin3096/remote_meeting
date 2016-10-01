@@ -1,11 +1,11 @@
-const logger = require('log4js').getLogger('user unit test');
+const logger = require('log4js').getLogger('utils test');
 const chai = require('chai'),
       expect = chai.expect;
 const mongoose = require('mongoose');
 const dispatcher = require('../../lib/Dispatcher');
 
 before(function (done) {
-	done();
+  done();
 });
 
 after(function (done) {
@@ -14,7 +14,7 @@ after(function (done) {
   });
 });
 
-describe('Dispatcher unit tests', function () {
+describe('Dispatcher', function () {
   let shortsP = ['A', 'B', 'C', 'D', 'E'];
   let shortsS = ['a', 'b', 'c'];
 

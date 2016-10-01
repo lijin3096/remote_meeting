@@ -33,6 +33,8 @@ describe('Orgnization', function() {
   describe('#shortNumbers', function() {
     it('expect', function(done) {
       Orgnization.shortNumbers('p0991001', 's0997001', function(err, res) {
+        logger.debug(res);
+        logger.error(err);
         expect(res).to.have.deep.property('[0].orgType', 'p');
         expect(res).to.have.deep.property('[0].orgType', 's');
         done(err);
