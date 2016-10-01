@@ -18,7 +18,7 @@ AMQP.connect('amqp://mq').then(function (conn) {
         let s = array[2];
         let id = array[3];
 
-        let res = Dispatcher.init(p, s, array[0], function (err, res) {
+        let res = Dispatcher.init(p, s, array[0], (err, res) => {
           if (err) {
             logger.error(err);
           } else if (res.code === 200) {

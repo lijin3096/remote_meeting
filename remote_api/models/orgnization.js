@@ -2,29 +2,39 @@ const logger   = require('log4js').getLogger('Prison');
 const mongoose = require('./../db');
       mongoose.Promise = global.Promise;
 
-const OrgnizationSchema = new mongoose.Schema({
+function Orgnization() {
+  this.schema = new mongoose.Schema({
     orgCode:        String,
     orgType:        String,
     shortNumbers:   [String]
-});
+  });
+  this.model = mongoose.model('Orgnization', this.schema);
+}
 
-OrgnizationSchema.statics.config = function(params, cb) {
-  this.findOneAndUpdate({ orgCode: params.orgCode },
-    { shortNumbers: params.shortNumbers },
-    function(err, res) {
-      if(err) {
+Orgnization.prototype.config = function(params, cb) {
+  this.model.findOneAndUpdate({orgCode: params.orgCode},
+    {shortNumbers: params.shortNumbers},
+    (err, res) => {
+      if (err) {
         logger.error(`Update prison settings error ${err}`);
         cb(err);
-      } else cb();
+      } else {
+        cb();
+      }
+  });
+};
+
+Orgnization.prototype.shortNumbers = function(prison, justice, cb) {
+  this.model.find().where('orgCode')
+  .in([prison, justice])
+  .sort('orgType')
+  .then( (res) => {
+    if (res) { 
+      cb(null, res);
     }
-  );
+  }).catch( (e) => {
+     cb(e);
+  });
 };
 
-OrgnizationSchema.statics.shortNumbers = function(p, s, cb) {
-  this.find().where('orgCode').in([p, s]).sort('orgType').then((res) => {
-    if (res) cb(null, res);
-  }).catch((e) => { cb(e); });
-};
-
-
-module.exports = mongoose.model('Orgnization', OrgnizationSchema);
+module.exports = new Orgnization();

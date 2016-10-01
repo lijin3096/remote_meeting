@@ -28,10 +28,10 @@ Meeting.prototype.persist = function(meeting, cb) {
         cb(null, res);
       });
     } else {
-      cb(null, `Meeting with date ${meeting.fillingDate} and orgCode ${meeting.orgCode} not found`);
+      cb(null, `[#persist] with date ${meeting.fillingDate} and orgCode ${meeting.orgCode} not found`);
     }
   }).catch( (e) => {
-    logger.error(`Persist meeting error: ${err}`);
+    logger.error(`[#persist] meeting ${meeting.fillingDate} and orgCode ${meeting.orgCode} error: ${err}`);
     cb(e); 
   });
 };
