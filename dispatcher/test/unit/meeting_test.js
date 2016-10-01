@@ -31,60 +31,60 @@ describe('Meeting', function () {
     });
   });
 
-  // describe('#schedules(fillingDate, prison, justice, callback)', function () {
-  //   it('expect an array with two meetings that schedules was empty.', function (done) {
-  //     Meeting.schedules('2016-08-25', 'p0991009', 's0997009', function (err, meetings) {
-  //       if (err) {
-  //         logger.error(err);
-  //         done(err);
-  //       }
-  //       expect(meetings).to.have.length(2);
-  //       expect(meetings).to.have.deep.property('[0].orgType', 'p');
-  //       expect(meetings).to.have.deep.property('[1].orgType', 's');
-  //       expect(meetings).to.have.deep.property('[0].schedule').to.be.empty;
-  //       expect(meetings).to.have.deep.property('[1].schedule').to.be.empty;
-  //       done();
-  //     });
-  //   });
+  describe('#schedules(fillingDate, prison, justice, callback)', function () {
+    it('expect an array with two meetings that schedules was empty.', function (done) {
+      Meeting.schedules('2016-08-25', 'p0991009', 's0997009', function (err, meetings) {
+        if (err) {
+          logger.error(err);
+          done(err);
+        }
+        expect(meetings).to.have.length(2);
+        expect(meetings).to.have.deep.property('[0].orgType', 'p');
+        expect(meetings).to.have.deep.property('[1].orgType', 's');
+        expect(meetings).to.have.deep.property('[0].schedule').to.be.empty;
+        expect(meetings).to.have.deep.property('[1].schedule').to.be.empty;
+        done();
+      });
+    });
 
-  //   it('expect an array with two meetings and create new meeting with s0997008.', function (done) {
-  //     Meeting.schedules('2016-09-01', 'p0991001', 's0997008', function(err, meetings) {
-  //       if (err) {
-  //         logger.error(err);
-  //         done(err);
-  //       }
-  //       expect(meetings).to.have.length(2);
-  //       expect(meetings).to.have.deep.property('[0].orgType', 'p');
-  //       expect(meetings).to.have.deep.property('[1].orgType', 's');
-  //       expect(meetings).to.have.deep.property('[0].schedule').to.not.be.empty;
-  //       expect(meetings).to.have.deep.property('[1].schedule').to.be.empty;
-  //       done();
-  //     });
-  //   });
+    it('expect an array with two meetings and create new meeting with s0997008.', function (done) {
+      Meeting.schedules('2016-09-01', 'p0991001', 's0997008', function(err, meetings) {
+        if (err) {
+          logger.error(err);
+          done(err);
+        }
+        expect(meetings).to.have.length(2);
+        expect(meetings).to.have.deep.property('[0].orgType', 'p');
+        expect(meetings).to.have.deep.property('[1].orgType', 's');
+        expect(meetings).to.have.deep.property('[0].schedule').to.not.be.empty;
+        expect(meetings).to.have.deep.property('[1].schedule').to.be.empty;
+        done();
+      });
+    });
 
-  //   it('expect an array with two meetings and create new meeting with p0991006.', function (done) {
-  //     Meeting.schedules('2016-09-01', 'p0991006', 's0997001', function(err, meetings) {
-  //       if (err) {
-  //         logger.error(err);
-  //         done(err);
-  //       }
-  //       expect(meetings).to.have.length(2);
-  //       expect(meetings).to.have.deep.property('[0].orgType', 'p');
-  //       expect(meetings).to.have.deep.property('[1].orgType', 's');
-  //       expect(meetings).to.have.deep.property('[1].schedule').to.not.be.empty;
-  //       expect(meetings).to.have.deep.property('[0].schedule').to.be.empty;
-  //       done();
-  //     });
-  //   });
+    it('expect an array with two meetings and create new meeting with p0991006.', function (done) {
+      Meeting.schedules('2016-09-01', 'p0991006', 's0997001', function(err, meetings) {
+        if (err) {
+          logger.error(err);
+          done(err);
+        }
+        expect(meetings).to.have.length(2);
+        expect(meetings).to.have.deep.property('[0].orgType', 'p');
+        expect(meetings).to.have.deep.property('[1].orgType', 's');
+        expect(meetings).to.have.deep.property('[1].schedule').to.not.be.empty;
+        expect(meetings).to.have.deep.property('[0].schedule').to.be.empty;
+        done();
+      });
+    });
 
-  //   it('expect return an error with', function(done) {
-  //     Meeting.schedules('2016-09-02', 'p0991002', 's0997001', function(err) {
-  //       expect(err).to.be.an('error');
-  //       done();
-  //     });
-  //   });
+    it('expect return an error with', function(done) {
+      Meeting.schedules('2016-09-02', 'p0991002', 's0997001', function(err) {
+        expect(err).to.be.an('error');
+        done();
+      });
+    });
 
-  // });
+  });
 
   describe('#persist(Meeting)', function () {
     it('expect a message with `can not update` when no result with specify conditions.', function(done) {
