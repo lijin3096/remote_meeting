@@ -77,26 +77,26 @@ Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
   let self = this;
 
   this.model.find( {fillingDate: fillingDate} )
-  .where('orgCode')
-  .in([prison,justice])
-  .sort('orgType')
-  .then( (meetings) => {
-    let len = meetings.length;
-    if (len === 0) { 
-      let array = [];
-      array.push({fillingDate: fillingDate, orgType: 'p', orgCode: prison, schedule: []});
-      array.push({fillingDate: fillingDate, orgType: 's', orgCode: justice, schedule: []});
+    .where('orgCode')
+    .in([prison,justice])
+    .sort('orgType')
+    .then( (meetings) => {
+      let len = meetings.length;
+      if (len === 0) { 
+        let array = [];
+        array.push({fillingDate: fillingDate, orgType: 'p', orgCode: prison, schedule: []});
+        array.push({fillingDate: fillingDate, orgType: 's', orgCode: justice, schedule: []});
 
-      self.model.insertMany(array)
-      .then( (res) => {
-        self.model.find({fillingDate: fillingDate})
-        .where('orgCode')
-        .in([prison, justice])
-        .sort('orgType')
-        .then( (ms) => {
-          cb(null, ms);
+        self.model.insertMany(array)
+          .then( (res) => {
+            self.model.find({fillingDate: fillingDate})
+              .where('orgCode')
+              .in([prison, justice])
+              .sort('orgType')
+              .then( (ms) => {
+                cb(null, ms);
+              });
         });
-      });
       
     } else if (len === 1) {
 
@@ -114,8 +114,10 @@ Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
         }
         cb(null, array);
       });
-    } else {
+    } else if (len === 2) {
       cb(null, meetings);
+    } else {
+      cb(new Error('multi records found'));
     }
   }).catch( (e) => {
      cb(e);
