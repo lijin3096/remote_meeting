@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
 // User login
 router.post('/api/v1/login', (req, res) => {
-  User.isValidUser( req.body.session.userid, req.body.session.password, (err, result) => {
+  User.isValidUser(req.body.session.userid, req.body.session.password, (err, result) => {
     if (err) {
       res.status(500).send({ error: err });
     } else if(result.valid) {

@@ -11,6 +11,11 @@ function Orgnization() {
   this.model = mongoose.model('Orgnization', this.schema);
 }
 
+/**
+ * Configure shortNumbers of orgnization.
+ * @param {Object} params contains orgCode and shortNumbers.
+ * @param {Function} callback.
+ */
 Orgnization.prototype.config = function(params, cb) {
   this.model.findOneAndUpdate({orgCode: params.orgCode},
     {shortNumbers: params.shortNumbers},
@@ -24,6 +29,14 @@ Orgnization.prototype.config = function(params, cb) {
   });
 };
 
+/**
+ * Return array contains orgnizations of specify orgnization code
+ * and the first element of this array always prison orgnization.
+ * 
+ * @param {String} prison orgnization code.
+ * @param {String} justice orgnization code.
+ * @param {Function(Error, Object)} callback.
+ */
 Orgnization.prototype.shortNumbers = function(prison, justice, cb) {
   this.model.find().where('orgCode')
   .in([prison, justice])
