@@ -44,6 +44,8 @@ Orgnization.prototype.shortNumbers = function(prison, justice, cb) {
   .then( (res) => {
     if (res) { 
       cb(null, res);
+    } else {
+      // FIX this
     }
   }).catch( (e) => {
      cb(e);

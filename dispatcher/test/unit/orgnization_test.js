@@ -33,19 +33,13 @@ describe('Orgnization', function() {
   describe('#shortNumbers', function() {
     it('expect', function(done) {
       Orgnization.shortNumbers('p0991001', 's0997001', function(err, res) {
+        logger.debug('**********');
         logger.debug(res);
-        logger.error(err);
         expect(res).to.have.deep.property('[0].orgType', 'p');
         expect(res).to.have.deep.property('[1].orgType', 's');
         done(err);
       });
     });
-   
-    // it('expect', function(done) {
-    //   Orgnization.shortNumbers('p0991002', 's0997002', function(err, res) {
-
-    //   });
-    // });
   });
 
 });
