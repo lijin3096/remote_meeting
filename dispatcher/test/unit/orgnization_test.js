@@ -36,7 +36,7 @@ describe('Orgnization', function() {
         logger.debug(res);
         logger.error(err);
         expect(res).to.have.deep.property('[0].orgType', 'p');
-        expect(res).to.have.deep.property('[0].orgType', 's');
+        expect(res).to.have.deep.property('[1].orgType', 's');
         done(err);
       });
     });
