@@ -123,19 +123,21 @@ Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
 };
 
 
-Meeting.prototype.create = function(fillingDate, orgCode, orgType, cb) {
+Meeting.prototype.create = function(fillingDate, orgCode, orgType) {
   let meeting = new this.model({
     fillingDate: fillingDate, orgCode: orgCode, orgType: orgType, schedule:[] 
   });
-
-  meeting.save( (err) => {
-    if (err) {
-      logger.error(`create meeting error ${err}`);
-      cb(err);
-    } else {
-      cb(null, meeting);
-    }
+  return new Promise(function(resolve, reject) {
+    meeting.save( (err) => {
+      if (err) {
+        logger.error(`create meeting error ${err}`);
+        reject(err);
+      } else {
+        resolve(meeting);
+      }
+    });
   });
+
 };
 
 // Meeting.prototype.getSFSSchedule = function(orgCode, fillingDate, cb) {
