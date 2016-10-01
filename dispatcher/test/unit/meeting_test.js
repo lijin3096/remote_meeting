@@ -90,6 +90,8 @@ describe('Meeting', function () {
     it('expect a message with `can not update` when no result with specify conditions.', function(done) {
       let meeting = { fillingDate: '2016-08-25', orgCode: '0997001', schedule: [['aa']] };
       Meeting.persist(meeting, function (err, res) {
+        logger.debug(res);
+        logger.error(err);
         expect(res).to.be.equal(`Meeting with date ${meeting.fillingDate} and orgCode ${meeting.orgCode} not found`);
         done(err);
       });
