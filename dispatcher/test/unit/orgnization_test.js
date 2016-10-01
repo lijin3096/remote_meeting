@@ -8,10 +8,10 @@ const Orgnization  = require('../../models/orgnization');
 describe('Orgnization', function() {
   before(function (done) {
     let orgs = [
-      {orgCode: 'p0991001', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
-      {orgCode: 's0997001', orgType: 's', shortNumbers: ['aa', 'bb']},
-      {orgCode: 'p0991002', orgType: 'p', shortNumbers: ['EE', 'FF']},
-      {orgCode: 's0997002', orgType: 's', shortNumbers: ['cc', 'dd']},
+      {orgCode: '0991001', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
+      {orgCode: '0997001', orgType: 's', shortNumbers: ['aa', 'bb']},
+      {orgCode: '0991002', orgType: 'p', shortNumbers: ['EE', 'FF']},
+      {orgCode: '0997002', orgType: 's', shortNumbers: ['cc', 'dd']},
     ];
 
     mongoose.connection.collection('orgnizations').insertMany(orgs, (err, res) => {
