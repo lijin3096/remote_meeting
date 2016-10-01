@@ -1,40 +1,59 @@
-const _      = require('lodash');
-var logger   = require('log4js').getLogger('Meeting');
-var mongoose = require('./../db');
-    mongoose.Promise = global.Promise;
-      
-var Schema   = mongoose.Schema;
+const logger   = require('log4js').getLogger('Meeting');
+const mongoose = require('./../db');
+      mongoose.Promise = global.Promise;
+const Schema   = mongoose.Schema;
 
-var MeetingSchema = new Schema({
-  orgCode:     String,
-  orgType:     String,
-  fillingDate:   String,
-  schedule:    [Schema.Types.Mixed]
-});
+function Meeting() {
+  this.schema = new Schema({
+    orgCode:     String,
+    orgType:     String,
+    fillingDate:   String,
+    schedule:    [Schema.Types.Mixed]
+  });
 
-MeetingSchema.statics.persist = function(meeting, cb) {
-  this.findOne({fillingDate: meeting.fillingDate, orgCode: meeting.orgCode}).then((m) => {
+  this.model = mongoose.model('Meeting', this.schema);
+}
+
+/**
+ * Persist meeting.
+ * @param {Object} meeting object.
+ * @param {Function(Error, Object)} callback
+ */
+Meeting.prototype.persist = function(meeting, cb) {
+  this.model.findOne( {fillingDate: meeting.fillingDate, orgCode: meeting.orgCode} )
+  .then( (m) => {
     if(m) {
       m.schedule = meeting.schedule;
       m.save().then( (res) => {
         cb(null, res);
       });
-    } else cb(null, 'can not update');
-  }).catch((e) => { cb(e); });
+    } else {
+      cb(null, `Meeting with date ${meeting.fillingDate} and orgCode ${meeting.orgCode} not found`);
+    }
+  }).catch( (e) => {
+    logger.error(`Persist meeting error: ${err}`);
+    cb(e); 
+  });
 };
 
-MeetingSchema.statics.schedule = function(fillingDate, prisonCode, cb) {
-  this.findOne( { prisonCode: prisonCode, fillingDate: fillingDate } ).then((meeting) => {
-   
+/**
+ * Return meeting schedule of special filling date
+ * and prison code.
+ * @param {String} filling date of application.
+ * @param {String} prison orgnization code.
+ * @param {Function(Error, Object)} callback.
+ */
+Meeting.prototype.schedule = function(fillingDate, prisonCode, cb) {
+  this.model.findOne( { prisonCode: prisonCode, fillingDate: fillingDate } )
+  .then( (meeting) => {
     if (!meeting) {
-
       meeting = new this({
         fillingDate: fillingDate,
         prisonCode: prisonCode,
         schedule: []
       });
 
-      meeting.save((err) => {
+      meeting.save( (err) => {
         if(err) {
           logger.error(`save meeting error ${err}`);
           return cb(err);
@@ -44,8 +63,7 @@ MeetingSchema.statics.schedule = function(fillingDate, prisonCode, cb) {
       });
     }
 
-    return cb( null, meeting);
-    
+    return cb( null, meeting); 
   });
 };
 
@@ -55,20 +73,27 @@ MeetingSchema.statics.schedule = function(fillingDate, prisonCode, cb) {
  * @prison
  * @justice
 */
-MeetingSchema.statics.schedules = function(fillingDate, prison, justice, cb) {
+Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
   let self = this;
 
-  this.find({ fillingDate: fillingDate }).where('orgCode').in([prison,justice]).sort('orgType').then((meetings) => {
+  this.model.find( {fillingDate: fillingDate} )
+  .where('orgCode')
+  .in([prison,justice])
+  .sort('orgType')
+  .then( (meetings) => {
     let len = meetings.length;
-
-    if (len === 0) {
-      
+    if (len === 0) { 
       let array = [];
       array.push({fillingDate: fillingDate, orgType: 'p', orgCode: prison, schedule: []});
       array.push({fillingDate: fillingDate, orgType: 's', orgCode: justice, schedule: []});
 
-      this.collection.insertMany(array).then((res) => {
-        self.find({fillingDate: fillingDate}).where('orgCode').in([prison, justice]).sort('orgType').then((ms) => {
+      self.model.insertMany(array)
+      .then( (res) => {
+        self.model.find({fillingDate: fillingDate})
+        .where('orgCode')
+        .in([prison, justice])
+        .sort('orgType')
+        .then( (ms) => {
           cb(null, ms);
         });
       });
@@ -80,7 +105,8 @@ MeetingSchema.statics.schedules = function(fillingDate, prison, justice, cb) {
       let orgCode = meeting.orgType === 'p' ? justice : prison;
       let orgType = meeting.orgType === 'p' ? 's' : 'p';
 
-      self.create(fillingDate, orgCode, orgType).then((m) => {
+      self.create(fillingDate, orgCode, orgType)
+      .then( (m) => {
         if (m.orgType === 'p') {
           array = [m, meeting];
         } else {
@@ -91,17 +117,18 @@ MeetingSchema.statics.schedules = function(fillingDate, prison, justice, cb) {
     } else {
       cb(null, meetings);
     }
-  }).catch((e) => { cb(e); });
+  }).catch( (e) => {
+     cb(e);
+  });
 };
 
 
-MeetingSchema.statics.create = function(fillingDate, orgCode, orgType, cb) {
-  
-  let meeting = new this({ 
-        fillingDate: fillingDate, orgCode: orgCode, orgType: orgType, schedule:[] 
-      });
+Meeting.prototype.create = function(fillingDate, orgCode, orgType, cb) {
+  let meeting = new this.model({
+    fillingDate: fillingDate, orgCode: orgCode, orgType: orgType, schedule:[] 
+  });
 
-  meeting.save((err) => {
+  meeting.save( (err) => {
     if (err) {
       logger.error(`create meeting error ${err}`);
       cb(err);
@@ -111,12 +138,16 @@ MeetingSchema.statics.create = function(fillingDate, orgCode, orgType, cb) {
   });
 };
 
-MeetingSchema.statics.getSFSSchedule = function(orgCode, fillingDate, cb) {
-  this.find({ fillingDate: fillingDate, orgCode: orgCode}).then((result) => {
+Meeting.prototype.getSFSSchedule = function(orgCode, fillingDate, cb) {
+  this.model.find({ fillingDate: fillingDate, orgCode: orgCode})
+  .then( (result) => {
     return cb(null, result);
-  }).catch((e) => { cb(e); });
+  })
+  .catch( (e) => {
+     cb(e);
+   });
 };
 
 
-module.exports = mongoose.model('Meeting', MeetingSchema);
+module.exports = new Meeting();
 

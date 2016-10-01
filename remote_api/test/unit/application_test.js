@@ -92,8 +92,6 @@ describe('Application', function() {
     it('expect 200 when submit an application successfully.', function(done) {
       Application.submit({orgCode: '0997001', uuid: '666666', fillingDate: '2016-10-03' },
         (err, res) => {
-          logger.error(err);
-          logger.debug(res);
           expect(res).to.be.equal(200);
           done(err);
         });
