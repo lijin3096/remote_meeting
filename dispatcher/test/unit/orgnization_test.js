@@ -25,9 +25,7 @@ describe('Orgnization', function() {
   });
 
   after(function (done) {
-    mongoose.connection.db.dropCollection('orgnizations', function (err) {
-      done(err);
-    });
+    done();
   });
 
   describe('#shortNumbers', function() {
