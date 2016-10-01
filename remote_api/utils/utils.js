@@ -1,8 +1,8 @@
 const Logger  = require('log4js').getLogger('Utils');
 const Bcrypt  = require('bcrypt');
-const _       = require('lodash');
-const Org     = require('../models/orgnization');
-const Meeting = require('../models/meeting');
+//const _       = require('lodash');
+//const Org     = require('../models/orgnization');
+//const Meeting = require('../models/meeting');
 
 class Utils {
 
@@ -14,14 +14,15 @@ class Utils {
   static hashedPassword (password) {
     return new Promise(function(resolve, reject) {
       Bcrypt.genSalt(10, (err, salt) => {
-        if(err) {
+        if (err) {
           Logger.error(`genSalt error ${err}`);
           reject(err);
-        }else
+        } else {
           Bcrypt.hash(password, salt, (err, hashedPassword) => {
             if(err) reject(err);
             else resolve(hashedPassword);
           });
+        }
       });
     });
   }

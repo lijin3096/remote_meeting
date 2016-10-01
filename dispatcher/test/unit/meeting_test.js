@@ -1,16 +1,15 @@
-var logger   = require('log4js').getLogger('user unit test');
-var mongoose = require('mongoose');
-var chai     = require('chai'),
-    expect   = chai.expect;
+const logger   = require('log4js').getLogger('user unit test');
+const mongoose = require('mongoose');
+const chai     = require('chai'),
+      expect   = chai.expect;
 
-var Meeting  = require('../../models/meeting');
+const Meeting  = require('../../models/meeting');
 
 describe('Meeting', function () {
   before(function (done) {
     let ms = [
       {orgCode: 'p0991001', orgType: 'p', fillingDate: '2016-09-01', schedule: [['1255']]},
       {orgCode: 's0997001', orgType: 's', fillingDate: '2016-09-01', schedule: [['1448']]},
-
       {orgCode: 's0997001', orgType: 's', fillingDate: '2016-09-02', schedule: [['1448']]},
       {orgCode: 'p0991002', orgType: 'p', fillingDate: '2016-09-02'},
       {orgCode: 'p0991002', orgType: 'p', fillingDate: '2016-09-02'}
@@ -91,7 +90,7 @@ describe('Meeting', function () {
     it('expect a message with `can not update` when no result with specify conditions.', function(done) {
       let meeting = { fillingDate: '2016-08-25', orgCode: '0997001', schedule: [['aa']] };
       Meeting.persist(meeting, function (err, res) {
-        expect(res).to.be.equal('can not update');
+        expect(res).to.be.equal(`Meeting with date ${meeting.fillingDate} and orgCode ${meeting.orgCode} not found`);
         done(err);
       });
     });
