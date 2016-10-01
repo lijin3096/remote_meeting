@@ -10,36 +10,34 @@ function User() {
   this.schema = new mongoose.Schema({
     userid:           String,
     name:             String,
-    phone:            { type:String, default: 'undefined' }, 
+    phone:            {type:String, default: 'undefined'}, 
     hashedPassword:   String,
-    orgnization:      { code: String, title: String },
-    cloudMsg:         { cloudID: String, token: String },
+    orgnization:      {code: String, title: String},
+    cloudMsg:         {cloudID: String, token: String},
     shorts:           [String]
   });
 
   this.model = mongoose.model('User', this.schema);
 }
 
-
 /**
- * Validation user for app login.
- * @param {!string} userid - The userid of app user.
- * @param {!string} password - The password of app user.
- * @param {!function(Error, Object)} - callback with validation result,
- * result contains user's information except password.
- * 
+ * User validation.
+ * @param {!String} userid - The userid of app user.
+ * @param {!String} password - The password of app user.
+ * @param {!Function(Error, Object)} - callback with validation result,
+ *                     and contains user's information except password.
 */
 User.prototype.isValidUser = function(userid, password, cb) {
   this.model.findOne({userid: userid}).then( (user) => {
     if (user) 
       bcrypt.compare(password, user.hashedPassword, (err, res) => {
         if(err) {
-          logger.error(`password compare ${err}`);
+          logger.error(`Validation error: ${err}`);
           cb(err);
         } else {
           let userProperties = {};
 
-          if (res) 
+          if (res) {
             userProperties = { 
               userid: user.userid, 
               token: user._id,
@@ -48,14 +46,15 @@ User.prototype.isValidUser = function(userid, password, cb) {
               cloudMsg: user.cloudMsg,
               orgnization: user.orgnization 
             };
+          }
 
           cb(null, {valid: res, user: userProperties});
         }
       });
     else 
-      return cb(null, {valid: false, user: 'not found'});
+      return cb(null, {valid: false, user: `User ${userid} not found`});
   }).catch( (err) => { 
-    cb(null, {valid: false, user: `found user ${err}`}); 
+    cb(null, {valid: false, user: `Validation error: ${err}`}); 
   });
 };
 
@@ -71,8 +70,8 @@ User.prototype.create = function(user, callback) {
     user.save( () => {
       callback();
     });
-  }).catch((err) => {
-    logger.error(`create user ${err}`);
+  }).catch( (err) => {
+    logger.error(`create user error: ${err}`);
     callback(err);
   });
 };
@@ -86,7 +85,7 @@ User.prototype.getUserById = function(id, cb) {
   logger.debug(id);
   this.model.findOne({_id: new ObjectId(id)}, (err, user) => {
     if(err) {
-      logger.error(`user authorization ${err}`);
+      logger.error(`user authorization error: ${err}`);
       cb(err);
     } else {
       cb(null, user);
@@ -96,21 +95,20 @@ User.prototype.getUserById = function(id, cb) {
 
 /**
  * Update phone number and password of specify user by _id.
- * @param {string} _id of user.
- * @param {!Object} params with property name and value that will be updated.
- * @param {!function(Error, string)} callback.
+ * @param {String} _id of user.
+ * @param {!Object} params with property names 
+ *                  and the value will be updated.
+ * @param {!Function(Error, string)} callback.
 */
 User.prototype.update = function(_id, params, callback) {
- 
   this.model.findOne({ _id: new ObjectId(_id) }).then( (user) => {
     if (user) {
       if (params.hasOwnProperty('newPassword')) {
-        
         Utils.hashedPassword(params.newPassword).then( (hashedPassword) => {
           user.hashedPassword = hashedPassword;
           user.save( (err) => {
             if(err) {
-              logger.error(`update user error ${err}`);
+              logger.error(`update user ${_id} error ${err}`);
               callback(err);
             } else callback(null, 'update user success');
           });
@@ -126,15 +124,20 @@ User.prototype.update = function(_id, params, callback) {
         });
       }
     } else { 
-      callback(null, 'no such user');
+      callback(null, `User ${_id} not found`);
     }
   });
 
 };
 
+/**
+ * Get shortNumbers of specify User by orgCode.
+ * @param {String} orgCode of a user.
+ * @param {Function(Error, Object)}
+ */
 User.prototype.shortNumbers = function(orgCode, cb) {
-  this.model.findOne({'orgnization.code': orgCode}).
-    select('shortNumbers').exec( (err, res) => {
+  this.model.findOne({'orgnization.code': orgCode})
+    .select('shortNumbers').exec( (err, res) => {
       cb(err, res);
     });
 };
