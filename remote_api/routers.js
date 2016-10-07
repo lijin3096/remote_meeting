@@ -86,7 +86,7 @@ router.all('*', (req, res, next) => {
       }
     });
   } else {
-    logger.debug('authentication value not valid');
+    logger.debug('authentication invalid');
     res.status(401).send({ msg: 'forbidden' });
   }
 });

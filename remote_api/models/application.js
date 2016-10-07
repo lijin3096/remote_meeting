@@ -14,7 +14,7 @@ function Application() {
     phone:       String,
     applicant:   String,
     history: [{
-        fillingDate:      String,
+        fillingDate:     String,
         feedback: 
           {
             isPass:      String,
