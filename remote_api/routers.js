@@ -106,20 +106,25 @@ router.route('/api/v1/applies')
           res.status(500).send({ error: `Submit application error: ${err}` });
           next(err);
         } else {
-          logger.debug(resultCode);
           switch (resultCode) {
             case 200: 
               res.status(resultCode).send({ msg: '申请提交成功' });
+              logger.info(`${req.body.application.phone} 申请提交成功`);
               next();
               break;
             case 400:
               res.status(resultCode).send({ msg: '申请日期重复' });
+              logger.info(`${req.body.application.phone} 申请日期重复`);
               next();
               break;
             case 404:
               res.status(resultCode).send({ msg: '用户无申请会见权限' });
+              logger.info(`${req.body.application.phone} 用户无申请会见权限`);
               next();
               break;
+            default:
+              logger.warn(`undefined status ${resultCode}`);
+              next();
           }
         }
       });
