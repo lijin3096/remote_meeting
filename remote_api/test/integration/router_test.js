@@ -203,7 +203,7 @@ describe('Router', function() {
 	});
 
   describe('PATCH /api/v1/prisons', function() {
-		it('expect', function(done) {
+		it('expect status 200 after setting', function(done) {
 			chai.request(url)
 			.patch('/api/v1/prisons')
 			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})

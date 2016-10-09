@@ -39,7 +39,7 @@ describe('Orgnization', function() {
             if (err) done(err);
             else {
               expect(res).to.have.property('shortNumbers');
-              expect(res.shortNumbers).to.deep.equal(["AA", "BB", "CC"]);
+              expect(res.shortNumbers).to.include('CC');
               done();
             }
           });
