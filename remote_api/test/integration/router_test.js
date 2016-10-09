@@ -209,7 +209,7 @@ describe('Router', function() {
 			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
 			.send({settings: {orgCode: '0991001', shortNumbers: ['AA','BB','CC']}})
 			.end(function(err, res) {
-				logger.debug(res);
+				expect(res).to.have.status(200);
 				done();
 			});
 		});
