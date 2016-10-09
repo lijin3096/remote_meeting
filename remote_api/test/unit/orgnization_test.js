@@ -35,8 +35,13 @@ describe('Orgnization', function() {
           logger.error(err);
           done(err);
         } else {
-          logger.debug(res);
-          done();
+          Org.find({orgCode: '0991001'}, function(err, res) {
+            if (err) done(err);
+            else {
+              logger.debug(res);
+              done();
+            }
+          });
         }
       });
     });
