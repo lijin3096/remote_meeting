@@ -139,6 +139,7 @@ router.route('/api/v1/applies')
 
     Application.search({orgCode: req.query.orgCode, start: date, end: date}, (err, applies) => {
       if(err) {
+        logger.error(err);
         res.status(500).send({ error: 'find applications failed' });
         next(err);
       } else {
