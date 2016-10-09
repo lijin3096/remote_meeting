@@ -197,13 +197,13 @@ Application.prototype.search = function(query, cb) {
         }
       }
     }
-  ], function(err, res) {
+  ], (err, res) => {
     if (err) {
       Logger.error(`Search applications error: ${err}`);
       cb(err);
     } else {
       Logger.debug(this.map(res));
-      cb(null, res);
+      cb(null, this.map(res));
     }
   });
   // this.model.find({ orgCode: query.orgCode,
@@ -256,9 +256,10 @@ Application.prototype.search = function(query, cb) {
 // };
 
 Application.prototype.map = function(applications) {
-  return applications.filter((app) => {
+  var filtered = applications.filter((app) => {
     return app.history.length > 0;
   });
+  return filtered;
 };
 
 
