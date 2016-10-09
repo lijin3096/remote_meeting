@@ -58,7 +58,7 @@ router.post('/api/v1/feedback', (req, res) => {
 });
 
 // Prison settings
-router.post('/api/v1/prisons', (req, res) => {
+router.patch('/api/v1/prisons', (req, res) => {
   if(req.headers.authorization === '8e5946ccc540e5ac5eb5851658681708') {
     Org.config(req.body.settings, (err, result) => {
       if(err) res.status(500).send({ error: 'update settings error' });

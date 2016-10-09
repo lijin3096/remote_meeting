@@ -12,7 +12,8 @@ function Orgnization() {
 }
 
 Orgnization.prototype.config = function(params, cb) {
-  this.model.findOneAndUpdate({orgCode: params.orgCode},
+  this.model.findOneAndUpdate(
+    {orgCode: params.orgCode},
     {shortNumbers: params.shortNumbers},
     (err, res) => {
       if (err) {
