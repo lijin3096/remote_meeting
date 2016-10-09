@@ -20,7 +20,7 @@ Orgnization.prototype.config = function(params, cb) {
         logger.error(`Update prison settings error ${err}`);
         cb(err);
       } else {
-        cb();
+        cb(null, res);
       }
   });
 };
