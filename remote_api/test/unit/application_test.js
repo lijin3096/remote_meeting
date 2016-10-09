@@ -57,9 +57,12 @@ describe('Application', function() {
           }
         ]
       }
-    ]);
+    ], function(err, docs) {
+      if (err) done(err);
+      else done();
+    });
 
-    done();
+    //done();
   });
 
   after(function(done) {

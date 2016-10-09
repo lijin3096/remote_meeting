@@ -35,10 +35,11 @@ describe('Orgnization', function() {
           logger.error(err);
           done(err);
         } else {
-          Org.model.find({orgCode: '0991001'}, function(err, res) {
+          Org.model.findOne({orgCode: '0991001'}, function(err, res) {
             if (err) done(err);
             else {
-              logger.debug(res);
+              expect(res).to.have.property('shortNumbers');
+              expect(res.shortNumbers).to.eql(['AA', 'BB', 'CC']);
               done();
             }
           });
