@@ -59,7 +59,8 @@ describe('Router', function() {
     .reply(200);
 
   	conn = mongoose.connection;
-      Utils.hashedPassword(user.password).then( (hashedPassword) => {
+
+    Utils.hashedPassword(user.password).then( (hashedPassword) => {
   	  user.hashedPassword = hashedPassword;
       
   	  conn.collection('users').insert(user).then((u) => {
@@ -68,12 +69,15 @@ describe('Router', function() {
   	  }).then( () => {
   	  	conn.collection('applications').insert(applicant)
 				.then( () => {
-  	  	  done();
+					conn.collection('orgnizations').insert({orgCode: '0991001', orgType: 'p', shortNumbers: ['AA', 'BB']}).then(() => {
+						done();
+					});
+  	  	  //done();
   	  	});
   	  });
   	}).catch( (e) => {
-			 done(e); 
-			});
+			done(e); 
+		});
   });
 
   after(function(done) {
@@ -83,7 +87,10 @@ describe('Router', function() {
 			.then( () => {
       	nock.cleanAll();
         nock.enableNetConnect();
-      	done();
+				conn.collection('orgnizations').remove({orgCode: '0991001'}).then(() => {
+					done();
+				});
+      	//done();
       });
     }).catch( (e) => { done(e); });
   });
@@ -195,4 +202,16 @@ describe('Router', function() {
 		});
 	});
 
+  describe('PATCH /api/v1/prisons', function() {
+		it('expect', function(done) {
+			chai.request(url)
+			.patch('/api/v1/prisons')
+			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
+			.send({settings: {orgCode: '0991001', shortNumbers: ['AA','BB','CC']}})
+			.end(function(err, res) {
+				logger.debug(res);
+				done();
+			});
+		});
+	});
 });
