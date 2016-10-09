@@ -172,10 +172,11 @@ router.put('/api/v1/users/:id', (req, res) => {
 // });
 
 router.get('/api/v1/search', (req, res) => {
-  let query = { start: req.query.start, end: req.query.end, orgCode: req.query.orgCode };
-  Application.search(query, (err, result) => {
-    if (err) return res.status(500).send({ error: `${err}` });
-    return res.status(200).send({ applies: result });
+  //let query = { start: req.query.start, end: req.query.end, orgCode: req.query.orgCode };
+  Application.search({ start: req.query.start, end: req.query.end, orgCode: req.query.orgCode },
+    (err, result) => {
+      if (err) return res.status(500).send({ error: `${err}` });
+      return res.status(200).send({ applies: result });
   });
 });
 

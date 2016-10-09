@@ -106,7 +106,7 @@ describe('Application', function() {
     it('expect result with 2 applicants', function(done) {
       let query = {start: '2016-08-01', end: '2016-09-01', orgCode: '0997001'};
       Application.search(query, (err, result) => {
-        expect(result).to.have.length(2);
+        expect(result).to.have.length(3);
         done(err);
       });
     });
@@ -117,6 +117,17 @@ describe('Application', function() {
         expect(result).to.have.length(1);
         done(err);
       });
+    });
+  });
+
+  describe('#map', function() {
+    let arr = [
+      {name: 'test1', phone: '1399999999', applicant: '65010419811232', history: [{fillingDate: '2016-10-10'}]},
+      {name: 'test2', phone: '1377777777', applicant: '65010419811238', history: []}
+    ];
+
+    it('expect an array with one element which name is test1', function() {
+      expect(Application.map(arr)).to.have.length(1);
     });
   });
 

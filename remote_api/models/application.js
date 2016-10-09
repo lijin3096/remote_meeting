@@ -45,7 +45,7 @@ function Application() {
 Application.prototype.submit = function(params, callback) {
   Logger.debug(params);
   this.model.findOne({applicant: params.uuid})
-    .then((application) => {
+    .then( (application) => {
       if (application) {
         // Check the applicant has already applyed in special date.
         if ( _.find(application.history, {fillingDate: params.fillingDate}) ) {
@@ -64,7 +64,7 @@ Application.prototype.submit = function(params, callback) {
             }
           );
 
-          application.save().then(() => {
+          application.save().then( () => {
             Logger.debug('send to external service');
             let options = {
               host: '103.37.158.17',
@@ -179,20 +179,45 @@ Application.prototype.search = function(query, cb) {
     condition2 = ['history.feedback.isPass', isPass];
   }
   
-
-
-  this.model.find({ orgCode: query.orgCode,
-                   'history.fillingDate': {$gte: query.start, $lte: query.end}
-                  
-                  },
-     (err, applications) => {
-      if (err) {
-        Logger.error(`search error: ${err}`);
-        cb(err);
-      } else {
-        cb(null, this.map(applications, condition, isPass));
+  this.model.aggregate([
+    {$match: {orgCode: query.orgCode}},
+    {
+      $project: {
+        name: 1, applicant: 1, phone: 1,
+        history: {
+          $filter: {
+            input: '$history',
+            as: 'item',
+            cond: { $and: [
+              {$gte: ['$$item.fillingDate', query.start]},
+              {$lte: ['$$item.fillingDate', query.end]},
+              {$eq:  ['$$item.feedback.from', 'M']}
+            ]}
+          }
+        }
       }
+    }
+  ], function(err, res) {
+    if (err) {
+      Logger.error(`Search applications error: ${err}`);
+      cb(err);
+    } else {
+      Logger.debug(this.map(res));
+      cb(null, res);
+    }
   });
+  // this.model.find({ orgCode: query.orgCode,
+  //                  'history.fillingDate': {$gte: query.start, $lte: query.end}
+                  
+  //                 },
+  //    (err, applications) => {
+  //     if (err) {
+  //       Logger.error(`search error: ${err}`);
+  //       cb(err);
+  //     } else {
+  //       cb(null, this.map(applications, condition, isPass));
+  //     }
+  // });
 
 };
 
@@ -203,32 +228,40 @@ Application.prototype.search = function(query, cb) {
  * @return {Array} mapping result.
  * @api private
 */
-Application.prototype.map = function(applications, condition, isPass) {
-  Logger.debug(applications);
-  let result = {};
-  let history = [];
+// Application.prototype.map = function(applications, condition, isPass) {
+//   Logger.debug(applications);
+//   let result = {};
+//   let history = [];
 
-  applications.forEach( (application) => {
-    result.name = application.name;
-    result.uuid = application.applicant;
-    result.phone = application.phone;
+//   applications.forEach( (application) => {
+//     result.name = application.name;
+//     result.uuid = application.applicant;
+//     result.phone = application.phone;
 
-    result.application = application.history.filter( (h) => {
-       if (isPass === 'PASSED') {
-         return h.feedback.from === 'M' &&
-                h.fillingDate >= condition.$gte &&
-                h.fillingDate <= condition.$lte;
-       } else {
-         return h.feedback.isPass === 'DENIED' &&
-                h.fillingDate >= condition.$gte &&
-                h.fillingDate <= condition.$lte;
-       }
-    });
+//     result.application = application.history.filter( (h) => {
+//        if (isPass === 'PASSED') {
+//          return h.feedback.from === 'M' &&
+//                 h.fillingDate >= condition.$gte &&
+//                 h.fillingDate <= condition.$lte;
+//        } else {
+//          return h.feedback.isPass === 'DENIED' &&
+//                 h.fillingDate >= condition.$gte &&
+//                 h.fillingDate <= condition.$lte;
+//        }
+//     });
 
-    history.push(result);
+//     history.push(result);
+//   });
+//   return history;
+// };
+
+Application.prototype.map = function(applications) {
+  return applications.filter((app) => {
+    return app.history.length > 0;
   });
-  return history;
 };
+
+
 
 Application.prototype.sender = function(sender) {
   this.sender = sender;
