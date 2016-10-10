@@ -26,10 +26,7 @@ router.post('/api/v1/login', (req, res) => {
 
 // create user
 router.post('/api/v1/users', (req, res) => {
-  let user = new User(req.body.user);
-      user.password = req.body.user.password;
-  
-  User.create(user, (err) => {
+  User.create(req.body.user, (err) => {
     if (err) {
         logger.error(`save user error ${err}`);
         res.status(500).send({ error: 'save user error' });

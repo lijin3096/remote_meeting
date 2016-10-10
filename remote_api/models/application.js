@@ -159,26 +159,10 @@ Application.prototype.updateFeedback = function(params, callback) {
  * @api public
  */
 Application.prototype.search = function(query, cb) {
-  // let condition = {};
-  // let condition2 = [];
-  // let isPass = 'PASSED';
-      
-  // Object.getOwnPropertyNames(query).forEach( (q) => {
-  //   if (q === 'start') {
-  //     condition.$gte = query[q];
-  //   } else if (q === 'end') {
-  //     condition.$lte = query[q];
-  //   } else if (q === 'isPass') {
-  //     isPass = query[q];
-  //   }
-  // });
-   
-  // if (isPass === 'PASSED') {
-  //   condition2 = ['history.feedback.from', 'M'];
-  // } else {
-  //   condition2 = ['history.feedback.isPass', isPass];
-  // }
-  
+  let eql = ['$$item.feedback.from', 'M'];
+  if (query.isPass !== 'PASSED') {
+    eql = ['$$item.feedback.isPass', 'DENIED'];
+  }
   this.model.aggregate([
     {$match: {orgCode: query.orgCode}},
     {
@@ -191,7 +175,7 @@ Application.prototype.search = function(query, cb) {
             cond: { $and: [
               {$gte: ['$$item.fillingDate', query.start]},
               {$lte: ['$$item.fillingDate', query.end]},
-              {$eq:  ['$$item.feedback.from', 'M']}
+              {$eq:  eql}
             ]}
           }
         }
@@ -206,55 +190,14 @@ Application.prototype.search = function(query, cb) {
       cb(null, this.map(res));
     }
   });
-  // this.model.find({ orgCode: query.orgCode,
-  //                  'history.fillingDate': {$gte: query.start, $lte: query.end}
-                  
-  //                 },
-  //    (err, applications) => {
-  //     if (err) {
-  //       Logger.error(`search error: ${err}`);
-  //       cb(err);
-  //     } else {
-  //       cb(null, this.map(applications, condition, isPass));
-  //     }
-  // });
-
 };
 
 /**
- * Reject which feedback not comes from `M`.
+ * Remove applications that history is empty or null.
  * @param {Array} applications - that will be map.
- * @param {Object} condition for searching. 
  * @return {Array} mapping result.
  * @api private
 */
-// Application.prototype.map = function(applications, condition, isPass) {
-//   Logger.debug(applications);
-//   let result = {};
-//   let history = [];
-
-//   applications.forEach( (application) => {
-//     result.name = application.name;
-//     result.uuid = application.applicant;
-//     result.phone = application.phone;
-
-//     result.application = application.history.filter( (h) => {
-//        if (isPass === 'PASSED') {
-//          return h.feedback.from === 'M' &&
-//                 h.fillingDate >= condition.$gte &&
-//                 h.fillingDate <= condition.$lte;
-//        } else {
-//          return h.feedback.isPass === 'DENIED' &&
-//                 h.fillingDate >= condition.$gte &&
-//                 h.fillingDate <= condition.$lte;
-//        }
-//     });
-
-//     history.push(result);
-//   });
-//   return history;
-// };
-
 Application.prototype.map = function(applications) {
   var filtered = applications.filter((app) => {
     return Array.isArray(app.history);
