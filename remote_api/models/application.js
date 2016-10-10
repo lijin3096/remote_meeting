@@ -160,15 +160,18 @@ Application.prototype.updateFeedback = function(params, callback) {
  */
 Application.prototype.search = function(query, cb) {
   var eql = null;
-  
+  Logger.debug(query.isPass);
   switch (query.isPass) {
     case 'DENIED':
+      Logger.debug('d');
       eql = ['$$item.feedback.isPass', 'DENIED'];
       break;
     case 'PENDING':
+      Logger.debug('p');
       eql = ['$$item.feedback.isPass', 'pending'];
       break;
     default:
+      Logger.debug('m');
       eql = ['$$item.feedback.from', 'M'];     
   }
   
