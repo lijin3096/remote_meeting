@@ -158,20 +158,8 @@ router.put('/api/v1/users/:id', (req, res) => {
   });
 });
 
-// router.get('/api/v1/orgnizations/:orgCode/meetings', (req, res) => {
-//   let today = new Date().toISOString();
-//   Meeting.getSFSSchedule(req.params.orgCode, today.substring(0, today.indexOf('T')), 
-//     (err, meetings) => {
-//     if(err)
-//       res.status(500).send({ error: `${err}`});
-//     else
-//       res.status(200).send({ meetings: meetings});
-//   });
-// });
-
 router.get('/api/v1/search', (req, res) => {
-  //let query = { start: req.query.start, end: req.query.end, orgCode: req.query.orgCode };
-  Application.search({ start: req.query.start, end: req.query.end, orgCode: req.query.orgCode },
+  Application.search({ start: req.query.start, end: req.query.end, orgCode: req.query.orgCode, isPass: req.query.isPass },
     (err, result) => {
       if (err) return res.status(500).send({ error: `${err}` });
       return res.status(200).send({ applies: result });

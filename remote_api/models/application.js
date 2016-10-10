@@ -160,6 +160,7 @@ Application.prototype.updateFeedback = function(params, callback) {
  */
 Application.prototype.search = function(query, cb) {
   var eql = null;
+  Logger.debug(query);
   Logger.debug(query.isPass);
   switch (query.isPass) {
     case 'DENIED':
