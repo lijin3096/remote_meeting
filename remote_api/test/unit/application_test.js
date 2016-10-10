@@ -107,7 +107,7 @@ describe('Application', function() {
       let query = {start: '2016-08-01', end: '2016-09-01', orgCode: '0997001'};
       Application.search(query, (err, result) => {
         logger.debug(result);
-        expect(result).to.have.length(3);
+        expect(result).to.have.length(2);
         done(err);
       });
     });

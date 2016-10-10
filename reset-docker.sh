@@ -1,0 +1,9 @@
+#！ /bin/bash
+docker-compose down &&
+docker rmi remotemeeting_dispatcher &&
+docker rmi remotemeeting_remote_api &&
+docker-compose build &&
+docker-compose up -d &&
+docker exec -i remotemeeting_db_1 mongo localhost /tmp/scripts/init.js &&
+docker exec -i remotemeeting_remote_api_1 npm test &&
+docker exec -i remotemeeting_dispatcher_1 npm test

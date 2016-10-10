@@ -159,25 +159,25 @@ Application.prototype.updateFeedback = function(params, callback) {
  * @api public
  */
 Application.prototype.search = function(query, cb) {
-  let condition = {};
-  let condition2 = [];
-  let isPass = 'PASSED';
+  // let condition = {};
+  // let condition2 = [];
+  // let isPass = 'PASSED';
       
-  Object.getOwnPropertyNames(query).forEach( (q) => {
-    if (q === 'start') {
-      condition.$gte = query[q];
-    } else if (q === 'end') {
-      condition.$lte = query[q];
-    } else if (q === 'isPass') {
-      isPass = query[q];
-    }
-  });
+  // Object.getOwnPropertyNames(query).forEach( (q) => {
+  //   if (q === 'start') {
+  //     condition.$gte = query[q];
+  //   } else if (q === 'end') {
+  //     condition.$lte = query[q];
+  //   } else if (q === 'isPass') {
+  //     isPass = query[q];
+  //   }
+  // });
    
-  if (isPass === 'PASSED') {
-    condition2 = ['history.feedback.from', 'M'];
-  } else {
-    condition2 = ['history.feedback.isPass', isPass];
-  }
+  // if (isPass === 'PASSED') {
+  //   condition2 = ['history.feedback.from', 'M'];
+  // } else {
+  //   condition2 = ['history.feedback.isPass', isPass];
+  // }
   
   this.model.aggregate([
     {$match: {orgCode: query.orgCode}},
@@ -257,6 +257,8 @@ Application.prototype.search = function(query, cb) {
 
 Application.prototype.map = function(applications) {
   var filtered = applications.filter((app) => {
+    return Array.isArray(app.history);
+  }).filter( (app) => {
     return app.history.length > 0;
   });
   return filtered;
