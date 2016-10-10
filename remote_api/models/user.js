@@ -65,8 +65,10 @@ User.prototype.isValidUser = function(userid, password, cb) {
  * @param {function(?error)} callback.
 */
 User.prototype.create = function(params, callback) {
+  let self = this;
   Utils.hashedPassword(params.password).then( (hashedPassword) => {
-    let user = new this.model(params);
+    logger.debug(this);
+    let user = new self.model(params);
     user.hashedPassword = hashedPassword;
     user.save( () => {
       callback();

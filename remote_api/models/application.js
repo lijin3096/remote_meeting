@@ -159,10 +159,11 @@ Application.prototype.updateFeedback = function(params, callback) {
  * @api public
  */
 Application.prototype.search = function(query, cb) {
-  let eql = ['$$item.feedback.from', 'M'];
-  if (query.isPass !== 'PASSED') {
+  var eql = ['$$item.feedback.from', 'M'];
+  if (query.isPass !== undefined && query.isPass !== 'PASSED') {
     eql = ['$$item.feedback.isPass', 'DENIED'];
   }
+
   this.model.aggregate([
     {$match: {orgCode: query.orgCode}},
     {
