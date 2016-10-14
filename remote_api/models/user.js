@@ -67,7 +67,6 @@ User.prototype.isValidUser = function(userid, password, cb) {
 User.prototype.create = function(params, callback) {
   let self = this;
   Utils.hashedPassword(params.password).then( (hashedPassword) => {
-    logger.debug(this);
     let user = new self.model(params);
     user.hashedPassword = hashedPassword;
     user.save( () => {

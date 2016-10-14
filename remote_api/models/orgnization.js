@@ -1,6 +1,7 @@
-const logger   = require('log4js').getLogger('Prison');
+const logger   = require('log4js').getLogger('Orgnization');
 const mongoose = require('./../db');
       mongoose.Promise = global.Promise;
+const Utils     = require('./../utils/utils');
 
 function Orgnization() {
   this.schema = new mongoose.Schema({
@@ -35,6 +36,30 @@ Orgnization.prototype.shortNumbers = function(prison, justice, cb) {
     }
   }).catch( (e) => {
      cb(e);
+  });
+};
+
+Orgnization.prototype.meetings = function(shortNumber, cb) {
+  this.model.findOne({shortNumbers: shortNumber}).then( (org) => {
+    if (org) {
+      let meeting = mongoose.connection.collection('meetings');
+     
+      meeting.findOne({fillingDate: Utils.dateOfDatetime(new Date()), orgCode: org.orgCode}).then( (m) => {
+        
+        let schedule = [];
+        if (m) {
+          schedule = m.schedule[org.shortNumbers.indexOf(shortNumber)];
+        }
+        logger.debug(schedule);
+        cb(null, schedule);
+      });
+    } else {
+      logger.debug(`cannot find orgnization with shortNumber ${shortNumber}`);
+      cb(new Error('cannot find orgnization with shortNumber' + shortNumber));
+    }
+  }).catch( (e) => {
+    logger.error(e);
+    cb(e);
   });
 };
 

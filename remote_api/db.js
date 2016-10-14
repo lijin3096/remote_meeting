@@ -18,7 +18,7 @@ function Database() {
 }
 
 /**
- * Return mongoose connection.
+ * Return connection.
  * 
  * @return {Object} connection.
  */
@@ -33,9 +33,6 @@ Database.prototype.conn = function() {
   return mongoose.connection;
 };
   
-
-//onst db = new Database().conn();
-
-
 new Database();
+
 module.exports = mongoose;

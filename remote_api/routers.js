@@ -66,6 +66,23 @@ router.patch('/api/v1/prisons', (req, res) => {
   }  
 });
 
+// Retrun schedule of today with specify shortNumber. 
+router.get('/api/v1/shortNumbers/:shortNumber/meetings', (req, res) => {
+  if(req.headers.authorization === '8e5946ccc540e5ac5eb5851658681708') {
+    logger.debug('shortNumber: ' + req.params.shortNumber);
+    Org.meetings(req.params.shortNumber, (err, meetings) => {
+      if (err) {
+        logger.error(err);
+        res.status(500).send({msg: `get meetings error: ${err}`});
+      } else {
+        res.status(200).send({meetings: meetings});
+      }
+    });
+  } else {
+    res.status(401).send({ msg: 'unauthorized' });
+  }
+});
+
 // Authorization request 
 router.all('*', (req, res, next) => {
   let _id = req.headers.authorization;

@@ -15,7 +15,7 @@ describe('Router', function() {
   let conn = null;
   let id = null;
   let url = 'http://localhost:3000';
-
+  let today = Utils.dateOfDatetime(new Date());
   let headers = {
   	'Content-Type': 'application/json',
   };
@@ -63,19 +63,28 @@ describe('Router', function() {
     Utils.hashedPassword(user.password).then( (hashedPassword) => {
   	  user.hashedPassword = hashedPassword;
       
-  	  conn.collection('users').insert(user).then((u) => {
+  	  conn.collection('users').insert(user).then( (u) => {
   	  	id = u.ops[0]._id;
   	    headers.Authorization = id;
   	  }).then( () => {
-  	  	conn.collection('applications').insert(applicant)
-				.then( () => {
-					conn.collection('orgnizations').insert({orgCode: '0991001', orgType: 'p', shortNumbers: ['AA', 'BB']}).then(() => {
-						done();
+  	  	conn.collection('applications').insert(applicant).then( () => {
+					conn.model('Orgnization').insertMany([
+						{orgCode: '0991001', orgType: 'p', shortNumbers: ['AA', 'BB']},
+						{orgCode: 'test1', orgType: 'p', shortNumbers: ['FF', 'GG', 'HH']},
+            {orgCode: 'test2', orgType: 'p', shortNumbers: ['CC', 'DD', 'EE']}
+					]).then( () => {
+						conn.model('Meeting').insertMany([
+              {orgCode: 'test1', fillingDate: today, schedule: [['aa', 'bb', 'cc'], ['pp', 'dd', 'zz', 'jj']]},
+              {orgCode: 'test2', fillingDate: '2016-10-10', schedule:[]}
+						]).then( () => {
+							done();
+						});
 					});
-  	  	  //done();
   	  	});
+				done();
   	  });
   	}).catch( (e) => {
+			logger.error(e);
 			done(e); 
 		});
   });
@@ -83,14 +92,14 @@ describe('Router', function() {
   after(function(done) {
     conn.db.dropCollection('users')
 		.then( () => {
-      conn.db.dropCollection('applications')
-			.then( () => {
-      	nock.cleanAll();
-        nock.enableNetConnect();
-				conn.collection('orgnizations').remove({orgCode: '0991001'}).then(() => {
-					done();
+      conn.db.dropCollection('applications').then( () => {
+				conn.db.dropCollection('orgnizations').then( () => {
+					conn.db.dropCollection('meetings').then( () => {
+						nock.cleanAll();
+            nock.enableNetConnect();
+						done();
+					});
 				});
-      	//done();
       });
     }).catch( (e) => { done(e); });
   });
@@ -210,6 +219,32 @@ describe('Router', function() {
 			.send({settings: {orgCode: '0991001', shortNumbers: ['AA','BB','CC']}})
 			.end(function(err, res) {
 				expect(res).to.have.status(200);
+				done();
+			});
+		});
+	});
+
+	describe('GET /api/v1/shortNumbers/:shortNumber/meetings', function() {
+		it('expect status 200 but meetings is empty.', function(done) {
+			chai.request(url)
+			.get('/api/v1/shortNumbers/DD/meetings')
+			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
+			.end(function(err, res) {
+				logger.debug(res.body);
+				expect(res).to.have.status(200);
+				expect(res).to.have.deep.property('res.body.meetings').that.eql([]);
+				done();
+			});
+		});
+
+		it('expect status 200 and get an array with 4 elements', function(done) {
+			chai.request(url)
+			.get('/api/v1/shortNumbers/GG/meetings')
+			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
+			.end(function(err, res) {
+				logger.debug(res.body);
+				expect(res).to.have.status(200);
+				expect(res).to.have.deep.property('res.body.meetings').that.eql(['pp', 'dd', 'zz', 'jj']);
 				done();
 			});
 		});
