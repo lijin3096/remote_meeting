@@ -38,20 +38,20 @@ describe('Dispatcher', function () {
     });
   });
 	
-  describe('#pendingPos()', function () {
+  describe('#pendingPositions()', function () {
 
 		it('expect an empty array when P is not present', function () {
-			expect(dispatcher.pendingPos([])).to.be.empty;
+			expect(dispatcher.pendingPositions([])).to.be.empty;
 		});
 
 		it('expect an array with 1 element and value is 0', function () {
-			expect(dispatcher.pendingPos(['P', 'A'])).to.have.length(1);
-			expect(dispatcher.pendingPos(['P', 'A'])[0]).to.equal(0);
+			expect(dispatcher.pendingPositions(['P', 'A'])).to.have.length(1);
+			expect(dispatcher.pendingPositions(['P', 'A'])[0]).to.equal(0);
 		});
 
 		it('expect an array with 2 elements and value is [0,1]', function () {
-			expect(dispatcher.pendingPos(['P', 'P', 'A'])).to.have.length(2);
-			expect(dispatcher.pendingPos(['P', 'P', 'A']).toString()).to.equal([0, 1].toString());
+			expect(dispatcher.pendingPositions(['P', 'P', 'A'])).to.have.length(2);
+			expect(dispatcher.pendingPositions(['P', 'P', 'A']).toString()).to.equal([0, 1].toString());
 		});
 
   });
