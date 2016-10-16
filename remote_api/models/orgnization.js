@@ -41,12 +41,13 @@ Orgnization.prototype.shortNumbers = function(prison, justice, cb) {
 
 Orgnization.prototype.meetings = function(shortNumber, cb) {
   this.model.findOne({shortNumbers: shortNumber}).then( (org) => {
+    logger.debug(org);
     if (org) {
       let meeting = mongoose.connection.collection('meetings');
-     
-      meeting.findOne({fillingDate: Utils.dateOfDatetime(new Date()), orgCode: org.orgCode}).then( (m) => {
-        
+      logger.debug(Utils.dateOfDatetime(new Date()));
+      meeting.findOne({fillingDate: Utils.dateOfDatetime(new Date()), orgCode: org.orgCode}).then( (m) => {  
         let schedule = [];
+        logger.debug(m);
         if (m) {
           schedule = m.schedule[org.shortNumbers.indexOf(shortNumber)];
         }
@@ -55,7 +56,7 @@ Orgnization.prototype.meetings = function(shortNumber, cb) {
       });
     } else {
       logger.debug(`cannot find orgnization with shortNumber ${shortNumber}`);
-      cb(new Error('cannot find orgnization with shortNumber' + shortNumber));
+      cb(null, []);
     }
   }).catch( (e) => {
     logger.error(e);

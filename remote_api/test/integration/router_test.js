@@ -68,12 +68,13 @@ describe('Router', function() {
   	    headers.Authorization = id;
   	  }).then( () => {
   	  	conn.collection('applications').insert(applicant).then( () => {
-					conn.model('Orgnization').insertMany([
+					conn.collection('orgnizations').insertMany([
 						{orgCode: '0991001', orgType: 'p', shortNumbers: ['AA', 'BB']},
 						{orgCode: 'test1', orgType: 'p', shortNumbers: ['FF', 'GG', 'HH']},
             {orgCode: 'test2', orgType: 'p', shortNumbers: ['CC', 'DD', 'EE']}
 					]).then( () => {
-						conn.model('Meeting').insertMany([
+						logger.debug(today);
+						conn.collection('meetings').insertMany([
               {orgCode: 'test1', fillingDate: today, schedule: [['aa', 'bb', 'cc'], ['pp', 'dd', 'zz', 'jj']]},
               {orgCode: 'test2', fillingDate: '2016-10-10', schedule:[]}
 						]).then( () => {
@@ -81,7 +82,6 @@ describe('Router', function() {
 						});
 					});
   	  	});
-				done();
   	  });
   	}).catch( (e) => {
 			logger.error(e);
@@ -230,10 +230,9 @@ describe('Router', function() {
 			.get('/api/v1/shortNumbers/DD/meetings')
 			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
 			.end(function(err, res) {
-				logger.debug(res.body);
 				expect(res).to.have.status(200);
 				expect(res).to.have.deep.property('res.body.meetings').that.eql([]);
-				done();
+				done(err);
 			});
 		});
 
@@ -245,7 +244,18 @@ describe('Router', function() {
 				logger.debug(res.body);
 				expect(res).to.have.status(200);
 				expect(res).to.have.deep.property('res.body.meetings').that.eql(['pp', 'dd', 'zz', 'jj']);
-				done();
+				done(err);
+			});
+		});
+
+		it('expect status 500', function(done) {
+			chai.request(url)
+			.get('/api/v1/shortNumbers/ZZ/meetings')
+			.set({authorization: '8e5946ccc540e5ac5eb5851658681708'})
+			.end(function(err, res) {
+				expect(err).to.be.null;
+				expect(res).to.have.deep.property('res.body.meetings').that.eql([]);
+				done(err);
 			});
 		});
 	});

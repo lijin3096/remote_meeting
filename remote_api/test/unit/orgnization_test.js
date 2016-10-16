@@ -32,11 +32,11 @@ describe('Orgnization', function() {
   });
 
   after(function(done) {
-    conn.collection('orgnizations').remove({}, function(err) {
+    conn.db.dropCollection('orgnizations', function(err) {
       if (err) {
         done(err);
       } else {
-        conn.collection('meetings').remove({}, function(err) {
+        conn.db.dropCollection('meetings', function(err) {
           if (err)
             done(err);
           else
