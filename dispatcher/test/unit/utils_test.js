@@ -4,20 +4,40 @@ const chai = require('chai'),
 const mongoose = require('mongoose');
 const dispatcher = require('../../lib/Dispatcher');
 
-before(function (done) {
-  done();
-});
 
-after(function (done) {
-  mongoose.connection.db.dropCollection('meetings', function(err) {
-    done();
-  });
-});
 
 describe('Dispatcher', function () {
   let shortsP = ['A', 'B', 'C', 'D', 'E'];
   let shortsS = ['a', 'b', 'c'];
+  before(function (done) {
+    let orgs = [
+      {orgCode: 'prison1', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
+      {orgCode: 'justice1', orgType: 's', shortNumbers: ['aa', 'bb']},
+      {orgCode: 'prison2', orgType: 'p', shortNumbers: ['EE', 'FF']},
+      {orgCode: 'justice2', orgType: 's', shortNumbers: ['cc', 'dd']},
+    ];
 
+    mongoose.connection.collection('orgnizations').insertMany(orgs, (err, res) => {
+      if (err) {
+        logger.error(err);
+        done(err);
+      }
+      done();
+    });
+   
+  });
+
+  after(function (done) {
+    mongoose.connection.db.dropCollection('orgnizations', function(err) {
+      if (err) {
+        logger.error(err);
+        done(err);
+      } else {
+        done();
+      }
+    });
+  });
+	
   describe('#pendingPos()', function () {
 
 		it('expect an empty array when P is not present', function () {
@@ -47,7 +67,7 @@ describe('Dispatcher', function () {
     });
 
     it('expect ', function (done) {
-      dispatcher.init('p0991001', 's0997001', '2016-08-25', function (err, res) {
+      dispatcher.init('prison1', 'justice1', '2016-08-25', function (err, res) {
         if (err) {
 		      logger.error(err);
 		      return done(err);

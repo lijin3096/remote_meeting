@@ -8,10 +8,10 @@ const Orgnization  = require('../../models/orgnization');
 describe('Orgnization', function() {
   before(function (done) {
     let orgs = [
-      {orgCode: '0991001', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
-      {orgCode: '0997001', orgType: 's', shortNumbers: ['aa', 'bb']},
-      {orgCode: '0991002', orgType: 'p', shortNumbers: ['EE', 'FF']},
-      {orgCode: '0997002', orgType: 's', shortNumbers: ['cc', 'dd']},
+      {orgCode: 'prison1', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
+      {orgCode: 'justice1', orgType: 's', shortNumbers: ['aa', 'bb']},
+      {orgCode: 'prison2', orgType: 'p', shortNumbers: ['EE', 'FF']},
+      {orgCode: 'justice2', orgType: 's', shortNumbers: ['cc', 'dd']},
     ];
 
     mongoose.connection.collection('orgnizations').insertMany(orgs, (err, res) => {
@@ -25,13 +25,19 @@ describe('Orgnization', function() {
   });
 
   after(function (done) {
-    done();
+    mongoose.connection.db.dropCollection('orgnizations', function(err) {
+      if (err) {
+        logger.error(err);
+        done(err);
+      } else {
+        done();
+      }
+    });
   });
 
   describe('#shortNumbers', function() {
     it('expect', function(done) {
-      Orgnization.shortNumbers('p0991001', 's0997001', function(err, res) {
-        logger.debug('**********');
+      Orgnization.shortNumbers('prison1', 'justice1', function(err, res) {
         logger.debug(res);
         expect(res).to.have.deep.property('[0].orgType', 'p');
         expect(res).to.have.deep.property('[1].orgType', 's');
