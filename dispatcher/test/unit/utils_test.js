@@ -59,7 +59,7 @@ describe('Dispatcher', function () {
   describe('#init', function () {
 
     it('expect code with 400', function (done) {
-      dispatcher.init('0991999', '0997999', '2016-08-25', function (err, res) {
+      dispatcher.init('0991999', '0997999', '2016-08-25', 0, function (err, res) {
         if (err) done(err);
         expect(res).to.have.property('code').and.equal(400);
         done();
@@ -67,7 +67,7 @@ describe('Dispatcher', function () {
     });
 
     it('expect ', function (done) {
-      dispatcher.init('prison1', 'justice1', '2016-08-25', function (err, res) {
+      dispatcher.init('prison1', 'justice1', '2016-08-25', 0, function (err, res) {
         if (err) {
 		      logger.error(err);
 		      return done(err);
@@ -80,7 +80,7 @@ describe('Dispatcher', function () {
 
   });
 
-  describe('#avilableSfs(schedule, terminals)', function () {
+  describe('#availablePositions(schedule, shortNumbers)', function () {
 
     describe('schedules of justice is empty', function () {
       let pos = dispatcher.availablePositions([], shortsS);
