@@ -83,7 +83,7 @@ describe('Dispatcher', function () {
   describe('#avilableSfs(schedule, terminals)', function () {
 
     describe('schedules of justice is empty', function () {
-      let pos = dispatcher.posUsable([], shortsS);
+      let pos = dispatcher.availablePositions([], shortsS);
 
 			it('expect an array with 3 elements', function () {
 				expect(pos).to.have.length(3);
@@ -97,7 +97,7 @@ describe('Dispatcher', function () {
     });
 
     describe('schedules of justice is not empty but not fill complete', function () {
-      let pos = dispatcher.posUsable([['A']], shortsS);
+      let pos = dispatcher.availablePositions([['A']], shortsS);
 
       it('expect an array with 3 elements', function () {
 				expect(pos).to.have.length(3);
@@ -108,7 +108,7 @@ describe('Dispatcher', function () {
     });
 
     describe('schedules length equals to short numbers length', function () {
-      let pos = dispatcher.posUsable([['A'], ['B'], ['C']], shortsS);
+      let pos = dispatcher.availablePositions([['A'], ['B'], ['C']], shortsS);
 
 			it('expect an array with 3 elements', function () {
 				expect(pos).to.have.length(3);
@@ -120,7 +120,7 @@ describe('Dispatcher', function () {
     });
 
     describe('schedules suit', function () {
-      let pos = dispatcher.posUsable([['A', 'D'], ['B'], ['C']], shortsS);
+      let pos = dispatcher.availablePositions([['A', 'D'], ['B'], ['C']], shortsS);
 
 			it('expect an array with 3 elements', function () {
 				expect(pos).to.have.length(3);
@@ -132,7 +132,7 @@ describe('Dispatcher', function () {
     });
 
     describe('schedules with pendings', function () {
-      let pos = dispatcher.posUsable([['P', 'D'], ['P', 'B'], ['P', 'C']], shortsS);
+      let pos = dispatcher.availablePositions([['P', 'D'], ['P', 'B'], ['P', 'C']], shortsS);
 
 			it('expect an array with 3 elements', function () {
 				expect(pos).to.have.length(3);
@@ -147,17 +147,17 @@ describe('Dispatcher', function () {
     });
 
     describe('schedule suit 4', function () {
-      let pos = dispatcher.posUsable([['A', 'P', 'E'], ['B'], ['C']], shortsS);
+      let pos = dispatcher.availablePositions([['A', 'P', 'E'], ['B'], ['C']], shortsS);
       it('expect', function () {
 				expect(pos[0][1][0]).to.be.equal(1);
       });
     });
   });
 
-  describe('#posUsable', function () {
+  describe('#availablePositions', function () {
 		it('hehe', function () {
 			let schedule = [];
-			expect(dispatcher.posUsable(schedule, shortsP)).to.have.length(5);
+			expect(dispatcher.availablePositions(schedule, shortsP)).to.have.length(5);
 		});
   });
 
