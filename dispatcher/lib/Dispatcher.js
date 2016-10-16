@@ -12,7 +12,7 @@ class Dispatcher {
  * @param {Function(err, Object)} cb.
  * 
 */
-  static init(p, s, fillingDate, cb) {
+  static init(p, s, fillingDate, queueIndex, cb) {
     let self = this;
     Org.shortNumbers(p, s, function (err, orgs) {
       if (err) {
@@ -28,7 +28,9 @@ class Dispatcher {
             else {
               let prison = meetings[0];
               let justice = meetings[1];
+              let offset = queueIndex === undefined ? 0 : queueIndex;
               let res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
+
               Meeting.persist(prison, (error, prison) => {
                 if (err) {
                   logger.error(err);
@@ -54,7 +56,7 @@ class Dispatcher {
   /**
    * Dispatch terminal with prison and justice short numbers.
    * 
-   * @param {String} prison - Orgnization code.
+   * @param {String} prison - Orgnization code of prison.
    * @param {Array<String>} shortP - short numbers of prison.
    * @param {String} justice - Orgnization code of justice.
    * @param {Array<String>} shortS - short numbers of justice.
@@ -64,9 +66,8 @@ class Dispatcher {
    *                           2 short number of justice. 
   */
   static dispatch(prison, shortP, justice, shortS) {
-
-    let sPos = this.posUsable(justice.schedule, shortS);
-    let pPos = this.posUsable(prison.schedule, shortP);
+    let sPos = this.availablePositions(justice.schedule, shortS);
+    let pPos = this.availablePositions(prison.schedule, shortP);
 
     let sFlatted = this.flatten(sPos);
     let pFlatted = this.flatten(pPos);
@@ -155,9 +156,16 @@ class Dispatcher {
     }
   }
 
-  // Get avilable pos in prison schedule
-  static posUsable(schedule, shorts) {
-    var usable = [];
+  /** 
+   * Return available postions.
+   * 
+   * @param {Array} schedule of orgnization.
+   * @param {Array} shorts - short numbers of orgnization.
+   * @return {Array} available positions of orgnization on
+   *                 special day.
+   */
+  static availablePositions(schedule, shorts) {
+    var availables = [];
 
     for (let i = 0; i < shorts.length; i++) {
       let queue = schedule[i] === undefined ? [] : schedule[i];
@@ -166,18 +174,20 @@ class Dispatcher {
       if (queue.length === 0) {
         array = [i, [0]];
       } else {
-        let pendings = this.pendingPos(queue);
+        let pendings = this.pendingPositions(queue);
         pendings.push(queue.length);
         array = [i, pendings];
       }
 
-      usable.push(array);
+      availables.push(array);
     }
-    //logger.debug(usable);
-    return usable;
+    logger.debug(availables);
+    return availables;
   }
 
-
+  /**
+   * Return an array with 2 elements.
+   */
   static largestPos(array) {
     let largest = 0;
     let index = 0;
@@ -192,11 +202,16 @@ class Dispatcher {
     return [index, largest];
   }
 
-  /*
-   * @queue time list of special terminal
-   * return array of indexes of 'P' in queue
+  /**
+   * Return an array of positions which value is 'P' 
+   * or return an empty array that means there is no
+   * element is 'P' in this queue.
+   * 
+   * @param {Array} queue of short numbers list. e.g ['AA', 'BB'].
+   * @return an array of indexes that each index is 'P' in queue.
+   * @api private
   */
-  static pendingPos(queue) {
+  static pendingPositions(queue) {
     let p = [];
     if (queue === undefined) return p;
 
@@ -209,6 +224,14 @@ class Dispatcher {
     return p;
   }
 
+  /**
+   * Return an date string without text 'T'.
+   * 
+   * @param {String} datetime. e.g '2016-10-10T12:23:50'.
+   * @return {String} of date.
+   * @api private
+   * 
+   */
   static dateString(datetime) {
     return datetime.substring(0, datetime.indexOf('T'));
   }

@@ -39,6 +39,7 @@ Meeting.prototype.persist = function(meeting, cb) {
 /**
  * Return meeting schedule of special filling date
  * and prison code.
+ * 
  * @param {String} filling date of application.
  * @param {String} prison orgnization code.
  * @param {Function(Error, Object)} callback.
@@ -68,10 +69,13 @@ Meeting.prototype.schedule = function(fillingDate, prisonCode, cb) {
 };
 
 /**
- * @params
- * @fillingDate
- * @prison
- * @justice
+ * Return an array with 2 meetings, the first is meeting of prison
+ * and second is meeting of justice.
+ * 
+ * @param {String} fillingDate.
+ * @param {String} prison's orgnization code.
+ * @param {String} justice's orgnization code.
+ * @param {Function(Error, meetings)}
 */
 Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
   let self = this;
@@ -124,7 +128,6 @@ Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
   });
 };
 
-
 Meeting.prototype.create = function(fillingDate, orgCode, orgType) {
   let meeting = new this.model({
     fillingDate: fillingDate, orgCode: orgCode, orgType: orgType, schedule:[] 
@@ -142,16 +145,4 @@ Meeting.prototype.create = function(fillingDate, orgCode, orgType) {
 
 };
 
-// Meeting.prototype.getSFSSchedule = function(orgCode, fillingDate, cb) {
-//   this.model.find({ fillingDate: fillingDate, orgCode: orgCode})
-//   .then( (result) => {
-//     return cb(null, result);
-//   })
-//   .catch( (e) => {
-//      cb(e);
-//    });
-// };
-
-
 module.exports = new Meeting();
-

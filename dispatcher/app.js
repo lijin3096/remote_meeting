@@ -13,12 +13,13 @@ AMQP.connect('amqp://mq').then(function (conn) {
     ok = ok.then(function (_qok) {
       return ch.consume('apply', function (msg) {
 
-        let array = msg.content.toString().split(':');
-        let p = array[1];
-        let s = array[2];
-        let id = array[3];
+        let content = msg.content.toString().split(':');
+        let p = content[1];
+        let s = content[2];
+        let id = content[3];
+        let queueIndex = content[4];
 
-        let res = Dispatcher.init(p, s, array[0], (err, res) => {
+        let res = Dispatcher.init(p, s, content[0], queueIndex ,(err, res) => {
           if (err) {
             logger.error(err);
           } else if (res.code === 200) {

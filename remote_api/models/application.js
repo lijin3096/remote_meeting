@@ -101,10 +101,12 @@ Application.prototype.submit = function(params, callback) {
 Application.prototype.feedback = function(params, callback) {
   Logger.debug(params);
   if (params.from === 'P' && params.isPass === 'PASSED') {
-    this.sender.send(params.fillingDate + 
+    this.sender.send(
+      params.fillingDate + 
       ':' + params.prison + 
       ':' + params.justice + 
-      ':' + params.id);
+      ':' + params.id +
+      ':' + params.queueIndex);    // id will return to outservice directly
   }
 
   this.updateFeedback(params, (err, application) => {
