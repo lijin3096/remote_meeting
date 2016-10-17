@@ -29,7 +29,7 @@ class Dispatcher {
               let prison = meetings[0];
               let justice = meetings[1];
               let offset = queueIndex === undefined ? 0 : queueIndex;
-              let res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
+              let res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, offset);
 
               Meeting.persist(prison, (error, prison) => {
                 if (err) {
@@ -60,19 +60,29 @@ class Dispatcher {
    * @param {Array<String>} shortP - short numbers of prison.
    * @param {String} justice - Orgnization code of justice.
    * @param {Array<String>} shortS - short numbers of justice.
+   * @param {Integer} offset (optional) of position.
    * 
    * @return {Array<String>} - 0 short number of prison,
    *                           1 position in queue,
    *                           2 short number of justice. 
+   * @api private
   */
   static dispatch(prison, shortP, justice, shortS) {
     let sPos = this.availablePositions(justice.schedule, shortS);
     let pPos = this.availablePositions(prison.schedule, shortP);
 
+    if (arguments.length === 5) {
+
+    }
+    logger.debug('************');
     let sFlatted = this.flatten(sPos);
     let pFlatted = this.flatten(pPos);
-
+    logger.debug(pFlatted);
+    logger.debug(sFlatted);
+    
     let res = this.compare(pFlatted, sFlatted);
+    logger.debug(res);
+    logger.debug('--------------');
     let indexP, indexS, pos;
 
     if (res.pos === -1) {
