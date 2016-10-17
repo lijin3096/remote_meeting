@@ -95,15 +95,20 @@ class Dispatcher {
     return [shortP[indexP], pos, shortS[indexS]];
   }
 
-  
-
   /**
-   * param {Object} model
+   * Return the model which schedule was updated.
+   * 
+   * @param {Object} model - Meeting model.
+   * @param {Integer} index of queue in schedule.
+   * @param {String} shortNumber at position.
+   * @param {Integer} position in queue will insert short number.
+   * @return model.
+   * @api private
   */
   static persist(model, index, shortNumber, position) {
     let queue = model.schedule[index] === undefined ? [] : model.schedule[index];
 
-    // add `P` to position if position larger than queue length
+    // add `P` to positions if position larger than queue length
     let len = queue.length;
     for (let i = 0; i < position - len; i++) {
       queue.push('P');
@@ -116,21 +121,27 @@ class Dispatcher {
     return model;
   }
 
-
-  // compare prison and justice usable positions
-  // p: usable index of prison
-  // s: usable index of justice
-  // pos: position of usable 
-  static compare(a, b) {
+  /**
+   * Compare available postions of prison and justice.
+   * 
+   * @param {Array} posOfPrison.
+   * @param {Array} posOfJustice.
+   * @return {Object} - {p, s, pos}
+   *                    p: available position index of prison.
+   *                    s: available index of justice.
+   *                    pos: position at queue.
+   * @api private
+  */
+  static compare(posOfPrison, posOfJustice) {
     let array = [];
 
-    for (let i = 0; i < a.length; i++) {
-      let index = b.indexOf(a[i]);
-      if (index !== -1) array.push({ p: i, s: index, pos: a[i] });
+    for (let i = 0; i < posOfPrison.length; i++) {
+      let index = posOfJustice.indexOf(posOfPrison[i]);
+      if (index !== -1) array.push({ p: i, s: index, pos: posOfPrison[i] });
     }
 
     if (array.length > 0) {
-      return _.sortBy(array, function (a) { return a.pos; })[0];
+      return _.sortBy(array, function(element) { return element.pos; })[0];
     }
 
     return { p: -1, s: -1, pos: -1 };
@@ -147,8 +158,8 @@ class Dispatcher {
   }
 
   static findCorrespondingIndex(array, virtualIndex) {
-    let len = 0;
-    for (let i = 0; i < array.length; i++) {
+    //let len = 0;
+    for (let i = 0, len =0; i < array.length; i++) {
       len += array[i][1].length;
       if (len - 1 >= virtualIndex) {
         return i;

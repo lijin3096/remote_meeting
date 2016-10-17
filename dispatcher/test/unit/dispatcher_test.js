@@ -1,14 +1,13 @@
-const logger = require('log4js').getLogger('utils test');
+const logger = require('log4js').getLogger('Dispatcher unit test');
 const chai = require('chai'),
       expect = chai.expect;
 const mongoose = require('mongoose');
 const dispatcher = require('../../lib/Dispatcher');
 
-
-
 describe('Dispatcher', function () {
   let shortsP = ['A', 'B', 'C', 'D', 'E'];
   let shortsS = ['a', 'b', 'c'];
+	
   before(function (done) {
     let orgs = [
       {orgCode: 'prison1', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
