@@ -28,8 +28,13 @@ class Dispatcher {
             else {
               let prison = meetings[0];
               let justice = meetings[1];
-              let offset = queueIndex === undefined ? 0 : queueIndex;
-              let res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, offset);
+              let res = null;
+
+              if (queueIndex === undefined) {
+                res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
+              } else {
+                res = self.redispatcher(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueIndex);
+              }
 
               Meeting.persist(prison, (error, prison) => {
                 if (err) {
@@ -71,9 +76,6 @@ class Dispatcher {
     let sPos = this.availablePositions(justice.schedule, shortS);
     let pPos = this.availablePositions(prison.schedule, shortP);
 
-    if (arguments.length === 5) {
-
-    }
     logger.debug('************');
     let sFlatted = this.flatten(sPos);
     let pFlatted = this.flatten(pPos);
@@ -103,6 +105,10 @@ class Dispatcher {
     this.persist(justice, indexS, shortP[indexP], pos);
 
     return [shortP[indexP], pos, shortS[indexS]];
+  }
+
+  static redispatcher(prison, shortP, justice, shortS, offset) {
+    
   }
 
   /**
