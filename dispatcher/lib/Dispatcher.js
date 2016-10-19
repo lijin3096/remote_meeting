@@ -30,10 +30,10 @@ class Dispatcher {
               let justice = meetings[1];
               let res = null;
 
-              if (queueIndex === undefined) {
-                res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
+              if (queueIndex !== undefined){
+                res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueIndex);
               } else {
-                res = self.redispatcher(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueIndex);
+                res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
               }
 
               Meeting.persist(prison, (error, prison) => {
@@ -76,15 +76,10 @@ class Dispatcher {
     let sPos = this.availablePositions(justice.schedule, shortS);
     let pPos = this.availablePositions(prison.schedule, shortP);
 
-    logger.debug('************');
     let sFlatted = this.flatten(sPos);
     let pFlatted = this.flatten(pPos);
-    logger.debug(pFlatted);
-    logger.debug(sFlatted);
     
     let res = this.compare(pFlatted, sFlatted);
-    logger.debug(res);
-    logger.debug('--------------');
     let indexP, indexS, pos;
 
     if (res.pos === -1) {
@@ -105,6 +100,16 @@ class Dispatcher {
     this.persist(justice, indexS, shortP[indexP], pos);
 
     return [shortP[indexP], pos, shortS[indexS]];
+  }
+
+  static redispatch(prison, shortP, justice, shortS, queueIndex) {
+    let scheduleP = prison.schedule;
+    let scheduleS = justice.schedule;
+
+    for (let i = 0; i< scheduleP.length; i++) {
+     
+
+    }
   }
 
   /**
@@ -184,6 +189,7 @@ class Dispatcher {
    * 
    * @param {Array} schedule of orgnization.
    * @param {Array} shorts - short numbers of orgnization.
+   * @param {Integer} queueIndex - current queue index.
    * @return {Array} available positions of orgnization on
    *                 special day.
    */
@@ -201,7 +207,6 @@ class Dispatcher {
         pendings.push(queue.length);
         array = [i, pendings];
       }
-
       availables.push(array);
     }
     logger.debug(availables);
