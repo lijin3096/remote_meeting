@@ -103,13 +103,21 @@ class Dispatcher {
   }
 
   static redispatch(prison, shortP, justice, shortS, queueIndex) {
-    let scheduleP = prison.schedule;
-    let scheduleS = justice.schedule;
+    let shortestP = shortestQueue(prison.schedule);
+    let shortestS = shortestQueue(justice.schedule);
 
-    for (let i = 0; i< scheduleP.length; i++) {
-     
+  
+  }
 
+  static shortestQueue(queues) {
+    let shortest = queues[0];
+    let index = 0;
+    for (let i = 1; i < queues.length; i++) {
+      if (queues[i].length < shortest) {
+        shortest = queues[i];
+      }
     }
+    return [index, shortest];
   }
 
   /**
