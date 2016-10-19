@@ -39,19 +39,23 @@ Orgnization.prototype.shortNumbers = function(prison, justice, cb) {
   });
 };
 
+/**
+ * Retrun meetings schedule of specify terminal number.
+ * 
+ * @param {String} shortNumber of terminal.
+ * @param {Function(Error, Array)}.
+ * @api private
+ */
 Orgnization.prototype.meetings = function(shortNumber, cb) {
   this.model.findOne({shortNumbers: shortNumber}).then( (org) => {
     logger.debug(org);
     if (org) {
       let meeting = mongoose.connection.collection('meetings');
-      logger.debug(Utils.dateOfDatetime(new Date()));
       meeting.findOne({fillingDate: Utils.dateOfDatetime(new Date()), orgCode: org.orgCode}).then( (m) => {  
         let schedule = [];
-        logger.debug(m);
         if (m) {
           schedule = m.schedule[org.shortNumbers.indexOf(shortNumber)];
         }
-        logger.debug(schedule);
         cb(null, schedule);
       });
     } else {

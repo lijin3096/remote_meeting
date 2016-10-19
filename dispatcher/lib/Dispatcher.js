@@ -107,10 +107,6 @@ class Dispatcher {
     return [shortP[indexP], pos, shortS[indexS]];
   }
 
-  static redispatcher(prison, shortP, justice, shortS, offset) {
-    
-  }
-
   /**
    * Return the model which schedule was updated.
    * 

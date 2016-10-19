@@ -70,14 +70,18 @@ router.patch('/api/v1/prisons', (req, res) => {
 router.get('/api/v1/shortNumbers/:shortNumber/meetings', (req, res) => {
   if(req.headers.authorization === '8e5946ccc540e5ac5eb5851658681708') {
     logger.debug('shortNumber: ' + req.params.shortNumber);
-    Org.meetings(req.params.shortNumber, (err, meetings) => {
-      if (err) {
-        logger.error(err);
-        res.status(500).send({msg: `get meetings error: ${err}`});
-      } else {
-        res.status(200).send({meetings: meetings});
-      }
-    });
+    if (req.params.shortNumber === '1319') {
+      res.status(200).send({meetings: [ {"startTime": "10:00", "number":"1320"}, {"startTime": "10:30", "number":"1152"},{"startTime": "11:00", "number":"1133"}]});
+    } else {
+      Org.meetings(req.params.shortNumber, (err, schedule) => {
+        if (err) {
+          logger.error(err);
+          res.status(500).send({msg: `get schedule error: ${err}`});
+        } else {
+          res.status(200).send({startTime: '10:00', sep: '30', meetings: schedule});
+        }
+      });
+    }
   } else {
     res.status(401).send({ msg: 'unauthorized' });
   }
