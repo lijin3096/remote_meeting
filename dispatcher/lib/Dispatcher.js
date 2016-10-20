@@ -103,18 +103,64 @@ class Dispatcher {
   }
 
   static redispatch(prison, shortP, justice, shortS, queueIndex) {
-    let shortestP = shortestQueue(prison.schedule);
-    let shortestS = shortestQueue(justice.schedule);
+    let shortestP = this.shortestQueue(prison.schedule);
+    let shortestS = this.shortestQueue(justice.schedule);
 
-  
+    this.newPosition(shortestP[1], shortP[shortestP[0]], shortestS[1], shortS[shortestS[0]], queueIndex);
+    
   }
 
+  static newPosition(sp, np, ss, ns, currentIndex) {
+    let max = null;
+    let min = null;
+    let position = null;
+
+    if (sp.length >= ss.length) {
+      max = sp;
+      min = ss;
+    } else {
+      max = ss;
+      min = sp;
+    }
+
+    if (max.length < currentIndex) {
+      position = currentIndex + 1;
+    } else {
+      position = max.length;
+    }
+
+    sp[position] = ns;
+    ss[position] = np;
+
+    this.replaceUndefined(sp);
+    this.replaceUndefined(ss);
+    
+  }
+
+  static replaceUndefined(queue) {
+    for (let i = 0; i < queue.length; i++) {
+      if (queue[i] === undefined) {
+        queue[i] = 'P';
+      }
+    }
+  }
+  
+  /**
+   * Return shortest queue with index.
+   * 
+   * @param {Array} queues 
+   * @return [Integer, Array] the first element is the index of
+   *                          which queue is shortest in queues;
+   *                          the second element is the shortest queue.
+   * @api private
+   */
   static shortestQueue(queues) {
     let shortest = queues[0];
     let index = 0;
     for (let i = 1; i < queues.length; i++) {
-      if (queues[i].length < shortest) {
+      if (queues[i].length < shortest.length) {
         shortest = queues[i];
+        index = i;
       }
     }
     return [index, shortest];

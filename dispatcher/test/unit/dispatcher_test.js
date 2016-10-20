@@ -13,7 +13,7 @@ describe('Dispatcher', function () {
       {orgCode: 'prison1', orgType: 'p', shortNumbers: ['AA', 'BB', 'CC', 'DD']},
       {orgCode: 'justice1', orgType: 's', shortNumbers: ['aa', 'bb']},
       {orgCode: 'prison2', orgType: 'p', shortNumbers: ['EE', 'FF']},
-      {orgCode: 'justice2', orgType: 's', shortNumbers: ['cc', 'dd']},
+      {orgCode: 'justice2', orgType: 's', shortNumbers: ['cc', 'dd']}
     ];
 
     mongoose.connection.collection('orgnizations').insertMany(orgs, (err, res) => {
@@ -523,5 +523,18 @@ describe('Dispatcher', function () {
 			expect(sfs3.schedule[0][1]).include('N');
 		});
   });
+
+	describe('#redispatch', function() {
+		let meetingP = {orgType: 'p', orgCode: 'prison1', schedule:[['a', 'b', 'c', 'd'],['e','f'],['g', 'h']]};
+		let meetingS = {orgType: 's', orgCode: 'justice1', schedule:[['A', 'B', 'C'],['E','F'],['G']]};
+
+		it('expect redispatched', function() {
+			dispatcher.redispatch(meetingP, ['W','X', 'Y', 'Z'], meetingS, ['x', 'y', 'z'], 5);
+			logger.debug(meetingP);
+			logger.debug(meetingS);
+		});
+
+
+	});
 
 });
