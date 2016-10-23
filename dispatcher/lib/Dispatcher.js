@@ -61,9 +61,9 @@ class Dispatcher {
   /**
    * Dispatch terminal with prison and justice short numbers.
    * 
-   * @param {String} prison - Orgnization code of prison.
+   * @param {String} prison - Model of prison.
    * @param {Array<String>} shortP - short numbers of prison.
-   * @param {String} justice - Orgnization code of justice.
+   * @param {String} justice - Model of justice.
    * @param {Array<String>} shortS - short numbers of justice.
    * @param {Integer} offset (optional) of position.
    * 
@@ -102,40 +102,77 @@ class Dispatcher {
     return [shortP[indexP], pos, shortS[indexS]];
   }
 
+  /**
+   * Redispatch terminal with prison and justice short numbers.
+   * 
+   * @param {String} prison - Model of prison.
+   * @param {Array<String>} shortP - short numbers of prison.
+   * @param {String} justice - Model of justice.
+   * @param {Array<String>} shortS - short numbers of justice.
+   * @param {Integer} offset (optional) of position.
+   * 
+   * @return {Array<String>} - 0 short number of prison,
+   *                           1 position in queue,
+   *                           2 short number of justice. 
+   * @api private
+  */
   static redispatch(prison, shortP, justice, shortS, queueIndex) {
     let shortestP = this.shortestQueue(prison.schedule);
     let shortestS = this.shortestQueue(justice.schedule);
 
-    this.newPosition(shortestP[1], shortP[shortestP[0]], shortestS[1], shortS[shortestS[0]], queueIndex);
-    
-  }
+    let scheduleOfPrison = shortestP[1];
+    let scheduleOfJustice = shortestS[1];
 
-  static newPosition(sp, np, ss, ns, currentIndex) {
-    let max = null;
-    let min = null;
+    let max = scheduleOfPrison.length >= scheduleOfJustice.length ? scheduleOfPrison : scheduleOfJustice;
     let position = null;
 
-    if (sp.length >= ss.length) {
-      max = sp;
-      min = ss;
-    } else {
-      max = ss;
-      min = sp;
-    }
-
-    if (max.length < currentIndex) {
-      position = currentIndex + 1;
+    if (max.length < queueIndex) {
+      position = queueIndex + 1;
     } else {
       position = max.length;
     }
-
-    sp[position] = ns;
-    ss[position] = np;
-
-    this.replaceUndefined(sp);
-    this.replaceUndefined(ss);
     
+    scheduleOfPrison[position] = shortS[shortestS[0]];
+    scheduleOfJustice[position] = shortP[shortestP[0]];
+
+    this.replaceUndefined(scheduleOfPrison);
+    this.replaceUndefined(scheduleOfJustice);
+
+    return [shortP[shortestP[0]], position, shortS[shortestS[0]]];
   }
+
+  /**
+   * Reset postions and return an array with prison's 
+   * short number, postion and justice's short number.
+   * 
+   * @param {Array} scheduleOfPrison
+   * @param {String} shortNumberOfPrison
+   * @param {Array} scheduleOfJustice
+   * @param {String} shortNumberOfJustice
+   * @param {Integer} currentIndex 
+   * @return {Array} The first element is short number of prison.
+   *                 The second element is new position.
+   *                 The last element is short number of justice.
+   */
+  // static resetPositions(scheduleOfPrison, shortNumberOfPrison, scheduleOfJustice, shortNumberOfJustice, currentIndex) {
+  //   let max = scheduleOfPrison.length >= scheduleOfJustice.length ? scheduleOfPrison : scheduleOfJustice;
+  //   let position = null;
+
+  //   if (max.length < currentIndex) {
+  //     position = currentIndex + 1;
+  //   } else {
+  //     position = max.length;
+  //   }
+    
+  //   scheduleOfPrison[position] = shortNumberOfJustice;
+  //   scheduleOfJustice[position] = shortNumberOfPrison;
+
+  //   this.replaceUndefined(scheduleOfPrison);
+  //   this.replaceUndefined(scheduleOfJustice);
+
+  //   return [shortNumberOfPrison, position, shortNumberOfJustice];
+    
+  // }
 
   static replaceUndefined(queue) {
     for (let i = 0; i < queue.length; i++) {
@@ -280,7 +317,6 @@ class Dispatcher {
         index = i;
       }
     }
-
     return [index, largest];
   }
 
@@ -317,7 +353,6 @@ class Dispatcher {
   static dateString(datetime) {
     return datetime.substring(0, datetime.indexOf('T'));
   }
-
 }
 
 module.exports = Dispatcher;

@@ -22,7 +22,7 @@ function Meeting() {
 Meeting.prototype.persist = function(meeting, cb) {
   this.model.findOne( {fillingDate: meeting.fillingDate, orgCode: meeting.orgCode} )
   .then( (m) => {
-    if(m) {
+    if (m) {
       m.schedule = meeting.schedule;
       m.save().then( (res) => {
         cb(null, res);

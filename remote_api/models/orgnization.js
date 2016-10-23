@@ -3,6 +3,8 @@ const mongoose = require('./../db');
       mongoose.Promise = global.Promise;
 const Utils     = require('./../utils/utils');
 
+const MAX_QUEUE = 12;
+
 function Orgnization() {
   this.schema = new mongoose.Schema({
     orgCode:        String,

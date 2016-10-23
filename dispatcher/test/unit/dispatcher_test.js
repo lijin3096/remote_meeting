@@ -58,22 +58,23 @@ describe('Dispatcher', function () {
   describe('#init', function () {
 
     it('expect code with 400', function (done) {
-      dispatcher.init('0991999', '0997999', '2016-08-25', 0, function (err, res) {
+      dispatcher.init('0991999', '0997999', '2016-08-25', undefined, function (err, res) {
         if (err) done(err);
         expect(res).to.have.property('code').and.equal(400);
         done();
       });
     });
 
-    it('expect ', function (done) {
-      dispatcher.init('prison1', 'justice1', '2016-08-25', 0, function (err, res) {
+    it('expect code with 200', function (done) {
+      dispatcher.init('prison1', 'justice1', '2016-08-25', undefined, function (err, res) {
         if (err) {
 		      logger.error(err);
-		      return done(err);
-		    }
-		    logger.debug(res);
-        expect(res).to.have.property('code').and.equal(200);
-        done();
+		      done(err);
+		    } else {
+					expect(res).to.have.property('code').and.equal(200);
+					done();
+				}
+
       });
     });
 
@@ -528,13 +529,11 @@ describe('Dispatcher', function () {
 		let meetingP = {orgType: 'p', orgCode: 'prison1', schedule:[['a', 'b', 'c', 'd'],['e','f'],['g', 'h']]};
 		let meetingS = {orgType: 's', orgCode: 'justice1', schedule:[['A', 'B', 'C'],['E','F'],['G']]};
 
-		it('expect redispatched', function() {
-			dispatcher.redispatch(meetingP, ['W','X', 'Y', 'Z'], meetingS, ['x', 'y', 'z'], 5);
-			logger.debug(meetingP);
-			logger.debug(meetingS);
+		it('expect an array [X, 5, z]', function() {
+			let res = dispatcher.redispatch(meetingP, ['W','X', 'Y', 'Z'], meetingS, ['x', 'y', 'z'], 4);
+			expect(res).to.have.length(3);
+			expect(res).to.be.eql(['X', 5, 'z']);
 		});
-
-
 	});
 
 });
