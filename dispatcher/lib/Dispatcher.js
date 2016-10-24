@@ -12,7 +12,7 @@ class Dispatcher {
  * @param {Function(err, Object)} cb.
  * 
 */
-  static init(p, s, fillingDate, queueIndex, cb) {
+  static init(p, s, fillingDate, queueId, cb) {
     let self = this;
     Org.shortNumbers(p, s, function (err, orgs) {
       if (err) {
@@ -30,9 +30,9 @@ class Dispatcher {
               let justice = meetings[1];
               let res = null;
 
-              logger.debug(`queueIndex: ${queueIndex}`);
-              if (queueIndex !== 'undefined'){
-                res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueIndex);
+              logger.debug(`queueId: ${queueId}`);
+              if (queueId !== 'undefined'){
+                res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueId);
               } else {
                 res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
               }
@@ -117,7 +117,7 @@ class Dispatcher {
    *                           2 short number of justice. 
    * @api private
   */
-  static redispatch(prison, shortP, justice, shortS, queueIndex) {
+  static redispatch(prison, shortP, justice, shortS, queueId) {
     let shortestP = this.shortestQueue(prison.schedule);
     let shortestS = this.shortestQueue(justice.schedule);
 
@@ -127,8 +127,8 @@ class Dispatcher {
     let max = scheduleOfPrison.length >= scheduleOfJustice.length ? scheduleOfPrison : scheduleOfJustice;
     let position = null;
 
-    if (max.length < queueIndex) {
-      position = queueIndex + 1;
+    if (max.length < queueId) {
+      position = queueId + 1;
     } else {
       position = max.length;
     }
@@ -281,7 +281,7 @@ class Dispatcher {
    * 
    * @param {Array} schedule of orgnization.
    * @param {Array} shorts - short numbers of orgnization.
-   * @param {Integer} queueIndex - current queue index.
+   * @param {Integer} queueId - current queue index.
    * @return {Array} available positions of orgnization on
    *                 special day.
    */

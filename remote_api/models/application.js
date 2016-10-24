@@ -106,7 +106,7 @@ Application.prototype.feedback = function(params, callback) {
       ':' + params.prison + 
       ':' + params.justice + 
       ':' + params.id +
-      ':' + params.queueIndex);    // id will return to outservice directly
+      ':' + params.queueId);    // id will return to outservice directly
   }
 
   this.updateFeedback(params, (err, application) => {

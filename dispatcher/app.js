@@ -17,9 +17,9 @@ AMQP.connect('amqp://mq').then(function (conn) {
         let p = content[1];
         let s = content[2];
         let id = content[3];
-        let queueIndex = content[4];
+        let queueId = content[4];
 
-        let res = Dispatcher.init(p, s, content[0], queueIndex ,(err, res) => {
+        let res = Dispatcher.init(p, s, content[0], queueId ,(err, res) => {
           if (err) {
             logger.error(err);
           } else if (res.code === 200) {
