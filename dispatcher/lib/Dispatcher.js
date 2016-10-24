@@ -1,5 +1,5 @@
 const _       = require('lodash');
-const logger  = require('log4js').getLogger('Utils');
+const logger  = require('log4js').getLogger('Dispatcher');
 const Org     = require('../models/orgnization');
 const Meeting = require('../models/meeting');
 
@@ -30,7 +30,7 @@ class Dispatcher {
               let justice = meetings[1];
               let res = null;
 
-              logger.debug(queueIndex);
+              logger.debug(`queueIndex: ${queueIndex}`);
               if (queueIndex !== 'undefined'){
                 res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueIndex);
               } else {
