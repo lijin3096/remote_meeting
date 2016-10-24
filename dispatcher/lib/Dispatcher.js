@@ -30,7 +30,8 @@ class Dispatcher {
               let justice = meetings[1];
               let res = null;
 
-              if (queueIndex !== undefined){
+              logger.debug(queueIndex);
+              if (queueIndex !== 'undefined'){
                 res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueIndex);
               } else {
                 res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
