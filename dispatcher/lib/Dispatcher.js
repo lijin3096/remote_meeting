@@ -32,7 +32,7 @@ class Dispatcher {
 
               logger.debug(`queueId: ${queueId}`);
               if (queueId !== 'undefined'){
-                res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, queueId);
+                res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, parseInt(queueId));
               } else {
                 res = self.dispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers);
               }
