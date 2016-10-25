@@ -237,14 +237,16 @@ class Dispatcher {
   }
 
   /**
+   * Return index in available positions by index that is the
+   * largest value in flatted array.
    * 
    * @param {Array} availables - available positions.
    * @param {Integer} virtualIndex is the index of the
    *                  largest value in flatted array. 
-   *                  
+   * 
+   * @api private                 
    */
   static findCorrespondingIndex(availables, virtualIndex) {
-
     for (let i = 0, len = 0; i < availables.length; i++) {
       len += availables[i][1].length;
       if (len - 1 >= virtualIndex) {
@@ -282,7 +284,6 @@ class Dispatcher {
       availables.push(array);
     }
 
-    logger.debug(availables);
     return availables;
   }
 

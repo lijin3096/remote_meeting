@@ -58,7 +58,7 @@ describe('Dispatcher', function () {
   describe('#init', function () {
 
     it('expect code with 400', function (done) {
-      dispatcher.init('0991999', '0997999', '2016-08-25', undefined, function (err, res) {
+      dispatcher.init('0991999', '0997999', '2016-08-25', 'undefined', function (err, res) {
         if (err) done(err);
         expect(res).to.have.property('code').and.equal(400);
         done();
@@ -66,7 +66,7 @@ describe('Dispatcher', function () {
     });
 
     it('expect code with 200', function (done) {
-      dispatcher.init('prison1', 'justice1', '2016-08-25', undefined, function (err, res) {
+      dispatcher.init('prison1', 'justice1', '2016-08-25', 'undefined', function (err, res) {
         if (err) {
 		      logger.error(err);
 		      done(err);
@@ -177,7 +177,7 @@ describe('Dispatcher', function () {
 		});
   });
 
-  describe('#compare(array1, array2)', function () {
+  describe('#matchedPosition(array1, array2)', function () {
 		let array1 = dispatcher.flatten([
 			[0, [1, 2]], [1, [3, 4]], [2, [0]], [3, [2, 3, 4]], [4, [0, 2, 3, 4]]
 		]);
@@ -191,13 +191,13 @@ describe('Dispatcher', function () {
 		]);
 
     it('expect an hash with 3 properties', function () {
-      let res = dispatcher.compare(array1, array2);
+      let res = dispatcher.matchedPosition(array1, array2);
       expect(res).to.have.all.keys('p', 's', 'pos');
       expect(res).to.deep.equal({ p: 4, s: 0, pos: 0 });
     });
 
     it('expect an hash with 3 properties, but each value is -1', function () {
-      let res = dispatcher.compare(array1, array3);
+      let res = dispatcher.matchedPosition(array1, array3);
       expect(res).to.have.all.keys('p', 's', 'pos');
       expect(res).to.deep.equal({ p: -1, s: -1, pos: -1 });
     });
@@ -213,7 +213,13 @@ describe('Dispatcher', function () {
 	  	  [0, [1, 2]], [1, [3, 4]], [2, [0]], [3, [2, 3, 4]], [4, [0, 2, 3, 4]]
 	  	];
 
-    let res2 = dispatcher.findCorrespondingIndex(array2, 6);
+		let array3 = [
+			[0, [1, 2]], [1, [3, 10]], [2, [11]], [3, [2, 3, 12]], [4, [0, 2, 3, 13]]
+		];
+
+		let array4 = [
+			[0, [1]], [1, [0]], [2, [0]], [3, [0]]
+		];
 
 		it('expect correspanding index 0', function () {
 			let res = dispatcher.findCorrespondingIndex(array1, 0);
@@ -221,17 +227,31 @@ describe('Dispatcher', function () {
 		});
 
 		it('expect correspanding index 3', function () {
-			let res = dispatcher.findCorrespondingIndex(array2, 6);
-			expect(res).to.be.equal(3);
+			let res = dispatcher.findCorrespondingIndex(array2, 11);
+			expect(res).to.be.equal(4);
 		});
 
+		it('expect correspanding index 2', function () {
+			let res = dispatcher.findCorrespondingIndex(array3, 4);
+			expect(res).to.be.equal(2);
+		});
+
+		it('expect correspanding index 1', function () {
+			let res = dispatcher.findCorrespondingIndex(array4, 0);
+			expect(res).to.be.equal(0);
+		});
   });
 
   describe('#largestPos(array)', function () {
 		it('expect an array with largest element index and value', function () {
 			let array = [4, 0, 1, 3, 2];
-			expect(dispatcher.largestPos(array)).to.have.length(2);
-			expect(dispatcher.largestPos(array)).to.be.deep.equal([0, 4]);
+			let array2 = [0,2,1,4,3];
+			let array3 = [1,0,3,4,5,2,9];
+			let array4 = [1,2,3,10,11,2,3,12,0,2,3,13];
+			expect(dispatcher.largestPos(array)).to.be.eql([0, 4]);
+			expect(dispatcher.largestPos(array2)).to.be.eql([3, 4]);
+			expect(dispatcher.largestPos(array3)).to.be.eql([6, 9]);
+			expect(dispatcher.largestPos(array4)).to.be.eql([4, 11]);
 		});
   });
 
