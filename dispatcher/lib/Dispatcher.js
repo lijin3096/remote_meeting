@@ -3,7 +3,7 @@ const logger  = require('log4js').getLogger('Dispatcher');
 const Org     = require('../models/orgnization');
 const Meeting = require('../models/meeting');
 
-const MAX_QUEUE = 12;
+const MAX_QUEUE_LENGTH = 12;
 
 class Dispatcher {
 
@@ -32,7 +32,6 @@ class Dispatcher {
               let justice = meetings[1];
               let res = null;
 
-              logger.debug(`queueId: ${queueId}`);
               if (queueId !== 'undefined'){
                 res = self.redispatch(prison, orgs[0].shortNumbers, justice, orgs[1].shortNumbers, parseInt(queueId));
               } else {
@@ -301,7 +300,7 @@ class Dispatcher {
     let index = 0;
 
     for (let i = 0; i < array.length; i++) {
-      if (array[i] > value && array[i] < MAX_QUEUE) {
+      if (array[i] > value && array[i] < MAX_QUEUE_LENGTH - 1) {
         value = array[i];
         index = i;
       }

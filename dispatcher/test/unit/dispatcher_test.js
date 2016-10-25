@@ -251,7 +251,7 @@ describe('Dispatcher', function () {
 			expect(dispatcher.largestPos(array)).to.be.eql([0, 4]);
 			expect(dispatcher.largestPos(array2)).to.be.eql([3, 4]);
 			expect(dispatcher.largestPos(array3)).to.be.eql([6, 9]);
-			expect(dispatcher.largestPos(array4)).to.be.eql([4, 11]);
+			expect(dispatcher.largestPos(array4)).to.be.eql([3, 10]);
 		});
   });
 
