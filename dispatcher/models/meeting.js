@@ -100,6 +100,9 @@ Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
               .then( (ms) => {
                 cb(null, ms);
               });
+        }).catch( (e) => {
+          logger.error(`create schedule error: ${e}`);
+          cb(e);
         });
       
     } else if (len === 1) {
@@ -128,6 +131,15 @@ Meeting.prototype.schedules = function(fillingDate, prison, justice, cb) {
   });
 };
 
+/**
+ * Return Promise.
+ * 
+ * @param {String} fillingDate.
+ * @param {String} orgCode of orgnization which will be created for meeting model.
+ * @param {String} orgType.
+ * @return {Object}  new Promise.
+ * @api private. 
+ */
 Meeting.prototype.create = function(fillingDate, orgCode, orgType) {
   let meeting = new this.model({
     fillingDate: fillingDate, orgCode: orgCode, orgType: orgType, schedule:[] 
@@ -142,7 +154,6 @@ Meeting.prototype.create = function(fillingDate, orgCode, orgType) {
       }
     });
   });
-
 };
 
 module.exports = new Meeting();

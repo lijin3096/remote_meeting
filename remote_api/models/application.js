@@ -26,9 +26,7 @@ function Application() {
           }
       }]
   });
-
   this.model = mongoose.model('Application', this.applicationSchema);
-
 }
 
 /**
