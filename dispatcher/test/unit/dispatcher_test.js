@@ -255,295 +255,296 @@ describe('Dispatcher', function () {
 		});
   });
 
-  describe('#dispatch(prison, shortP, justice, shortS)', function () {
 
-    let prison1 = { schedule: [] };
-    let prison2 = { schedule: [] };
-    let prison3 = { schedule: [] };
-    let prison4 = { schedule: [] };
+  // describe('#dispatch(prison, shortP, justice, shortS)', function () {
 
-		let sfs1 = { schedule: [] };
-		let sfs2 = { schedule: [] };
-		let sfs3 = { schedule: [] };
-		let sfs4 = { schedule: [] };
-    let sfs5 = { schedule: [] };
+  //   let prison1 = { schedule: [] };
+  //   let prison2 = { schedule: [] };
+  //   let prison3 = { schedule: [] };
+  //   let prison4 = { schedule: [] };
 
-		let p1 = ['A', 'B', 'C', 'D', 'E', 'F'];
-    let p2 = ['G', 'H', 'I', 'G', 'K', 'L'];
-    let p3 = ['M', 'N', 'O', 'Q', 'R'];
-    let p4 = ['S', 'T', 'U', 'V', 'W', 'X', 'Y'];
+	// 	let sfs1 = { schedule: [] };
+	// 	let sfs2 = { schedule: [] };
+	// 	let sfs3 = { schedule: [] };
+	// 	let sfs4 = { schedule: [] };
+  //   let sfs5 = { schedule: [] };
 
-    let s1 = ['a', 'b', 'c'];
-    let s2 = ['d', 'e', 'f'];
-    let s3 = ['g', 'h', 'i'];
-    let s4 = ['j', 'k', 'l'];
-    let s5 = ['m', 'n', 'o'];
+	// 	let p1 = ['A', 'B', 'C', 'D', 'E', 'F'];
+  //   let p2 = ['G', 'H', 'I', 'G', 'K', 'L'];
+  //   let p3 = ['M', 'N', 'O', 'Q', 'R'];
+  //   let p4 = ['S', 'T', 'U', 'V', 'W', 'X', 'Y'];
 
-		it('sfs1 applies prison1 ', function () {
-			dispatcher.dispatch(prison1, p1, sfs1, s1);
+  //   let s1 = ['a', 'b', 'c'];
+  //   let s2 = ['d', 'e', 'f'];
+  //   let s3 = ['g', 'h', 'i'];
+  //   let s4 = ['j', 'k', 'l'];
+  //   let s5 = ['m', 'n', 'o'];
 
-			expect(prison1.schedule).to.have.length(1);
-			expect(prison1.schedule[0]).to.include('a');
+	// 	it('sfs1 applies prison1 ', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(1);
-			expect(sfs1.schedule[0]).to.include('A');
+	// 		expect(prison1.schedule).to.have.length(1);
+	// 		expect(prison1.schedule[0]).to.include('a');
 
-		});
+	// 		expect(sfs1.schedule).to.have.length(1);
+	// 		expect(sfs1.schedule[0]).to.include('A');
 
-		it('sfs2 applies prison1', function () {
-			dispatcher.dispatch(prison1, p1, sfs2, s2);
+	// 	});
 
-			expect(prison1.schedule).to.have.length(2);
-			expect(prison1.schedule[1]).to.include('d');
+	// 	it('sfs2 applies prison1', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs2, s2);
 
-			expect(sfs2.schedule).to.have.length(1);
-			expect(sfs2.schedule[0]).to.include('B');
-		});
+	// 		expect(prison1.schedule).to.have.length(2);
+	// 		expect(prison1.schedule[1]).to.include('d');
 
-		it('sfs2 applies prison1 again', function () {
-			dispatcher.dispatch(prison1, p1, sfs2, s2);
+	// 		expect(sfs2.schedule).to.have.length(1);
+	// 		expect(sfs2.schedule[0]).to.include('B');
+	// 	});
 
-   	  expect(prison1.schedule).to.have.length(3);
-			expect(prison1.schedule[2]).to.include('e');
+	// 	it('sfs2 applies prison1 again', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs2, s2);
 
-			expect(sfs2.schedule).to.have.length(2);
-			expect(sfs2.schedule[1]).to.include('C');
-		});
+  //  	  expect(prison1.schedule).to.have.length(3);
+	// 		expect(prison1.schedule[2]).to.include('e');
 
-		it('sfs2 applies prison2', function () {
-			dispatcher.dispatch(prison2, p2, sfs2, s2);
+	// 		expect(sfs2.schedule).to.have.length(2);
+	// 		expect(sfs2.schedule[1]).to.include('C');
+	// 	});
 
-			expect(prison2.schedule).to.have.length(1);
-			expect(prison2.schedule[0]).to.include('f');
+	// 	it('sfs2 applies prison2', function () {
+	// 		dispatcher.dispatch(prison2, p2, sfs2, s2);
 
-			expect(sfs2.schedule).to.have.length(3);
-			expect(sfs2.schedule[2]).to.include('G');
-		});
+	// 		expect(prison2.schedule).to.have.length(1);
+	// 		expect(prison2.schedule[0]).to.include('f');
 
-		it('sfs3 applies prison1', function () {
-			dispatcher.dispatch(prison1, p1, sfs3, s3);
+	// 		expect(sfs2.schedule).to.have.length(3);
+	// 		expect(sfs2.schedule[2]).to.include('G');
+	// 	});
 
-			expect(prison1.schedule).to.have.length(4);
-			expect(prison1.schedule[3]).to.include('g');
+	// 	it('sfs3 applies prison1', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs3, s3);
 
-			expect(sfs3.schedule).to.have.length(1);
-			expect(sfs3.schedule[0]).to.include('D');
-		});
+	// 		expect(prison1.schedule).to.have.length(4);
+	// 		expect(prison1.schedule[3]).to.include('g');
 
-		it('sfs4 applies prison3', function () {
-			dispatcher.dispatch(prison3, p3, sfs4, s4);
+	// 		expect(sfs3.schedule).to.have.length(1);
+	// 		expect(sfs3.schedule[0]).to.include('D');
+	// 	});
 
-			expect(prison3.schedule).to.have.length(1);
-			expect(prison3.schedule[0]).to.include('j');
+	// 	it('sfs4 applies prison3', function () {
+	// 		dispatcher.dispatch(prison3, p3, sfs4, s4);
 
-			expect(sfs4.schedule).to.have.length(1);
-			expect(sfs4.schedule[0]).to.include('M');
-		});
+	// 		expect(prison3.schedule).to.have.length(1);
+	// 		expect(prison3.schedule[0]).to.include('j');
 
-		it('sfs4 applies prison1', function () {
-			dispatcher.dispatch(prison1, p1, sfs4, s4);
+	// 		expect(sfs4.schedule).to.have.length(1);
+	// 		expect(sfs4.schedule[0]).to.include('M');
+	// 	});
 
-			expect(prison1.schedule).to.have.length(5);
-			expect(prison1.schedule[4]).to.include('k');
+	// 	it('sfs4 applies prison1', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs4, s4);
 
-			expect(sfs4.schedule).to.have.length(2);
-			expect(sfs4.schedule[1]).to.include('E');
-		});
+	// 		expect(prison1.schedule).to.have.length(5);
+	// 		expect(prison1.schedule[4]).to.include('k');
 
-		it('sfs4 applies prison1 again', function () {
-			dispatcher.dispatch(prison1, p1, sfs4, s4);
+	// 		expect(sfs4.schedule).to.have.length(2);
+	// 		expect(sfs4.schedule[1]).to.include('E');
+	// 	});
 
-			expect(prison1.schedule).to.have.length(6);
-			expect(prison1.schedule[5]).to.include('l');
+	// 	it('sfs4 applies prison1 again', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs4, s4);
 
-			expect(sfs4.schedule).to.have.length(3);
-			expect(sfs4.schedule[2]).include('F');
-		});
+	// 		expect(prison1.schedule).to.have.length(6);
+	// 		expect(prison1.schedule[5]).to.include('l');
 
-		it('sfs1 applies prison1 again', function () {
-			dispatcher.dispatch(prison1, p1, sfs1, s1);
+	// 		expect(sfs4.schedule).to.have.length(3);
+	// 		expect(sfs4.schedule[2]).include('F');
+	// 	});
 
-			expect(prison1.schedule).to.have.length(6);
-			expect(prison1.schedule[0][1]).to.include('a');
+	// 	it('sfs1 applies prison1 again', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(1);
-			expect(sfs1.schedule[0][1]).include('A');
-		});
+	// 		expect(prison1.schedule).to.have.length(6);
+	// 		expect(prison1.schedule[0][1]).to.include('a');
 
-		it('sfs1 applies prison1 again', function () {
-			dispatcher.dispatch(prison1, p1, sfs1, s1);
+	// 		expect(sfs1.schedule).to.have.length(1);
+	// 		expect(sfs1.schedule[0][1]).include('A');
+	// 	});
 
-			expect(prison1.schedule).to.have.length(6);
-			expect(prison1.schedule[0][2]).to.include('a');
+	// 	it('sfs1 applies prison1 again', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(1);
-			expect(sfs1.schedule[0][2]).include('A');
-		});
+	// 		expect(prison1.schedule).to.have.length(6);
+	// 		expect(prison1.schedule[0][2]).to.include('a');
 
-		it('sfs1 applies prison2 again', function () {
-			dispatcher.dispatch(prison2, p2, sfs1, s1);
+	// 		expect(sfs1.schedule).to.have.length(1);
+	// 		expect(sfs1.schedule[0][2]).include('A');
+	// 	});
 
-			expect(prison2.schedule).to.have.length(2);
-			expect(prison2.schedule[1][0]).to.include('b');
+	// 	it('sfs1 applies prison2 again', function () {
+	// 		dispatcher.dispatch(prison2, p2, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(2);
-			expect(sfs1.schedule[1][0]).include('H');
-		});
+	// 		expect(prison2.schedule).to.have.length(2);
+	// 		expect(prison2.schedule[1][0]).to.include('b');
 
-		it('sfs1 applies prison3', function () {
-			dispatcher.dispatch(prison3, p3, sfs1, s1);
+	// 		expect(sfs1.schedule).to.have.length(2);
+	// 		expect(sfs1.schedule[1][0]).include('H');
+	// 	});
 
-			expect(prison3.schedule).to.have.length(2);
-			expect(prison3.schedule[1][0]).to.include('c');
+	// 	it('sfs1 applies prison3', function () {
+	// 		dispatcher.dispatch(prison3, p3, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(3);
-			expect(sfs1.schedule[2][0]).include('N');
-		});
+	// 		expect(prison3.schedule).to.have.length(2);
+	// 		expect(prison3.schedule[1][0]).to.include('c');
 
-		it('sfs1 applies prison3 again', function () {
-			dispatcher.dispatch(prison3, p3, sfs1, s1);
+	// 		expect(sfs1.schedule).to.have.length(3);
+	// 		expect(sfs1.schedule[2][0]).include('N');
+	// 	});
 
-			expect(prison3.schedule).to.have.length(2);
-			expect(prison3.schedule[0][1]).to.include('b');
+	// 	it('sfs1 applies prison3 again', function () {
+	// 		dispatcher.dispatch(prison3, p3, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(3);
-			expect(sfs1.schedule[1][1]).include('M');
-		});
+	// 		expect(prison3.schedule).to.have.length(2);
+	// 		expect(prison3.schedule[0][1]).to.include('b');
 
-		it('sfs1 applies prison2 again', function () {
-			dispatcher.dispatch(prison2, p2, sfs1, s1);
+	// 		expect(sfs1.schedule).to.have.length(3);
+	// 		expect(sfs1.schedule[1][1]).include('M');
+	// 	});
 
-			expect(prison2.schedule).to.have.length(2);
-			expect(prison2.schedule[0][1]).to.include('c');
+	// 	it('sfs1 applies prison2 again', function () {
+	// 		dispatcher.dispatch(prison2, p2, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(3);
-			expect(sfs1.schedule[2][1]).include('G');
-		});
+	// 		expect(prison2.schedule).to.have.length(2);
+	// 		expect(prison2.schedule[0][1]).to.include('c');
 
-		it('sfs3 applies prison3', function () {
-			dispatcher.dispatch(prison3, p3, sfs3, s3);
+	// 		expect(sfs1.schedule).to.have.length(3);
+	// 		expect(sfs1.schedule[2][1]).include('G');
+	// 	});
 
-			expect(prison3.schedule).to.have.length(3);
-			expect(prison3.schedule[2][0]).to.include('h');
+	// 	it('sfs3 applies prison3', function () {
+	// 		dispatcher.dispatch(prison3, p3, sfs3, s3);
 
-			expect(sfs3.schedule).to.have.length(2);
-			expect(sfs3.schedule[1][0]).include('O');
-		});
+	// 		expect(prison3.schedule).to.have.length(3);
+	// 		expect(prison3.schedule[2][0]).to.include('h');
 
-		it('sfs2 applies prison2', function () {
-			dispatcher.dispatch(prison2, p2, sfs2, s2);
+	// 		expect(sfs3.schedule).to.have.length(2);
+	// 		expect(sfs3.schedule[1][0]).include('O');
+	// 	});
 
-			expect(prison2.schedule).to.have.length(2);
-			expect(prison2.schedule[1][1]).to.include('d');
+	// 	it('sfs2 applies prison2', function () {
+	// 		dispatcher.dispatch(prison2, p2, sfs2, s2);
 
-			expect(sfs2.schedule).to.have.length(3);
-			expect(sfs2.schedule[0][1]).include('H');
-		});
+	// 		expect(prison2.schedule).to.have.length(2);
+	// 		expect(prison2.schedule[1][1]).to.include('d');
 
-		it('sfs2 applies prison2 again', function () {
-			dispatcher.dispatch(prison2, p2, sfs2, s2);
+	// 		expect(sfs2.schedule).to.have.length(3);
+	// 		expect(sfs2.schedule[0][1]).include('H');
+	// 	});
 
-			expect(prison2.schedule).to.have.length(2);
-			expect(prison2.schedule[0][2]).to.include('d');
+	// 	it('sfs2 applies prison2 again', function () {
+	// 		dispatcher.dispatch(prison2, p2, sfs2, s2);
 
-			expect(sfs2.schedule).to.have.length(3);
-			expect(sfs2.schedule[0][2]).include('G');
-		});
+	// 		expect(prison2.schedule).to.have.length(2);
+	// 		expect(prison2.schedule[0][2]).to.include('d');
 
-		it('sfs3 applies prison3', function () {
-			dispatcher.dispatch(prison3, p3, sfs3, s3);
+	// 		expect(sfs2.schedule).to.have.length(3);
+	// 		expect(sfs2.schedule[0][2]).include('G');
+	// 	});
 
-			expect(prison3.schedule).to.have.length(4);
-			expect(prison3.schedule[3][0]).to.include('i');
+	// 	it('sfs3 applies prison3', function () {
+	// 		dispatcher.dispatch(prison3, p3, sfs3, s3);
 
-			expect(sfs3.schedule).to.have.length(3);
-			expect(sfs3.schedule[2][0]).include('Q');
-		});
+	// 		expect(prison3.schedule).to.have.length(4);
+	// 		expect(prison3.schedule[3][0]).to.include('i');
 
-		it('sfs1 applies prison4', function () {
-			dispatcher.dispatch(prison4, p4, sfs1, s1);
+	// 		expect(sfs3.schedule).to.have.length(3);
+	// 		expect(sfs3.schedule[2][0]).include('Q');
+	// 	});
 
-			expect(prison4.schedule).to.have.length(1);
-			expect(prison4.schedule[0][0]).to.include('P');
-			expect(prison4.schedule[0][1]).to.include('P');
-			expect(prison4.schedule[0][2]).to.include('P');
-			expect(prison4.schedule[0][3]).to.include('a');
+	// 	it('sfs1 applies prison4', function () {
+	// 		dispatcher.dispatch(prison4, p4, sfs1, s1);
 
-			expect(sfs1.schedule).to.have.length(3);
-			expect(sfs1.schedule[0][3]).include('S');
-		});
+	// 		expect(prison4.schedule).to.have.length(1);
+	// 		expect(prison4.schedule[0][0]).to.include('P');
+	// 		expect(prison4.schedule[0][1]).to.include('P');
+	// 		expect(prison4.schedule[0][2]).to.include('P');
+	// 		expect(prison4.schedule[0][3]).to.include('a');
 
-		it('sfs4 applies prison4', function () {
-			dispatcher.dispatch(prison4, p4, sfs4, s4);
+	// 		expect(sfs1.schedule).to.have.length(3);
+	// 		expect(sfs1.schedule[0][3]).include('S');
+	// 	});
 
-			expect(prison4.schedule).to.have.length(1);
-			expect(prison4.schedule[0][1]).to.include('j');
+	// 	it('sfs4 applies prison4', function () {
+	// 		dispatcher.dispatch(prison4, p4, sfs4, s4);
 
-			expect(sfs4.schedule).to.have.length(3);
-			expect(sfs4.schedule[0][1]).include('S');
-		});
+	// 		expect(prison4.schedule).to.have.length(1);
+	// 		expect(prison4.schedule[0][1]).to.include('j');
 
-		it('sfs4 applies prison4', function () {
-			dispatcher.dispatch(prison4, p4, sfs4, s4);
+	// 		expect(sfs4.schedule).to.have.length(3);
+	// 		expect(sfs4.schedule[0][1]).include('S');
+	// 	});
 
-			expect(prison4.schedule).to.have.length(1);
-			expect(prison4.schedule[0][1]).to.include('j');
+	// 	it('sfs4 applies prison4', function () {
+	// 		dispatcher.dispatch(prison4, p4, sfs4, s4);
 
-			expect(sfs4.schedule).to.have.length(3);
-			expect(sfs4.schedule[0][1]).include('S');
-		});
+	// 		expect(prison4.schedule).to.have.length(1);
+	// 		expect(prison4.schedule[0][1]).to.include('j');
 
-		it('sfs4 applies prison4', function () {
-			dispatcher.dispatch(prison4, p4, sfs4, s4);
+	// 		expect(sfs4.schedule).to.have.length(3);
+	// 		expect(sfs4.schedule[0][1]).include('S');
+	// 	});
 
-			expect(prison4.schedule).to.have.length(1);
-			expect(prison4.schedule[0][4]).to.include('j');
+	// 	it('sfs4 applies prison4', function () {
+	// 		dispatcher.dispatch(prison4, p4, sfs4, s4);
 
-			expect(sfs4.schedule).to.have.length(3);
-			expect(sfs4.schedule[0][3]).include('P');
-			expect(sfs4.schedule[0][4]).include('S');
-		});
+	// 		expect(prison4.schedule).to.have.length(1);
+	// 		expect(prison4.schedule[0][4]).to.include('j');
 
-		it('sfs4 applies prison2', function () {
-			dispatcher.dispatch(prison2, p2, sfs4, s4);
+	// 		expect(sfs4.schedule).to.have.length(3);
+	// 		expect(sfs4.schedule[0][3]).include('P');
+	// 		expect(sfs4.schedule[0][4]).include('S');
+	// 	});
 
-			expect(prison2.schedule).to.have.length(2);
-			expect(prison2.schedule[0][3]).to.include('j');
+	// 	it('sfs4 applies prison2', function () {
+	// 		dispatcher.dispatch(prison2, p2, sfs4, s4);
 
-			expect(sfs4.schedule[0][3]).include('G');
-			expect(sfs4.schedule[0][4]).include('S');
-		});
+	// 		expect(prison2.schedule).to.have.length(2);
+	// 		expect(prison2.schedule[0][3]).to.include('j');
 
-		it('sfs5 applies prison4', function () {
-			dispatcher.dispatch(prison4, p4, sfs5, s5);
+	// 		expect(sfs4.schedule[0][3]).include('G');
+	// 		expect(sfs4.schedule[0][4]).include('S');
+	// 	});
 
-			expect(prison4.schedule).to.have.length(1);
-			expect(prison4.schedule[0][0]).to.include('m');
+	// 	it('sfs5 applies prison4', function () {
+	// 		dispatcher.dispatch(prison4, p4, sfs5, s5);
 
-			expect(sfs5.schedule).to.have.length(1);
-			expect(sfs5.schedule[0][0]).include('S');
-		});
+	// 		expect(prison4.schedule).to.have.length(1);
+	// 		expect(prison4.schedule[0][0]).to.include('m');
 
-		it('sfs5 applies prison1', function () {
-			dispatcher.dispatch(prison1, p1, sfs5, s5);
+	// 		expect(sfs5.schedule).to.have.length(1);
+	// 		expect(sfs5.schedule[0][0]).include('S');
+	// 	});
 
-			expect(prison1.schedule).to.have.length(6);
-			expect(prison1.schedule[1][1]).to.include('m');
+	// 	it('sfs5 applies prison1', function () {
+	// 		dispatcher.dispatch(prison1, p1, sfs5, s5);
 
-			expect(sfs5.schedule).to.have.length(1);
-			expect(sfs5.schedule[0][1]).include('B');
-		});
+	// 		expect(prison1.schedule).to.have.length(6);
+	// 		expect(prison1.schedule[1][1]).to.include('m');
 
-		it('sfs3 applies prison3', function () {
-			dispatcher.dispatch(prison3, p3, sfs3, s3);
+	// 		expect(sfs5.schedule).to.have.length(1);
+	// 		expect(sfs5.schedule[0][1]).include('B');
+	// 	});
 
-			expect(prison3.schedule).to.have.length(4);
-			expect(prison3.schedule[1][1]).to.include('g');
+	// 	it('sfs3 applies prison3', function () {
+	// 		dispatcher.dispatch(prison3, p3, sfs3, s3);
 
-			expect(sfs3.schedule).to.have.length(3);
-			expect(sfs3.schedule[0][1]).include('N');
-		});
-  });
+	// 		expect(prison3.schedule).to.have.length(4);
+	// 		expect(prison3.schedule[1][1]).to.include('g');
+
+	// 		expect(sfs3.schedule).to.have.length(3);
+	// 		expect(sfs3.schedule[0][1]).include('N');
+	// 	});
+  // });
 
 	describe('#redispatch', function() {
 		let meetingP = {orgType: 'p', orgCode: 'prison1', schedule:[['a', 'b', 'c', 'd'],['e','f'],['g', 'h']]};
@@ -554,6 +555,38 @@ describe('Dispatcher', function () {
 			expect(res).to.have.length(3);
 			expect(res).to.be.eql(['X', 5, 'z']);
 		});
+	});
+
+	describe('#dispatch', function() {
+		let prison1 =  {schedule: []};
+
+		let justice1 = {schedule: []};
+		let justice2 = {schedule: []};
+		let justice3 = {schedule: []};
+		let justice4 = {schedule: []};
+		let justice5 = {schedule: []};
+
+		let p1 = ['A', 'B', 'C', 'D', 'E'];
+
+		let j1 = ['a', 'b'];
+		let j2 = ['c', 'd'];
+		let j3 = ['e'];
+		let j4 = ['f', 'h', 'i'];
+		let j5 = ['g'];
+
+		it('expect dispatch', function() {
+			dispatcher.dispatch(prison1, p1, justice1, j1);
+			dispatcher.dispatch(prison1, p1, justice2, j2);
+			dispatcher.dispatch(prison1, p1, justice3, j3);
+			dispatcher.dispatch(prison1, p1, justice4, j4);
+			dispatcher.dispatch(prison1, p1, justice5, j5);
+			logger.debug(prison1);
+			// dispatcher.dispatch(prison1, p1, justice1, j1);
+			// dispatcher.dispatch(prison1, p1, justice1, j1);
+			// dispatcher.dispatch(prison1, p1, justice1, j1);
+			// dispatcher.dispatch(prison1, p1, justice1, j1);
+		});
+
 	});
 
 });
