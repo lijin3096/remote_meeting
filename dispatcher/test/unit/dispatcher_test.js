@@ -580,12 +580,13 @@ describe('Dispatcher', function () {
 			dispatcher.dispatch(prison1, p1, justice3, j3);
 			dispatcher.dispatch(prison1, p1, justice4, j4);
 			dispatcher.dispatch(prison1, p1, justice5, j5);
-			
+
 			dispatcher.dispatch(prison1, p1, justice2, j2);
 			dispatcher.dispatch(prison1, p1, justice3, j3);
 			dispatcher.dispatch(prison1, p1, justice4, j4);
 			dispatcher.dispatch(prison1, p1, justice5, j5);
 			logger.debug(prison1);
+			logger.debug(justice5);
 			// dispatcher.dispatch(prison1, p1, justice1, j1);
 			// dispatcher.dispatch(prison1, p1, justice1, j1);
 			// dispatcher.dispatch(prison1, p1, justice1, j1);
